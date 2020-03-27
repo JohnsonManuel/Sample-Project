@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Login</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<h:outputStylesheet name="primeicons/primeicons.css"
+		library="primefaces" />
+	<h:outputStylesheet name="mystyle.css" library="css" />
+
+</h:head>
+
+<h:body>
+	<div class="ui-g">
+		<div class="ui-g-12 ui-sm-12 ui-md-4 ui-lg-4 ui-xl-4"
+			id="banner_wrapper">
+			<div id="banner">
+				<h2>iManage</h2>
+				<p:graphicImage name="Laptop.svg" library="images"/>
+			</div>
+		</div>
+	</div>
+</h:body>
+</html>
+

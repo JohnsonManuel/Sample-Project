@@ -1,0 +1,28 @@
+package com.iManage.Bean;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+@ViewScoped
+@ManagedBean
+public class CaptchaBean {
+	
+	private String captcha;
+	private String captchaText;
+	
+	
+	public String getCaptcha() {
+		return captcha;
+	}
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
+	}
+	public String getCaptchaText() {
+		return captchaText;
+	}
+	public void setCaptchaText(String captchaText) {
+		this.captchaText = captchaText;
+	}
+
+	
+}

@@ -1,0 +1,30 @@
+package com.iManage.Model;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
+
+import com.iManage.Bean.LoginBean;
+
+@ManagedBean
+public class loginModel {
+
+	@ManagedProperty(value="#{LoginBean}")
+	private LoginBean loginBean
+	public String validateUser() {
+		
+		if(username.equals("admin")&&password.equals("admin")) {
+			return "index?faces-redirect=true";
+		}else {
+			System.out.println("Came here");
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage("invalid Username or password"));
+			return null;
+		}
+		
+	}
+	
+	
+	
+}

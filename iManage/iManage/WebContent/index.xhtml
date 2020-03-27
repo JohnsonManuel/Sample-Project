@@ -19,7 +19,7 @@
 		<p:outputPanel styleClass="ui-g ui-g-8 ui-sm-6">
 			<p:commandButton id="menubutton" icon="pi pi-bars"  onclick="PF('sidebar').show()" ></p:commandButton>
 			<span style="padding:5px"><h:outputText value="iManage"/></span>
-			<p:commandButton value="Create" type="button" styleClass="btn"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show()" ></p:commandButton>
+			<p:commandButton value="Create" type="button" styleClass="btn"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show();" ></p:commandButton>
 		</p:outputPanel>
 		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-6" >
 		<h:outputLink id="profile-tab">
@@ -43,9 +43,9 @@
 					<ul id="menu-options-sidebar">
 						<li><span style="font-size: 20px;">Menu</span></li>
 						<li><hr /></li>
-						<li><h:outputLink onclick="togglevisibility('alp');">All Requests</h:outputLink>
-						</li>
-						<li><p:commandButton value="Create" type="button" styleClass="btn-sidebar"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show()" ></p:commandButton>
+						<li><h:outputLink onclick="togglevisibility('alp');">All Requests</h:outputLink></li>
+						<li><hr/></li>
+						<li><p:commandButton value="Create" type="button" styleClass="btn-sidebar"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show();PF('sidebar').hide();" ></p:commandButton>
 						</li>
 					</ul>
 				</div>
