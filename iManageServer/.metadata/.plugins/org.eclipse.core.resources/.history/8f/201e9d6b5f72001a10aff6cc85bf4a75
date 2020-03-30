@@ -1,0 +1,5 @@
+package com.iManageServer.Dao;
+
+public class WorkDAO {
+
+}

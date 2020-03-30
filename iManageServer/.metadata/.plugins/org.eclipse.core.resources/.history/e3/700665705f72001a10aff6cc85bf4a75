@@ -1,0 +1,11 @@
+package com.iManageServer.Dao;
+
+public class WorkDAO {
+
+	
+	public boolean checkuserinDB(String user,String pass) {
+		if(user.equals("john")&&pass.equals("John1234")) {
+			return true;
+		}_
+	}
+}

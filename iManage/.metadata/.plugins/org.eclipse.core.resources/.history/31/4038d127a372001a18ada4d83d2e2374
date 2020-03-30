@@ -1,0 +1,110 @@
+package com.iManage.Model;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.imageio.ImageIO;
+
+import com.iManage.Bean.LoginBean;
+import com.iManage.Client.Login;
+
+@RequestScoped
+@ManagedBean(name="loginModel",eager=true)
+public class loginModel {
+
+	@ManagedProperty(value="#{loginBean}")
+	private LoginBean loginBean;	
+	
+
+	
+	public String validateUser() {
+		
+		Login login = new Login();
+		if(login.checkuserinDB(loginBean.getUsername(),loginBean.getPassword())) {
+			loginBean.setUsername("");
+			loginBean.setPassword("");			
+			String capthca = login.getCaptchaBase64();
+			loginBean.setCaptcha(captcha);
+			loginBean.setCaptcha64(ConvertTexttoBase64(captcha));
+			
+			 System.out.println("the captcha returned in model "+ login.getCaptchaBase64());
+			 System.out.println("The ca[tcha in base 64 is"+ ConvertTexttoBase64(login.getCaptchaBase64() ));
+			 System.out.println("The ca[tcha in base 64 is"+ ConvertTexttoBase64(login.getCaptchaBase64() ).length());
+			return "captcha";
+		}else {
+			System.out.println("Came here");
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage("invalid Username or password"));
+			return null;
+		}
+		
+	}
+	
+	public String validateCaptcha() {
+		
+		System.out.println(loginBean.getCaptcha());
+		if(loginBean.getCaptcha().equals(loginBean.getCaptchaText())) {
+			loginBean.setCaptchaText("");
+			return "index?faces-redirect=true";
+		}
+		else {
+			System.out.println("Came here");
+			FacesContext context = FacesContext.getCurrentInstance();
+	        context.addMessage(null, new FacesMessage("invalid Captcha"));
+			return null;
+		}
+	}
+
+	public String getText() {
+		return "/9j/4AAQSkZJRgABAgAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAoAKADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwBaKKKRoFFVY7ghrgyNlUbA49zTFN5KnmKyqD0XHWgVy7RVP7U7WsjfdlQgHj3qfe32Tfn5vLzn3xQFyWiqDXMwhgZTlmJyMdeaknuG+ypLGcFj9fWgLluiqk00rXPkQlVIGSTToZZVLrOOFGd4HBoC5Zoqkr3VwS8bKiZwMjrTo7mQpKkg2yopI4oC5boqrZ3DSgrJ97GQcdRTrOV5YSznJ3Y6UBcsUUUUDCiiigAooooAKrPdeVclJABHjIIHP+etWaRkVxhlDD0IzQIz41M0V0VB+Ygj881LDeRLAoYkMoxjHWrgAAAAwB2pjRRsctGpPqRQFigAWtbiUjAdhgfj/wDXp/2OP7N5u5t2zd146VeZQwwwBHoaNo27cDbjGO1ArGcv3LP/AHj/ADpLtTCWjA+Rm3r7eorR8tPl+Rfl6cdKVkVxhlDD0IzQFinctC03lzIV44cHmm25aQzRIzNHtIUt29KvMiuMMoYehGaFUKMKAB6Cgdila3UcUXlyZVlPcU1CZnuZgMKUI5+n/wBarzRo5yyKx9SM0u0bduBtxjHagLFFFK2kM6jLRk59xk5qTT/+Pdv97+gq0qhRhQAPQUKioMKoUegGKAsLRRRQMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//Z\r\n" + 
+				"";
+	}
+	public String ConvertTexttoBase64(String str) {
+		
+		int width =320;
+		int height =60;
+		
+		Color bg= new Color(135,127,127);
+		Color fg = new Color(100,100,100);
+		Font font = new Font("Arial",Font.BOLD,40);
+		
+		BufferedImage cpimg = new BufferedImage(width,height,BufferedImage.OPAQUE);
+		
+		Graphics g = cpimg.createGraphics();
+		g.setFont(font);
+		g.setColor(bg);
+		g.fillRect(0, 0, width, height);
+		g.setColor(fg);
+		g.drawString(str, 80, 45);
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(cpimg, "jpg", baos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String encodedString = Base64.getEncoder().encodeToString(baos.toByteArray());
+
+		return encodedString;
+		
+	}
+
+	public LoginBean getLoginBean() {
+		return loginBean;
+	}
+
+	public void setLoginBean(LoginBean loginBean) {
+		this.loginBean = loginBean;
+	}
+	
+}

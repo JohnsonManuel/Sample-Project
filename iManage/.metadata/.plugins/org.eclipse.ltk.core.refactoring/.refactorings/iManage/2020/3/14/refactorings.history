@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;iManage/WebContent/capthca.xhtml&apos; to &apos;captcha.xhtml&apos;" description="Rename resource &apos;capthca.xhtml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="WebContent/capthca.xhtml" name="captcha.xhtml" stamp="1585576322081" updateReferences="true"/>
+</session>
