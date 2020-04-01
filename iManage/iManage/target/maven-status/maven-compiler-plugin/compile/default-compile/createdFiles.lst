@@ -1,5 +1,9 @@
-com\iManage\Bean\workRequestBean.class
-com\iManage\Bean\LoginBean.class
-com\iManage\Model\workRequestModel.class
+com\iManage\Client\WorkRequest$1.class
+com\iManage\Client\WorkRequest$3.class
 com\iManage\Client\Login.class
+com\iManage\Client\WorkRequest$2.class
+com\iManage\Bean\LoginBean.class
+com\iManage\Client\WorkRequest.class
+com\iManage\Model\WorkRequestModel.class
+com\iManage\Bean\WorkRequestBean.class
 com\iManage\Model\loginModel.class

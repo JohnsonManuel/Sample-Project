@@ -1,2 +1,4 @@
+com\iManageServer\Pojo\WorkRequestPojo.class
+com\iManageServer\Service\WorkRequestService.class
 com\iManageServer\Dao\WorkDAO.class
-com\iManageServer\Service\Login.class
+com\iManageServer\Service\LoginService.class

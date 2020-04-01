@@ -57,6 +57,7 @@ public class loginModel {
 			loginBean.setCaptchaText("");
 			loginBean.setCaptcha("");
 			loginBean.setCaptcha64("");
+			loginBean.setUsername("");
 			if(loginBean.getUserType().equals("admin")) {
 				return "admin?faces-redirect=true";
 			}else {

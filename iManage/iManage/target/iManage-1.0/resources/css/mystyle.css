@@ -79,7 +79,7 @@ body {
 	padding: 3px 4px;
 }
 
-#menu-options li a {
+#menu-options li a ,#menu-options-sidebar li a{
 	color: #8b95a6;
 	display: block;
 	padding: 10px 15px;
@@ -91,7 +91,7 @@ body {
 	color: blue;
 }
 
-#menu-options li a:hover {
+#menu-options li a:hover ,#menu-options-sidebar li a:hover{
 	background: #ebecf0;
 }
 

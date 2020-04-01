@@ -3,41 +3,31 @@ package com.iManage.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.PrimeFaces;
 
-import com.iManage.Model.workRequestModel;
-
 @ViewScoped
 @ManagedBean(name="workRequestBean",eager=true)
-public class workRequestBean {
+public class WorkRequestBean {
 	
 	private String name;
 	private String requestType;
 	private String description;
 	private String status;
-	private List<workRequestBean> workrequestList;
 	
+	private List<WorkRequestBean> workrequestList;
 	
+
 	
-	@PostConstruct
-	public void init() {
-		System.out.println("INIT CALLED");
-		this.setWorkrequestList(workRequestModel.loadWorkRequests());
+	public WorkRequestBean() {
+		workrequestList = new ArrayList<WorkRequestBean>(); 
 	}
 	
 	
 	
-	public workRequestBean() {
-		workrequestList = new ArrayList<workRequestBean>(); 
-	}
-	
-	
-	
-	public workRequestBean(String name, String requestType, String description, String status) {
+	public WorkRequestBean(String name, String requestType, String description, String status) {
 		this.name = name;
 		this.requestType = requestType;
 		this.description = description;
@@ -45,7 +35,7 @@ public class workRequestBean {
 	}
 	
 	public void addWorkRequest() {
-		workrequestList.add(new workRequestBean(name,requestType,description,"In Progress")	);	
+		workrequestList.add(new WorkRequestBean(name,requestType,description,"In Progress")	);	
 		this.name="";
 		this.setDescription("");
 		PrimeFaces.current().executeScript("PF('dlg2').hide();");
@@ -78,14 +68,13 @@ public class workRequestBean {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<workRequestBean> getWorkrequestList() {
+	public List<WorkRequestBean> getWorkrequestList() {
 		return workrequestList;
 	}
-	public void setWorkrequestList(List<workRequestBean> workrequestList) {
+	public void setWorkrequestList(List<WorkRequestBean> workrequestList) {
 		this.workrequestList = workrequestList;
 	}
 	
-	
-	
+
 
 }
