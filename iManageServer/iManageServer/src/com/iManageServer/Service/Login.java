@@ -15,7 +15,7 @@ public class Login {
 	@POST
 	@Path("user")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean validateUser(@FormParam("user")String user,@FormParam("pass")String pass) {
+	public String validateUser(@FormParam("user")String user,@FormParam("pass")String pass) {
 		System.out.println(" User and pass are" + user+" "+ pass);
 		WorkDAO workDAO = new WorkDAO();
 		return workDAO.checkuserinDB(user, pass);

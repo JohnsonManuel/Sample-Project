@@ -10,16 +10,16 @@ import javax.ws.rs.core.MediaType;
 public class Login {
 	
 	
-	public boolean checkuserinDB(String user,String pass) {
+	public String checkuserinDB(String user,String pass) {
 		 Client client = ClientBuilder.newClient();
 		 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("login").path("user");
 		 System.out.println(target.getUri());
 		 Form form = new Form();
 		 form.param("user",user);
 		 form.param("pass",pass);
-		 String validUser = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),String.class);
+		 String validUserType = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),String.class);
 		 
-		return Boolean.parseBoolean(validUser);
+		return validUserType;
 	}
 	
 		//  http://localhost:8181/iManageServer/rest/login/captcha

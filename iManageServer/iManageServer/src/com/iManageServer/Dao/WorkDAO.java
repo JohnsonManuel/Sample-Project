@@ -3,13 +3,15 @@ package com.iManageServer.Dao;
 public class WorkDAO {
 
 	
-	public boolean checkuserinDB(String user,String pass) {
+	public String checkuserinDB(String user,String pass) {
 		if(user.equals("john")&&pass.equals("John1234")) {
-			return true;
+			return "user";
 		}
-		else {
-			return false;
+		else if(user.equals("admin")&&pass.equals("admin")){
+			return "admin";
 			
+		}else {
+			return null;
 		}
 	}
 
@@ -20,6 +22,7 @@ public class WorkDAO {
         for (int i = 0; i < length; i++) {
         	finalString.append(chars[(int) Math.round(Math.random()*(chars.length - 1))]);
         }
+        
 		return finalString.toString();
 	}
 }

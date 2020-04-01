@@ -9,7 +9,9 @@ public class LoginBean {
 	
 	private String username;
 	private String password;
+	private String userType;
 	private String captcha;
+	private String captcha64;
 	private String captchaText;
 	
 	public String getUsername() {
@@ -36,6 +38,20 @@ public class LoginBean {
 	public void setCaptchaText(String captchaText) {
 		this.captchaText = captchaText;
 	}
+	public String getCaptcha64() {
+		return captcha64;
+	}
+	public void setCaptcha64(String captcha64) {
+		this.captcha64 = captcha64;
+	}
+	public String getUserType() {
+		return userType;
+	}
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+	
+	
 	
 	
 	

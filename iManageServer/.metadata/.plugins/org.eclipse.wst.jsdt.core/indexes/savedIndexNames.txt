@@ -1,7 +1,0 @@
-INDEX VERSION 1.4+C:\Users\Johnson Manuel\iManageServer\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-806010574.index
-3840585169.index
-18880128.index
-963059801.index
-2657640659.index
-4174689078.index

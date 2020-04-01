@@ -3,12 +3,15 @@ package com.iManage.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 
 import org.primefaces.PrimeFaces;
 
-@SessionScoped
+import com.iManage.Model.workRequestModel;
+
+@ViewScoped
 @ManagedBean(name="workRequestBean",eager=true)
 public class workRequestBean {
 	
@@ -17,6 +20,16 @@ public class workRequestBean {
 	private String description;
 	private String status;
 	private List<workRequestBean> workrequestList;
+	
+	
+	
+	@PostConstruct
+	public void init() {
+		System.out.println("INIT CALLED");
+		this.setWorkrequestList(workRequestModel.loadWorkRequests());
+	}
+	
+	
 	
 	public workRequestBean() {
 		workrequestList = new ArrayList<workRequestBean>(); 
