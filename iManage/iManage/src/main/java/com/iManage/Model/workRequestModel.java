@@ -5,16 +5,20 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.RequestScoped;
+
+import org.primefaces.PrimeFaces;
 
 import com.iManage.Bean.WorkRequestBean;
 import com.iManage.Client.WorkRequest;
-@ViewScoped
+
+@RequestScoped
 @ManagedBean(name="workRequestModel" ,eager=true)
 public class WorkRequestModel {
 	
-	@ManagedProperty(value="#{workrequestBean}")
+	@ManagedProperty(value="#{workRequestBean}")
 	private WorkRequestBean workrequestBean;
+	
 	private WorkRequestBean selectedworkRequest;
 	private List<WorkRequestBean> inProgressWorksList;
 	private List<WorkRequestBean> allWorksList;
@@ -23,16 +27,11 @@ public class WorkRequestModel {
 	
 	@PostConstruct
 	public void init() {
-		WorkRequest obj = new WorkRequest();
-		allWorksList = obj.getAll();
-		inProgressWorksList = obj.getInProgress();
-		completedWorksList = obj.getCompleted();
+		updateTables();
 	}
 	
 	public WorkRequestModel() {
-	
 
-		
 	}
 	
 	public WorkRequestBean getWorkrequestBean() {
@@ -46,10 +45,36 @@ public class WorkRequestModel {
 
 	
 	public void updateList() {
+		System.out.println(selectedworkRequest.getName());
+		System.out.println(selectedworkRequest.getRequestType());
+		System.out.println(selectedworkRequest.getDescription());
+		System.out.println(selectedworkRequest.getStatus());
+
 		// need to work on
 	}
 	
 	
+	public void addWorkRequest() {
+		System.out.println(" Came here");
+		System.out.println(workrequestBean.getName());
+		WorkRequest objj = new WorkRequest();
+		System.out.println(workrequestBean.getName());
+		objj.addWorkRequest(workrequestBean.getName(),workrequestBean.getRequestType(),workrequestBean.getDescription(),"In Progress");
+		workrequestBean.setName("");
+		workrequestBean.setDescription("");
+		workrequestBean.setRequestType("");
+		workrequestBean.setStatus("");
+		updateTables();
+		PrimeFaces.current().executeScript("PF('dlg2').hide();");
+
+	}
+	public void updateTables()
+	{
+		WorkRequest obj = new WorkRequest();
+		allWorksList = obj.getAll();
+		inProgressWorksList = obj.getInProgress();
+		completedWorksList = obj.getCompleted();
+	}	
 	
 
 	public WorkRequestBean getSelectedworkRequest() {
@@ -85,10 +110,6 @@ public class WorkRequestModel {
 	public void setCompletedWorksList(List<WorkRequestBean> completedWorkList) {
 		this.completedWorksList = completedWorkList;
 	}
-	
-	
-	
-	
 	
 	
 }

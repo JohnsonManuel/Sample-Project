@@ -43,6 +43,7 @@
 			</ul>
 		</div>
 		<div class="ui-g-10 ui-sm-12" >
+		
 			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); " >
 				<div class="ui-g-12" 
 					style="height: 100%;">
@@ -52,13 +53,13 @@
 						<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('all');PF('sidebar').hide();">All Requests</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('inp');PF('sidebar').hide();">In progress</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('comp');PF('sidebar').hide();">Completed</h:outputLink></li>
-						
 						<li><hr /></li>
 						<li><p:commandButton value="Create" type="button" styleClass="btn-sidebar"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show();PF('sidebar').hide();" ></p:commandButton>
 						</li>
 					</ul>
 				</div>
 			</p:sidebar>
+			
 			<p:dialog header="Create request" widgetVar="dlg2" modal="true"
 				positionType="absolute" width="80%" height="600" resizable="false" draggable="false">
 				<h:form>
@@ -72,7 +73,7 @@
 						</p:selectOneMenu>
 						<p:outputLabel for="desc" value="Description"></p:outputLabel>
 						<p:inputTextarea id="desc"  value="#{workRequestBean.description}"  styleClass="ui-g-12 ui-sm-12" rows="10" required="true"/>
-						<p:commandButton value="Submit"  action="#{workRequestBean.addWorkRequest()}" update="worklist @form"  ></p:commandButton>
+						<p:commandButton value="Submit"  action="#{workRequestModel.addWorkRequest()}"  update="worklist @form"  ></p:commandButton>
 					</p:panelGrid>
 				</h:form>
 			</p:dialog>

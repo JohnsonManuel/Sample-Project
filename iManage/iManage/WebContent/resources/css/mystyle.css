@@ -1,7 +1,8 @@
 body {
 	margin: 0;
 	padding: 0;
-	font-size: 16px;
+	font-family: Arial, Helvetica, sans-serif !important;
+	font-size: 14px;
 }
 
 .btn, .btn-sidebar {
@@ -91,6 +92,14 @@ body {
 	color: blue;
 }
 
+#menu-options li span{
+	
+	font-size: 20px;
+    padding: 10px 15px;
+    font-weight: bold;
+	
+}
+    
 #menu-options li a:hover ,#menu-options-sidebar li a:hover{
 	background: #ebecf0;
 }

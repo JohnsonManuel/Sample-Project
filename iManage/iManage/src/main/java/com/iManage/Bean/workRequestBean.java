@@ -1,12 +1,7 @@
 package com.iManage.Bean;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-
-import org.primefaces.PrimeFaces;
 
 @ViewScoped
 @ManagedBean(name="workRequestBean",eager=true)
@@ -17,16 +12,11 @@ public class WorkRequestBean {
 	private String description;
 	private String status;
 	
-	private List<WorkRequestBean> workrequestList;
-	
-
 	
 	public WorkRequestBean() {
-		workrequestList = new ArrayList<WorkRequestBean>(); 
 	}
 	
-	
-	
+
 	public WorkRequestBean(String name, String requestType, String description, String status) {
 		this.name = name;
 		this.requestType = requestType;
@@ -34,13 +24,7 @@ public class WorkRequestBean {
 		this.status = status;
 	}
 	
-	public void addWorkRequest() {
-		workrequestList.add(new WorkRequestBean(name,requestType,description,"In Progress")	);	
-		this.name="";
-		this.setDescription("");
-		PrimeFaces.current().executeScript("PF('dlg2').hide();");
-		System.out.println(workrequestList.size());
-	}
+	
 
 
 	public String getName() {
@@ -68,12 +52,7 @@ public class WorkRequestBean {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<WorkRequestBean> getWorkrequestList() {
-		return workrequestList;
-	}
-	public void setWorkrequestList(List<WorkRequestBean> workrequestList) {
-		this.workrequestList = workrequestList;
-	}
+
 	
 
 

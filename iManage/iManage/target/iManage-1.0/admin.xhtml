@@ -59,15 +59,8 @@
 				</div>
 			</p:sidebar>
 			<p:outputPanel styleClass="display-panels active" id="all">
-				<h:form id="editform">
-					<p:panelGrid columns="1" layout="grid" >
-						<h:inputText value="#{workRequestModel.selectedworkRequest.name}"></h:inputText>
-						<h:inputText value="#{workRequestModel.selectedworkRequest.requestType}"></h:inputText>
-						<h:inputText value="#{workRequestModel.selectedworkRequest.description}"></h:inputText>
-						<h:inputText value="#{workRequestModel.selectedworkRequest.status}"></h:inputText>
-						<p:commandButton value="update" action="{#workRequestModel.updateList()}"></p:commandButton>
-					</p:panelGrid>
-					</h:form>
+				
+				
 				<h2>ADMIN PAGE</h2>
 				<h:form>
 					<p:dataTable var="list" value="#{workRequestModel.allWorksList}"
@@ -84,13 +77,30 @@
 						<p:column headerText="Status">
 							<h:outputText value="#{list.status}" />
 						</p:column>
-						<p:column headerText="Edit" >
-							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform"></p:commandButton>
-						</p:column>
 					</p:dataTable>
 				</h:form>
+				
 			</p:outputPanel>
 			<p:outputPanel styleClass="display-panels " id="inp">
+				<h:form id="editform" >
+					<p:panelGrid columns="2" layout="grid" >
+							<h:outputLabel value="Name:" for="selectedName"></h:outputLabel>
+							<p:inputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" readonly="true"></p:inputText>
+							
+							<h:outputLabel value="Type:" for="selectedType"></h:outputLabel>
+							<p:inputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true"></p:inputText>
+							
+							<h:outputLabel value="Description:" for="selectedDescription"></h:outputLabel>
+							<p:inputTextarea id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}" cols="3" readonly="true" styleClass="ui-g-12"></p:inputTextarea>	
+													
+							<h:outputLabel value="Status:" for="selectedStatus"></h:outputLabel>
+							<p:selectOneMenu  id="selectedStatus" value="#{workRequestModel.selectedworkRequest.status}" style="width:100px;" >
+								<f:selectItem itemLabel="In Progress" itemValue="In Progress"></f:selectItem>
+								<f:selectItem itemLabel="Completed" itemValue="Completed"></f:selectItem>
+							</p:selectOneMenu>
+							<br />
+							<p:commandButton value="update" action="#{workRequestModel.updateList()}"></p:commandButton>
+					</p:panelGrid>
 				<h2>In progress requests</h2>
 				<p:dataTable var="list" value="#{workRequestModel.inProgressWorksList}"
 					id="inprogressworklist" reflow="true">
@@ -106,7 +116,11 @@
 					<p:column headerText="Status">
 						<h:outputText value="#{list.status}" />
 					</p:column>
+					<p:column headerText="Edit" >
+							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="@form"></p:commandButton>
+						</p:column>
 				</p:dataTable>
+				</h:form>
 			</p:outputPanel>
 			<p:outputPanel styleClass="display-panels " id="comp">
 				<h2>Completed requests</h2>
@@ -130,6 +144,7 @@
 	</div>
 	<script>
 		function togglevisibility(id){
+			
 			document.querySelector(".active").classList.remove("active");
 			document.getElementById(id).classList.add("active");
 			return false;
