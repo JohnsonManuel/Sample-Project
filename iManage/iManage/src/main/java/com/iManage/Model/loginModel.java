@@ -15,33 +15,43 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.iManage.Bean.LoginBean;
 import com.iManage.Client.Login;
 
 @RequestScoped
 @ManagedBean(name="loginModel",eager=true)
 public class loginModel {
+	private static final Logger log = LogManager.getLogger(loginModel.class);	
 
+	
 	@ManagedProperty(value="#{loginBean}")
 	private LoginBean loginBean;	
 	
-
+	
 	
 	public String validateUser() {
-		
+		log.trace("Validating user ");
 		Login login = new Login();
-		
 		String user = login.checkuserinDB(loginBean.getUsername(),loginBean.getPassword());
 		
+		log.trace("User");
+		
 		if(!user.isEmpty()) {
+			log.trace("User exists and is of type "+user);
 			loginBean.setUserType(user);
 			loginBean.setUsername("");
 			loginBean.setPassword("");	
 			String captcha = login.getCaptchaString();
+			log.trace("Getting capthca from server...");
 			loginBean.setCaptcha(captcha);
+			log.trace("Setting captcha of value :"+ captcha);
 			loginBean.setCaptcha64(ConvertTexttoBase64(captcha));
 			return "captcha";
 		}else {
+			log.trace("User doesn't exist");
 			System.out.println("Came here");
 			FacesContext context = FacesContext.getCurrentInstance();
 	        context.addMessage(null, new FacesMessage("Invalid Username or password"));
@@ -51,9 +61,10 @@ public class loginModel {
 	}
 	
 	public String validateCaptcha() {
-		
+		log.trace("Validating Captcha");
 		System.out.println(loginBean.getCaptcha());
 		if(loginBean.getCaptcha().equals(loginBean.getCaptchaText())) {
+			log.trace("Entered captcah is valid");
 			loginBean.setCaptchaText("");
 			loginBean.setCaptcha("");
 			loginBean.setCaptcha64("");
