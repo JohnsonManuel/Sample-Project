@@ -20,9 +20,17 @@ public class WorkRequestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean addNewWorkRequest( @FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status  ) {
 		WorkDAO dao = new WorkDAO();
-		dao.addWorkRequestToDB(name,type,description,status);
-		return true;
+		return dao.addWorkRequestToDB(name,type,description,status);
 	}
+	
+	@POST
+	@Path("update")
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean updateWorkRequest( @FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status  ) {
+		WorkDAO dao = new WorkDAO();
+		return dao.updateRequestToDB(name,type,description,status);
+	}
+	
 	
 	@GET
 	@Path("allreq")

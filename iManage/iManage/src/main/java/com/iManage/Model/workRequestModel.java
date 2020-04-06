@@ -3,16 +3,18 @@ package com.iManage.Model;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 
 import com.iManage.Bean.WorkRequestBean;
 import com.iManage.Client.WorkRequest;
 
-@RequestScoped
+@ViewScoped
 @ManagedBean(name="workRequestModel" ,eager=true)
 public class WorkRequestModel {
 	
@@ -31,6 +33,7 @@ public class WorkRequestModel {
 	}
 	
 	public WorkRequestModel() {
+		selectedworkRequest = new WorkRequestBean();
 
 	}
 	
@@ -45,12 +48,16 @@ public class WorkRequestModel {
 
 	
 	public void updateList() {
-		System.out.println(selectedworkRequest.getName());
-		System.out.println(selectedworkRequest.getRequestType());
-		System.out.println(selectedworkRequest.getDescription());
-		System.out.println(selectedworkRequest.getStatus());
-
-		// need to work on
+		WorkRequest objj = new WorkRequest();
+		FacesContext context = FacesContext.getCurrentInstance();
+		boolean updated = objj.updateWorkRequest( selectedworkRequest.getName(),selectedworkRequest.getRequestType(),selectedworkRequest.getDescription(),selectedworkRequest.getStatus() );
+		updateTables();
+		if(updated) {
+	        context.addMessage(null, new FacesMessage("Work request updated"));
+		}
+		else {
+			 context.addMessage(null, new FacesMessage("update failed"));
+		}
 	}
 	
 	

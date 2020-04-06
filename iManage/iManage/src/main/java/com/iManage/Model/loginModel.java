@@ -81,6 +81,11 @@ public class loginModel {
 			return null;
 		}
 	}
+	
+	public String logout() {
+		return "login?faces-redirect=true";
+		
+	}
 
 
 	public String ConvertTexttoBase64(String str) {

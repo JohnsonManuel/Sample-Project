@@ -75,6 +75,25 @@ public class WorkRequest {
 		}
 
 
+		public boolean  updateWorkRequest(String name, String requestType, String description, String status) {
+			log.trace("Updating worklist ");
+
+			 Client client = ClientBuilder.newClient();
+			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("update");
+			 
+			 System.out.println("getAll() "+target.getUri());
+			 Form form = new Form();
+			 form.param("name",name);
+			 form.param("type", requestType);
+			 form.param("description", description);
+			 form.param("status", status);
+			 boolean result= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
+			 log.trace("updated? "+result);
+
+			 return result;
+		}
+
+
 		
 		
 }

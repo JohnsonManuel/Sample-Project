@@ -23,10 +23,14 @@
 		</p:outputPanel>
 		
 		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-6" >
-			<h:outputLink id="profile-tab">
+			<h:outputLink id="profile-tab" onclick="toggleVisibility('profile-tab-menu');" value="javascript:void(0)" >
 				<span><h:outputText value="User name" /></span>
 				<h:graphicImage name="profile.png" library="images" id="user-img"></h:graphicImage>
+				<p:outputPanel id="profile-tab-menu" style="display:none;" >
+					<p:commandButton value="Logout" action="#{loginModel.logout()}" ></p:commandButton>
+				</p:outputPanel>
 			</h:outputLink>
+			
 		</p:outputPanel>
 		
 	</div>
@@ -38,33 +42,29 @@
 			<ul id="menu-options">
 				<li><span style="font-size:20px;">Menu</span></li>
 				<li><hr/></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('all');">All Requests</h:outputLink></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('inp');">In progress</h:outputLink></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('comp');PF('sidebar').hide();">Completed</h:outputLink></li>
+				<li><h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" class="current">All Requests</h:outputLink></li>
+				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');">In progress</h:outputLink></li>
+				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');">Completed</h:outputLink></li>
 				
 			</ul>
 		</div>
 		
 		<div class="ui-g-10 ui-sm-12" >
 			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); " >
-				<div class="ui-g-12" 
-					style="height: 100%;">
+				<div class="ui-g-12" style="height: 100%;">
 					<ul id="menu-options-sidebar">
 						<li><span style="font-size: 20px;">Menu</span></li>
 						<li><hr /></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('all');PF('sidebar').hide();">All Requests</h:outputLink></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('inp');PF('sidebar').hide();">In progress</h:outputLink></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="togglevisibility('comp');PF('sidebar').hide();">Completed</h:outputLink></li>
+						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'all');PF('sidebar').hide();">All Requests</h:outputLink></li>
+						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');PF('sidebar').hide();">In progress</h:outputLink></li>
+						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();">Completed</h:outputLink></li>
 					</ul>
 				</div>
 			</p:sidebar>
+			
 			<p:outputPanel styleClass="display-panels active" id="all">
-				
-				
 				<h2>ADMIN PAGE</h2>
-				<h:form>
-					<p:dataTable var="list" value="#{workRequestModel.allWorksList}"
-						id="worklist" reflow="true">
+					<p:dataTable var="list" value="#{workRequestModel.allWorksList}" id="worklist" reflow="true">
 						<p:column headerText="Name">
 							<h:outputText value="#{list.name}" />
 						</p:column>
@@ -78,31 +78,11 @@
 							<h:outputText value="#{list.status}" />
 						</p:column>
 					</p:dataTable>
-				</h:form>
-				
 			</p:outputPanel>
+			
 			<p:outputPanel styleClass="display-panels " id="inp">
-				<h:form id="editform" >
-					<p:panelGrid columns="2" layout="grid" >
-							<h:outputLabel value="Name:" for="selectedName"></h:outputLabel>
-							<p:inputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" readonly="true"></p:inputText>
-							
-							<h:outputLabel value="Type:" for="selectedType"></h:outputLabel>
-							<p:inputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true"></p:inputText>
-							
-							<h:outputLabel value="Description:" for="selectedDescription"></h:outputLabel>
-							<p:inputTextarea id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}" cols="3" readonly="true" styleClass="ui-g-12"></p:inputTextarea>	
-													
-							<h:outputLabel value="Status:" for="selectedStatus"></h:outputLabel>
-							<p:selectOneMenu  id="selectedStatus" value="#{workRequestModel.selectedworkRequest.status}" style="width:100px;" >
-								<f:selectItem itemLabel="In Progress" itemValue="In Progress"></f:selectItem>
-								<f:selectItem itemLabel="Completed" itemValue="Completed"></f:selectItem>
-							</p:selectOneMenu>
-							<br />
-							<p:commandButton value="update" action="#{workRequestModel.updateList()}"></p:commandButton>
-					</p:panelGrid>
 				<h2>In progress requests</h2>
-				<p:dataTable var="list" value="#{workRequestModel.inProgressWorksList}"
+				<p:dataTable   var="list" value="#{workRequestModel.inProgressWorksList}"
 					id="inprogressworklist" reflow="true">
 					<p:column headerText="Name">
 						<h:outputText value="#{list.name}" />
@@ -117,12 +97,11 @@
 						<h:outputText value="#{list.status}" />
 					</p:column>
 					<p:column headerText="Edit" >
-							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="@form"></p:commandButton>
+							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform" onclick="toggleSubMenu('edit');"></p:commandButton>
 						</p:column>
 				</p:dataTable>
-				</h:form>
 			</p:outputPanel>
-			<p:outputPanel styleClass="display-panels " id="comp">
+			<p:outputPanel styleClass="display-panels" id="comp">
 				<h2>Completed requests</h2>
 				<p:dataTable var="list" value="#{workRequestModel.completedWorksList}"
 					id="completedworklist" reflow="true">
@@ -140,15 +119,57 @@
 					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
+			<p:outputPanel styleClass="display-panels" id="edit">
+				<p:commandButton value="Back" onclick="toggleSubMenu('inp');"></p:commandButton>
+				<h:form id="editform" >
+					<h2>Edit Work Request</h2>
+					<p:growl id="messages"></p:growl>
+					<p:panelGrid columns="2" layout="grid" id="edit-panel">
+							<h:outputLabel value="Name:" for="selectedName"></h:outputLabel>
+							<h:outputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" readonly="true"> </h:outputText>
+							
+							<h:outputLabel value="Type:" for="selectedType"></h:outputLabel>
+							<h:outputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true" ></h:outputText>
+							
+							<h:outputLabel value="Description:" for="selectedDescription"></h:outputLabel>
+							<h:outputText  id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}" cols="3" readonly="true"   ></h:outputText>
+													
+							<h:outputLabel value="Status:" for="selectedStatus"></h:outputLabel>
+							<p:selectOneMenu  id="selectedStatus" value="#{workRequestModel.selectedworkRequest.status}" style="width:100px;" >
+								<f:selectItem itemLabel="In Progress" itemValue="In Progress"></f:selectItem>
+								<f:selectItem itemLabel="Completed" itemValue="Completed"></f:selectItem>
+							</p:selectOneMenu>
+							<br />
+							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inprogressworklist completedworklist worklist" onclick="toggleMenus('inp');" ></p:commandButton>
+					</p:panelGrid>
+				</h:form>	
+			</p:outputPanel>
 		</div>
 	</div>
+	
+	
 	<script>
-		function togglevisibility(id){
-			
-			document.querySelector(".active").classList.remove("active");
-			document.getElementById(id).classList.add("active");
+			function toggleSubMenu(id){
+				document.querySelector(".active").classList.remove("active");
+				document.getElementById(id).classList.add("active");
 			return false;
 		}
+		function toggleMenus(e,id){
+				document.querySelector(".current").classList.remove("current");
+				document.querySelector(".active").classList.remove("active");
+				document.getElementById(id).classList.add("active");
+				e.classList.add("current");
+			return false;
+		}
+		function toggleVisibility(id){
+			 var x = document.getElementById(id);
+			  if (x.style.display === "none") {
+			    x.style.display = "block";
+			  } else {
+			    x.style.display = "none";
+			  }
+		}
+		
 	</script>
 </h:body>
 </html>
