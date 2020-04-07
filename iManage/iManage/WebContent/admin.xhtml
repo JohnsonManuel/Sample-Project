@@ -15,11 +15,10 @@
 </h:head>
 
 <h:body>
-	<div class="ui-g" id="nav-bar" style="align-items:center;font-size:14px;">
-	
+	<div class="ui-g" id="nav-bar" >
 		<p:outputPanel styleClass="ui-g ui-g-8 ui-sm-6">
-			<p:commandButton id="menubutton" icon="pi pi-bars"  onclick="PF('sidebar').show()" ></p:commandButton>
-			<span style="padding:5px"><h:outputText value="iManage"/></span>
+			<p:commandButton id="menubutton" icon="pi pi-bars"  onclick="PF('sidebar').show()" />
+			<h3 style="margin:0;font-size:26px;"><h:outputText value="iManage"/></h3>
 		</p:outputPanel>
 		
 		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-6" >
@@ -45,19 +44,20 @@
 				<li><h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" class="current">All Requests</h:outputLink></li>
 				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');">In progress</h:outputLink></li>
 				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');">Completed</h:outputLink></li>
-				
+				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');">Open</h:outputLink></li>
 			</ul>
 		</div>
 		
-		<div class="ui-g-10 ui-sm-12" >
+		<div class="ui-g-10 ui-sm-12" id="main-panel">
 			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); " >
 				<div class="ui-g-12" style="height: 100%;">
 					<ul id="menu-options-sidebar">
 						<li><span style="font-size: 20px;">Menu</span></li>
 						<li><hr /></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'all');PF('sidebar').hide();">All Requests</h:outputLink></li>
+						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'all');PF('sidebar').hide();" class="current">All Requests</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');PF('sidebar').hide();">In progress</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();">Completed</h:outputLink></li>
+						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');">Open</h:outputLink></li>
 					</ul>
 				</div>
 			</p:sidebar>
@@ -79,10 +79,9 @@
 						</p:column>
 					</p:dataTable>
 			</p:outputPanel>
-			
 			<p:outputPanel styleClass="display-panels " id="inp">
 				<h2>In progress requests</h2>
-				<p:dataTable   var="list" value="#{workRequestModel.inProgressWorksList}"
+				<p:dataTable   var="list" value="#{workRequestModel.inProgressWorksList()}"
 					id="inprogressworklist" reflow="true">
 					<p:column headerText="Name">
 						<h:outputText value="#{list.name}" />
@@ -98,13 +97,35 @@
 					</p:column>
 					<p:column headerText="Edit" >
 							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform" onclick="toggleSubMenu('edit');"></p:commandButton>
-						</p:column>
+					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
 			<p:outputPanel styleClass="display-panels" id="comp">
 				<h2>Completed requests</h2>
-				<p:dataTable var="list" value="#{workRequestModel.completedWorksList}"
+				<p:dataTable var="list" value="#{workRequestModel.completedWorksList()}"
 					id="completedworklist" reflow="true">
+					<p:column headerText="Name">
+						<h:outputText value="#{list.name}" />
+					</p:column>
+					<p:column headerText="Type">
+						<h:outputText value="#{list.requestType}" />
+					</p:column>
+					<p:column headerText="Description" styleClass="singleLine">
+						<h:outputText value="#{list.description}" />
+					</p:column>
+					<p:column headerText="Status">
+						<h:outputText value="#{list.status}" />
+					</p:column>
+					<p:column headerText="Comment">
+						<h:outputText value="#{list.comment}" />
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+			
+			<p:outputPanel styleClass="display-panels " id="open">
+				<h2>Open requests</h2>
+				<p:dataTable var="list" value="#{workRequestModel.openProgressWorksList()}"
+					id="openprogressworklist" reflow="true">
 					<p:column headerText="Name">
 						<h:outputText value="#{list.name}" />
 					</p:column>
@@ -119,28 +140,37 @@
 					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
-			<p:outputPanel styleClass="display-panels" id="edit">
-				<p:commandButton value="Back" onclick="toggleSubMenu('inp');"></p:commandButton>
+			
+			<p:outputPanel styleClass="display-panels " id="edit">
+				<p:commandButton value="Back" onclick="toggleSubMenu('inp');" icon="pi pi-chevron-left" ></p:commandButton>
 				<h:form id="editform" >
 					<h2>Edit Work Request</h2>
 					<p:growl id="messages"></p:growl>
+					
 					<p:panelGrid columns="2" layout="grid" id="edit-panel">
-							<h:outputLabel value="Name:" for="selectedName"></h:outputLabel>
-							<h:outputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" readonly="true"> </h:outputText>
 							
-							<h:outputLabel value="Type:" for="selectedType"></h:outputLabel>
-							<h:outputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true" ></h:outputText>
+							<h:outputLabel value="Subject:" for="selectedName"></h:outputLabel>
+							<h:inputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" styleClass="ui-g-12" > </h:inputText>
+								
 							
-							<h:outputLabel value="Description:" for="selectedDescription"></h:outputLabel>
-							<h:outputText  id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}" cols="3" readonly="true"   ></h:outputText>
+							<p:outputLabel value="Type:" for="selectedType"></p:outputLabel>
+							<h:inputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true" styleClass="ui-g-6" ></h:inputText>
+							
+							<p:outputLabel value="Description:" for="selectedDescription"></p:outputLabel>
+							<h:inputTextarea  id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}"  rows="6"  styleClass="ui-g-12"  readonly="true"  style="resize: none"  ></h:inputTextarea>
+							
+							<p:outputLabel  value="Add Comment" for="selectedcomment"  rendered="#{workRequestModel.renderComment}" ></p:outputLabel>
+							<h:inputTextarea  id="selectedcomment" value="#{workRequestModel.selectedworkRequest.comment}" rendered="#{workRequestModel.renderComment}" rows="10" required="true" styleClass="ui-g-12"  style="resize: none;"  ></h:inputTextarea>
 													
-							<h:outputLabel value="Status:" for="selectedStatus"></h:outputLabel>
-							<p:selectOneMenu  id="selectedStatus" value="#{workRequestModel.selectedworkRequest.status}" style="width:100px;" >
-								<f:selectItem itemLabel="In Progress" itemValue="In Progress"></f:selectItem>
+							<p:outputLabel value="Status:" for="selectedStatus"></p:outputLabel>
+							<p:selectOneMenu  id="selectedStatus" value="#{workRequestModel.selectedworkRequest.status}"  style="width:100px;" >
+								<f:selectItem itemLabel="Open" itemValue="Open"  />
+								<f:selectItem itemLabel="In Progress" itemValue="In Progress" />
 								<f:selectItem itemLabel="Completed" itemValue="Completed"></f:selectItem>
+								<f:ajax event="change" listener="#{workRequestModel.handleStatusChange()}" render="@form" ></f:ajax>
 							</p:selectOneMenu>
 							<br />
-							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inprogressworklist completedworklist worklist" onclick="toggleMenus('inp');" ></p:commandButton>
+							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inprogressworklist completedworklist worklist"  ></p:commandButton>
 					</p:panelGrid>
 				</h:form>	
 			</p:outputPanel>
@@ -149,27 +179,48 @@
 	
 	
 	<script>
-			function toggleSubMenu(id){
+		function toggleSubMenu(id){
 				document.querySelector(".active").classList.remove("active");
 				document.getElementById(id).classList.add("active");
 			return false;
-		}
-		function toggleMenus(e,id){
-				document.querySelector(".current").classList.remove("current");
-				document.querySelector(".active").classList.remove("active");
-				document.getElementById(id).classList.add("active");
-				e.classList.add("current");
+			}
+
+		function toggleMenus(e, id) {
+			var elements = document.getElementsByClassName('current');
+			while (elements.length > 0) {
+				elements[0].classList.remove('current');
+			}
+
+			if(document.getElementById('menu-options').contains(e)){
+				var children = document.querySelectorAll("#menu-options li a");
+				var index = Array.prototype.indexOf.call(children, e);
+				var sidebarMenu = document.querySelectorAll("#menu-options-sidebar li a");
+				sidebarMenu[index].classList.add("current");
+	
+			}else{
+				var children = document.querySelectorAll("#menu-options-sidebar li a");
+				var index = Array.prototype.indexOf.call(children, e);
+				var sideMenu = document.querySelectorAll("#menu-options li a");
+				sideMenu[index].classList.add("current");
+			}
+	
+			document.querySelector(".active").classList.remove("active");
+			document.getElementById(id).classList.add("active");
+	
+			e.classList.add("current");
+			
 			return false;
-		}
-		function toggleVisibility(id){
-			 var x = document.getElementById(id);
-			  if (x.style.display === "none") {
-			    x.style.display = "block";
-			  } else {
-			    x.style.display = "none";
-			  }
 		}
 		
+		
+		function toggleVisibility(id) {
+			var x = document.getElementById(id);
+			if (x.style.display === "none") {
+				x.style.display = "block";
+			} else {
+				x.style.display = "none";
+			}
+		}
 	</script>
 </h:body>
 </html>

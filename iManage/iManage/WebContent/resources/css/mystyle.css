@@ -8,10 +8,32 @@ body {
 	padding:12px 10px ;
 }
 
-.ui-panelgrid .ui-panelgrid-cell {
-	padding:14px 10px !important;
+.customForm .ui-widget-content{
+	border:none;
+}
+.customForm{
+	height:100%;
+	position: relative;
 }
 
+.customForm .customForm_Footer{
+	position: absolute;
+    bottom: 0;
+    height: 55px;
+    text-align: right;
+}
+
+.customForm .ui-panelgrid{
+	height: calc(100% - 55px);
+	overflow:auto;
+}
+
+#editform .ui-widget-content{
+	border:none;
+}
+#editform .ui-panelgrid-cell{
+	padding:10px 10px;
+}
 .btn, .btn-sidebar {
 	margin-left: auto;
 	margin-left: auto !important;
@@ -38,6 +60,9 @@ body {
 
 
 #nav-bar {
+	align-items: center;
+    font-size: 14px;
+    z-index: 1;
 	padding: 0 10px;
 	height: 56px;
 	position: fixed;
@@ -72,6 +97,9 @@ body {
 #profile-tab:hover {
 	box-shadow: 3px 3px aquamarine;
 }
+.ui-shadow{
+	
+}
 #profile-tab-menu{
 	position:absolute;
 	right:50%;
@@ -91,6 +119,10 @@ body {
 #nav-panel {
 	height: 100%;
 	background: rgb(244, 245, 247);
+}
+#main-panel{
+	height:100%;
+	overflow:auto;
 }
 
 #menu-options, #menu-options-sidebar {

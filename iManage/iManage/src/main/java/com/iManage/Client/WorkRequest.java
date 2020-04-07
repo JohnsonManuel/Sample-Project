@@ -47,35 +47,11 @@ public class WorkRequest {
 		 log.trace("Response list size "+response.size());
 		 return response;
 		}
-		public List<WorkRequestBean> getInProgress() {
-			 log.trace("Get Inprogress Reuests List");
-
-			 Client client = ClientBuilder.newClient();
-			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("inprogressreq");
-			 
-			 System.out.println("getAll() "+target.getUri());
-			 
-			 List<WorkRequestBean> response = target.request(MediaType.APPLICATION_JSON).get(Response.class).readEntity(new GenericType<List<WorkRequestBean>>(){}) ;
-			 log.trace("Response list size "+response.size());
-
-			 return response;
-		}
-		public List<WorkRequestBean> getCompleted() {
-			 log.trace("Get Completed Reuests List");
-
-			 Client client = ClientBuilder.newClient();
-			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("completedreq");
-			 
-			 System.out.println("getAll() "+target.getUri());
-			 
-			 List<WorkRequestBean> response = target.request(MediaType.APPLICATION_JSON).get(Response.class).readEntity(new GenericType<List<WorkRequestBean>>(){}) ;
-			 log.trace("Response list size "+response.size());
-
-			 return response;
-		}
+		
+		
 
 
-		public boolean  updateWorkRequest(String name, String requestType, String description, String status) {
+		public boolean  updateWorkRequest(int id ,String name, String description, String status, String comment) {
 			log.trace("Updating worklist ");
 
 			 Client client = ClientBuilder.newClient();
@@ -83,10 +59,11 @@ public class WorkRequest {
 			 
 			 System.out.println("getAll() "+target.getUri());
 			 Form form = new Form();
+			 form.param("id", String.valueOf(id));
 			 form.param("name",name);
-			 form.param("type", requestType);
 			 form.param("description", description);
 			 form.param("status", status);
+			 form.param("comment", comment);
 			 boolean result= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
 			 log.trace("updated? "+result);
 

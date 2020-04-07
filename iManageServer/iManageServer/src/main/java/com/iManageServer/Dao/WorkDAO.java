@@ -105,12 +105,10 @@ public class WorkDAO {
 		return finalString.toString();
 	}
 	
-
-	
 	public List<WorkRequestPojo> getAllWorkRequests(){
 		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT request_name,request_type,request_description,request_status from work_requests ";
+		String query = "SELECT id,request_name,request_type,request_description,request_status,comments from work_requests ";
 		
 
 		System.out.println("Connecting to Database");
@@ -127,7 +125,7 @@ public class WorkDAO {
                 
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
-            		temp.add(new WorkRequestPojo( rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4) ));
+            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6) ));
                 }
             }
  
@@ -146,83 +144,9 @@ public class WorkDAO {
 		return temp;
 	}
 	
-	public List<WorkRequestPojo> getInprogressWorkRequests(){	
-		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT request_name,request_type,request_description,request_status from work_requests where request_status = 'In Progress' ";
-		
-		System.out.println("Connecting to Database");
-		Connection conn = null;
-		 
-        try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-            String DBuser = "sa";
-            String DBpass = "Jmred1234";
-            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
-            if (conn != null) {
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                
-                ResultSet rs= pstmt.executeQuery();
-                while(rs.next()) {
-            		temp.add(new WorkRequestPojo( rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4) ));
-                }
-            }
- 
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-	
-		return temp;
-	}
-	
-	public List<WorkRequestPojo> getCompletedWorkRequests(){		
-		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT request_name,request_type,request_description,request_status from work_requests where request_status = 'Completed' ";
-		
-		System.out.println("Connecting to Database");
-		Connection conn = null;
-		 
-        try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-            String DBuser = "sa";
-            String DBpass = "Jmred1234";
-            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
-            if (conn != null) {
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                
-                ResultSet rs= pstmt.executeQuery();
-                while(rs.next()) {
-            		temp.add(new WorkRequestPojo( rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4) ));
-                }
-            }
- 
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-	
-		return temp;
-	}
-
-	public boolean updateRequestToDB(String name, String type, String description, String status) {
+	public boolean updateRequestToDB(int id,String name, String description, String status ,String comment) {
 		int queryexecuted = 0;
-		String query = "UPDATE work_requests  SET request_status = ? WHERE request_name = ? AND request_type = ? AND request_description = ?";
+		String query = "UPDATE work_requests  SET request_status = ? , request_name = ? , request_description = ? ,comments = ? WHERE id= ?";
 	
 		System.out.println("Connecting to Database");
 		Connection conn = null;
@@ -237,8 +161,9 @@ public class WorkDAO {
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, status);
                 pstmt.setString(2, name);
-                pstmt.setString(3, type);
-                pstmt.setString(4, description);
+                pstmt.setString(3, description);
+                pstmt.setString(4, comment);
+                pstmt.setInt(5, id);
                 queryexecuted = pstmt.executeUpdate();
             }
  

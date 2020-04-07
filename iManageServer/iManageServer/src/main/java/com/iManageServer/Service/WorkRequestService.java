@@ -18,7 +18,7 @@ public class WorkRequestService {
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addNewWorkRequest( @FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status  ) {
+	public boolean addNewWorkRequest( @FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status ) {
 		WorkDAO dao = new WorkDAO();
 		return dao.addWorkRequestToDB(name,type,description,status);
 	}
@@ -26,11 +26,10 @@ public class WorkRequestService {
 	@POST
 	@Path("update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean updateWorkRequest( @FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status  ) {
+	public boolean updateWorkRequest(  @FormParam("id") int id,@FormParam("name") String name,@FormParam("description") String description,@FormParam("status") String status,@FormParam("comment") String comment   ) {
 		WorkDAO dao = new WorkDAO();
-		return dao.updateRequestToDB(name,type,description,status);
+		return dao.updateRequestToDB(id,name,description,status,comment);
 	}
-	
 	
 	@GET
 	@Path("allreq")
@@ -40,21 +39,7 @@ public class WorkRequestService {
 		return dao.getAllWorkRequests();
 	}
 	
-	@GET
-	@Path("inprogressreq")
-	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public List<WorkRequestPojo> getInprogressRequests() {
-		WorkDAO dao = new WorkDAO();
-		return dao.getInprogressWorkRequests();
-	}
 	
-	@GET
-	@Path("completedreq")
-	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public List<WorkRequestPojo> getcompletedRequests() {
-		WorkDAO dao = new WorkDAO();
-		return dao.getCompletedWorkRequests();
-	}
 	
 	
 }

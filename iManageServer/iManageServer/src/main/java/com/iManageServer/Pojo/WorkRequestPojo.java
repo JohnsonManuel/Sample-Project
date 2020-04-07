@@ -6,22 +6,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="WorkRequestBean")
 public class WorkRequestPojo {
 
-	
+	private int requestID;
 	private String name;
 	private String requestType;
 	private String description;
 	private String status;
+	private String comment;
 	
 	public WorkRequestPojo() {
 		
 	}
 	
-	public WorkRequestPojo(String name, String requestType, String description, String status) {
+	public WorkRequestPojo(int requestID,String name, String requestType, String description, String status,String comment) {
 		super();
 		this.name = name;
 		this.requestType = requestType;
 		this.description = description;
 		this.status = status;
+		this.requestID = requestID;
+		this.comment= comment;
 	}
 	@XmlElement(name ="name")
 	public String getName() {
@@ -51,6 +54,22 @@ public class WorkRequestPojo {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	@XmlElement(name ="requestID")
+	public int getRequestID() {
+		return requestID;
+	}
+
+	public void setRequestID(int requestID) {
+		this.requestID = requestID;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 	
 	

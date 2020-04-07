@@ -6,11 +6,12 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 @ManagedBean(name="workRequestBean",eager=true)
 public class WorkRequestBean {
-	
+	private int requestID;
 	private String name;
 	private String requestType;
 	private String description;
 	private String status;
+	private String comment;
 	
 	
 	public WorkRequestBean() {
@@ -52,6 +53,19 @@ public class WorkRequestBean {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	public int getRequestID() {
+		return requestID;
+	}
+	public void setRequestID(int requestID) {
+		this.requestID = requestID;
+	}
+	
 
 	
 
