@@ -39,6 +39,15 @@ public class WorkRequestService {
 		return dao.getAllWorkRequests();
 	}
 	
+	@POST
+	@Path("delete")
+	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
+	public boolean deleteWorkRequests( @FormParam("id") int id ) {
+		System.out.println(id);
+		WorkDAO dao = new WorkDAO();
+		return dao.deleteWorkRequests(id);
+	}
+	
 	
 	
 	

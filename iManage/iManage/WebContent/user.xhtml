@@ -38,8 +38,8 @@
 				<li><hr/></li>
 				<li><h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" class="current">All Requests</h:outputLink></li>
 				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');">In progress</h:outputLink></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');">Completed</h:outputLink></li>
 				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');">Open</h:outputLink></li>
+				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');">Completed</h:outputLink></li>
 			</ul>
 			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); " >
 				<div class="ui-g-12" style="height: 100%;">
@@ -48,8 +48,8 @@
 						<li><hr /></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'all');PF('sidebar').hide();" class="current">All Requests</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');PF('sidebar').hide();">In progress</h:outputLink></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();">Completed</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');PF('sidebar').hide();">Open Requsts</h:outputLink></li>
+						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();">Completed</h:outputLink></li>
 						<li><hr /></li>
 						<li><p:commandButton value="Create" type="button" styleClass="btn-sidebar"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show();PF('sidebar').hide();" ></p:commandButton></li>
 					</ul>
@@ -162,7 +162,7 @@
 							<h:outputText value="#{list.status}" />
 						</p:column>
 						<p:column headerText="Edit">
-							<p:commandButton value="delete" action="#{workRequestModel.deleteWorkRequest(list)}" update="completedworklist " ></p:commandButton>
+							<p:commandButton value="delete" action="#{workRequestModel.deleteWorkRequest(list)}" update="completedworklist inprogressworklist openprogressworklist worklist " ></p:commandButton>
 						</p:column>
 					</p:dataTable>
 				</h:form>

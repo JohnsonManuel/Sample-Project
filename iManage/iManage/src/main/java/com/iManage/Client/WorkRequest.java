@@ -71,6 +71,22 @@ public class WorkRequest {
 		}
 
 
+		public boolean deleteWorkRequest(int requestID) {
+			log.trace("Deleting worklist ");
+
+			 Client client = ClientBuilder.newClient();
+			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("delete");
+			 
+			 System.out.println("getAll() "+target.getUri());
+			 Form form = new Form();
+			 form.param("id", String.valueOf(requestID));
+			 boolean result= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
+			 log.trace("updated? "+result);
+
+			 return result;
+		}
+
+
 		
 		
 }

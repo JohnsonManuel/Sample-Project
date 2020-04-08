@@ -182,4 +182,39 @@ public class WorkDAO {
 		
 		return (queryexecuted == 1)?true:false;
 	}
+
+	public boolean deleteWorkRequests(int id) {
+		int queryexecuted = 0;
+		String query = "DELETE FROM work_requests WHERE id = ? ";
+	
+		System.out.println("Connecting to Database");
+		Connection conn = null;
+		 
+        try {
+        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
+            String DBuser = "sa";
+            String DBpass = "Jmred1234";
+            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
+            if (conn != null) {
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                pstmt.setInt(1, id);
+                queryexecuted = pstmt.executeUpdate();
+            }
+ 
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+		
+		
+		return (queryexecuted == 1)?true:false;
+	}
 }

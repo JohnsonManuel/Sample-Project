@@ -43,8 +43,9 @@
 				<li><hr/></li>
 				<li><h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" class="current">All Requests</h:outputLink></li>
 				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');">In progress</h:outputLink></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');">Completed</h:outputLink></li>
 				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');">Open</h:outputLink></li>
+				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');">Completed</h:outputLink></li>
+				
 			</ul>
 		</div>
 		
@@ -56,8 +57,8 @@
 						<li><hr /></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'all');PF('sidebar').hide();" class="current">All Requests</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');PF('sidebar').hide();">In progress</h:outputLink></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();">Completed</h:outputLink></li>
 						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');">Open</h:outputLink></li>
+						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();">Completed</h:outputLink></li>
 					</ul>
 				</div>
 			</p:sidebar>
@@ -138,11 +139,14 @@
 					<p:column headerText="Status">
 						<h:outputText value="#{list.status}" />
 					</p:column>
+					<p:column headerText="Edit" >
+							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform" onclick="toggleSubMenu('edit');"></p:commandButton>
+					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
-			
+				
 			<p:outputPanel styleClass="display-panels " id="edit">
-				<p:commandButton value="Back" onclick="toggleSubMenu('inp');" icon="pi pi-chevron-left" ></p:commandButton>
+				<p:commandButton value="Back" onclick="toggleSubMenu();" icon="pi pi-chevron-left" ></p:commandButton>
 				<h:form id="editform" >
 					<h2>Edit Work Request</h2>
 					<p:growl id="messages"></p:growl>
@@ -170,7 +174,7 @@
 								<f:ajax event="change" listener="#{workRequestModel.handleStatusChange()}" render="@form" ></f:ajax>
 							</p:selectOneMenu>
 							<br />
-							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inprogressworklist completedworklist worklist"  ></p:commandButton>
+							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inprogressworklist completedworklist worklist openprogressworklist"  ></p:commandButton>
 					</p:panelGrid>
 				</h:form>	
 			</p:outputPanel>
@@ -179,9 +183,18 @@
 	
 	
 	<script>
+	var prev ;
 		function toggleSubMenu(id){
-				document.querySelector(".active").classList.remove("active");
-				document.getElementById(id).classList.add("active");
+				if(id==undefined){
+					document.querySelector(".active").classList.remove("active");
+					document.getElementById(prev).classList.add("active");
+				}else{
+					prev = document.getElementsByClassName('active')[0].id;
+					document.querySelector(".active").classList.remove("active");
+					document.getElementById(id).classList.add("active");
+				}
+			
+				
 			return false;
 			}
 

@@ -49,23 +49,32 @@ public class WorkRequestModel {
 
 	public void deleteWorkRequest( WorkRequestBean delWork) {
 		System.out.println(delWork.getRequestID());
-		allWorksList.remove(delWork);
+		FacesContext context = FacesContext.getCurrentInstance();
+		WorkRequest objj = new WorkRequest();
+		boolean updated = objj.deleteWorkRequest( delWork.getRequestID());
 		
-		
+		if(updated) {
+			allWorksList.remove(delWork);
+	        context.addMessage(null, new FacesMessage("Work request deleted"));
+
+		}
+		else {
+			 context.addMessage(null, new FacesMessage("update failed"));
+		}
 	}
 	public void updateList() {
 		
-		PrimeFaces.current().executeScript("toggleSubMenu('inp');");
-		System.out.println("EVENT FIRED    __________________________________________________________--");
+		PrimeFaces.current().executeScript("toggleSubMenu();");
 		WorkRequest objj = new WorkRequest();
 		FacesContext context = FacesContext.getCurrentInstance();
 		boolean updated = objj.updateWorkRequest( selectedworkRequest.getRequestID(), selectedworkRequest.getName(),selectedworkRequest.getDescription(),selectedworkRequest.getStatus(),selectedworkRequest.getComment() );
 		updateTables();
 		if(updated) {
 	        context.addMessage(null, new FacesMessage("Work request updated"));
+
 		}
 		else {
-			 context.addMessage(null, new FacesMessage("update failed"));
+			 context.addMessage(null, new FacesMessage("Delete failed"));
 		}
 	}
 	
