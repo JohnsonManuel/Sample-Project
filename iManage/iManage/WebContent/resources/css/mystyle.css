@@ -125,6 +125,22 @@ body {
 	overflow:auto;
 }
 
+.information-panel{
+	text-align:center;
+}
+.information-panel img{
+	width:350px;
+	height:310px;
+}
+
+.type{
+	width:100px;
+	text-align:center;
+}
+.type-img{
+	width: 30px;
+    margin: auto;
+}
 #menu-options, #menu-options-sidebar {
 	list-style: none;
 	padding: 0;
@@ -147,16 +163,27 @@ body {
 	color: blue;
 }
 
-#menu-options li span{
-	
-	font-size: 20px;
-    padding: 10px 15px;
-    font-weight: bold;
-	
-}
+
     
 #menu-options li a:hover ,#menu-options-sidebar li a:hover{
 	background: #ebecf0;
+}
+
+.menu-option .ui-g-10,.menu-option .ui-g-2{
+	padding:0;
+}
+.menu-option .ui-g-2{
+	text-align:center;
+	margin:auto;
+	
+}
+.menu-option p{
+	width:20px;
+	height:20px;
+	border-radius:50%;
+	margin:0 auto;
+	padding:0;
+	background:white;
 }
 
 .singleLine {

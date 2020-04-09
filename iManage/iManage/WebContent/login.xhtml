@@ -37,7 +37,7 @@
 						<p:outputLabel for="password" value="Password:" />
 						<p:password id="password" styleClass="ui-g-12" value="#{loginBean.password}" />
 						<br />
-						<p:commandButton value="Login" id="login-btn" update="messages" action="#{loginModel.validateUser()}" oncomplete="$('login-btn').attr('disabled',false);" onclick="$('login-btn').attr('disabled',true);"    ></p:commandButton>
+						<p:commandButton value="Login"  widgetVar="loginButton" onclick="PF('loginButton').disable()" oncomplete="PF('loginButton').enable()"  id="login-btn" update="messages" action="#{loginModel.validateUser()}"   ></p:commandButton>
 					</p:panelGrid>
 				</h:form>
 			</p:outputPanel>

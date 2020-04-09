@@ -4,7 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" >
 
 <h:head>
 	<title>Home</title>
@@ -37,63 +38,117 @@
 	<!-- Main Wrapper -->
 	<div class="ui-g" id="main-wrapper">
 		
-	    <div class="ui-g-2" id="nav-panel" >
+	    <p:outputPanel class="ui-g-2" id="nav-panel" >
 			<ul id="menu-options">
+			
+			
 				<li><span style="font-size:20px;">Menu</span></li>
-				<li><hr/></li>
-				<li><h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" class="current">All Requests</h:outputLink></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');">In progress</h:outputLink></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');">Open</h:outputLink></li>
-				<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');">Completed</h:outputLink></li>
+				<li><hr /></li>
+				<li>
+					<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
+						<div class="ui-g-10"><h:outputText value="All Requests" /></div>
+						<div class="ui-g-2"> <p><h:outputText id="nav-panel_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
+					</h:outputLink>
+				</li>
+				<li>
+					<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');" styleClass="ui-g menu-option ">
+						<div class="ui-g-10"><h:outputText value="In Progress" /></div>
+						<div class="ui-g-2"> <p><h:outputText id="nav-panel_inp"  styleClass="counter" value="#{fn:length(workRequestModel.inProgressWorksList)}" /></p> </div>
+					</h:outputLink>
+				</li>
+				<li>
+					<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
+						<div class="ui-g-10"><h:outputText value="Open" /></div>
+						<div class="ui-g-2"> <p><h:outputText id="nav-panel_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
+					</h:outputLink></li>
+				<li>
+					<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');" styleClass="ui-g menu-option" >
+						<div class="ui-g-10"><h:outputText value="Completed" /></div>
+						<div class="ui-g-2"> <p><h:outputText id="nav-panel_comp" styleClass="counter" value="#{fn:length(workRequestModel.completedWorksList)}" /></p> </div>					
+					</h:outputLink>
+				</li>
 				
 			</ul>
-		</div>
+		</p:outputPanel>
 		
 		<div class="ui-g-10 ui-sm-12" id="main-panel">
-			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); " >
+			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); "  >
 				<div class="ui-g-12" style="height: 100%;">
 					<ul id="menu-options-sidebar">
-						<li><span style="font-size: 20px;">Menu</span></li>
+						<li><span style="font-size: 16px;">Menu</span></li>
 						<li><hr /></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'all');PF('sidebar').hide();" class="current">All Requests</h:outputLink></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');PF('sidebar').hide();">In progress</h:outputLink></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');">Open</h:outputLink></li>
-						<li><h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();">Completed</h:outputLink></li>
+						<li>
+							<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
+								<div class="ui-g-10"><h:outputText value="All Requests" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="sidebar_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
+							</h:outputLink>	
+						</li>
+						<li>
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');" styleClass="ui-g menu-option ">
+								<div class="ui-g-10"><h:outputText value="In Progress" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="sidebar_inp"  styleClass="counter" value="#{fn:length(workRequestModel.inProgressWorksList)}" /></p> </div>
+							</h:outputLink>
+						</li>
+						<li>
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
+								<div class="ui-g-10"><h:outputText value="Open" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="sidebar_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
+							</h:outputLink></li>
+						<li>
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');" styleClass="ui-g menu-option" >
+								<div class="ui-g-10"><h:outputText value="Completed" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="sidebar_comp" styleClass="counter" value="#{fn:length(workRequestModel.completedWorksList)}" /></p> </div>					
+							</h:outputLink>
+						</li>
 					</ul>
 				</div>
 			</p:sidebar>
 			
-			<p:outputPanel styleClass="display-panels active" id="all">
-				<h2>ADMIN PAGE</h2>
-					<p:dataTable var="list" value="#{workRequestModel.allWorksList}" id="worklist" reflow="true">
-						<p:column headerText="Name">
-							<h:outputText value="#{list.name}" />
-						</p:column>
-						<p:column headerText="Type">
-							<h:outputText value="#{list.requestType}" />
-						</p:column>
-						<p:column headerText="Description" styleClass="singleLine">
-							<h:outputText value="#{list.description}" />
-						</p:column>
-						<p:column headerText="Status">
-							<h:outputText value="#{list.status}" />
-						</p:column>
-					</p:dataTable>
-			</p:outputPanel>
-			<p:outputPanel styleClass="display-panels " id="inp">
-				<h2>In progress requests</h2>
-				<p:dataTable   var="list" value="#{workRequestModel.inProgressWorksList()}"
-					id="inprogressworklist" reflow="true">
-					<p:column headerText="Name">
+			<p:outputPanel styleClass="display-panels active ui-g-12" id="all">
+				<h2><h:outputText value="Admin Page"></h:outputText> </h2>
+				<p:outputPanel  rendered="#{empty workRequestModel.allWorksList}" styleClass="information-panel">
+					<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
+					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+				</p:outputPanel>
+				<p:dataTable var="list" value="#{workRequestModel.allWorksList}" id="worklist" rendered="#{not empty workRequestModel.allWorksList}" reflow="true">
+				    <p:column headerText="Id">
+						<h:outputText value="#{list.requestType}-#{list.requestID}" />
+					</p:column>
+					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+					</p:column>					
+					<p:column headerText="Name" sortBy="#{list.name}" >
 						<h:outputText value="#{list.name}" />
 					</p:column>
-					<p:column headerText="Type">
-						<h:outputText value="#{list.requestType}" />
-					</p:column>
-					<p:column headerText="Description" styleClass="singleLine">
+					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
 						<h:outputText value="#{list.description}" />
 					</p:column>
-					<p:column headerText="Status">
+					<p:column headerText="Status" sortBy="#{list.status}"   >
+						<h:outputText value="#{list.status}" />
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+			<p:outputPanel styleClass="display-panels ui-g-12" id="inp">
+				<h2>In progress requests</h2>
+				<p:outputPanel  rendered="#{empty workRequestModel.inProgressWorksList}" styleClass="information-panel">
+					<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
+					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+				</p:outputPanel>
+				<p:dataTable   var="list" value="#{workRequestModel.inProgressWorksList}" rendered="#{not empty workRequestModel.inProgressWorksList}"
+					id="inprogressworklist" reflow="true">
+					<p:column headerText="Id">
+							<h:outputText value="#{list.requestType}-#{list.requestID}" />
+						</p:column>
+					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+					</p:column>					
+					<p:column headerText="Name" sortBy="#{list.name}" >
+						<h:outputText value="#{list.name}" />
+					</p:column>
+					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
+						<h:outputText value="#{list.description}" />
+					</p:column>
+					<p:column headerText="Status"   >
 						<h:outputText value="#{list.status}" />
 					</p:column>
 					<p:column headerText="Edit" >
@@ -101,20 +156,28 @@
 					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
-			<p:outputPanel styleClass="display-panels" id="comp">
+			
+			<p:outputPanel styleClass="display-panels ui-g-12" id="comp">
 				<h2>Completed requests</h2>
-				<p:dataTable var="list" value="#{workRequestModel.completedWorksList()}"
+				<p:outputPanel  rendered="#{empty workRequestModel.completedWorksList}" styleClass="information-panel">
+					<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
+					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+				</p:outputPanel>
+				<p:dataTable var="list" value="#{workRequestModel.completedWorksList}" rendered="#{not empty workRequestModel.completedWorksList}"
 					id="completedworklist" reflow="true">
-					<p:column headerText="Name">
+					<p:column headerText="Id">
+							<h:outputText value="#{list.requestType}-#{list.requestID}" />
+					</p:column>
+					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+					</p:column>					
+					<p:column headerText="Name" sortBy="#{list.name}" >
 						<h:outputText value="#{list.name}" />
 					</p:column>
-					<p:column headerText="Type">
-						<h:outputText value="#{list.requestType}" />
-					</p:column>
-					<p:column headerText="Description" styleClass="singleLine">
+					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
 						<h:outputText value="#{list.description}" />
 					</p:column>
-					<p:column headerText="Status">
+					<p:column headerText="Status"   >
 						<h:outputText value="#{list.status}" />
 					</p:column>
 					<p:column headerText="Comment">
@@ -123,35 +186,45 @@
 				</p:dataTable>
 			</p:outputPanel>
 			
-			<p:outputPanel styleClass="display-panels " id="open">
+			<p:outputPanel styleClass="display-panels ui-g-12" id="open">
 				<h2>Open requests</h2>
-				<p:dataTable var="list" value="#{workRequestModel.openProgressWorksList()}"
+				<p:outputPanel  rendered="#{empty workRequestModel.openProgressWorksList}" styleClass="information-panel">
+					<h:graphicImage name="empty.jpg" library="images"></h:graphicImage>
+					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+				</p:outputPanel>
+				<p:dataTable var="list" value="#{workRequestModel.openProgressWorksList}" rendered="#{not empty workRequestModel.openProgressWorksList}"
 					id="openprogressworklist" reflow="true">
-					<p:column headerText="Name">
+					<p:column headerText="Id" sortBy="#{list.requestType}-#{list.requestID}">
+							<h:outputText value="#{list.requestType}-#{list.requestID}" />
+					</p:column>
+					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+					</p:column>
+					<p:column headerText="Name" sortBy="#{list.name}" >
 						<h:outputText value="#{list.name}" />
 					</p:column>
-					<p:column headerText="Type">
-						<h:outputText value="#{list.requestType}" />
-					</p:column>
-					<p:column headerText="Description" styleClass="singleLine">
+					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
 						<h:outputText value="#{list.description}" />
 					</p:column>
-					<p:column headerText="Status">
+					<p:column headerText="Status"   >
 						<h:outputText value="#{list.status}" />
 					</p:column>
+					<!-- sortBy="#{list.status}" -->
 					<p:column headerText="Edit" >
-							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform" onclick="toggleSubMenu('edit');"></p:commandButton>
+							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform " onclick="toggleSubMenu('edit');"></p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
 				
-			<p:outputPanel styleClass="display-panels " id="edit">
+			<p:outputPanel styleClass="display-panels ui-g-12 " id="edit">
 				<p:commandButton value="Back" onclick="toggleSubMenu();" icon="pi pi-chevron-left" ></p:commandButton>
 				<h:form id="editform" >
 					<h2>Edit Work Request</h2>
 					<p:growl id="messages"></p:growl>
 					
 					<p:panelGrid columns="2" layout="grid" id="edit-panel">
+							<h:outputText value="Ticket ID : #{workRequestModel.selectedworkRequest.requestType}-#{workRequestModel.selectedworkRequest.requestID}" />
+							<br />
 							
 							<h:outputLabel value="Subject:" for="selectedName"></h:outputLabel>
 							<h:inputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" styleClass="ui-g-12" > </h:inputText>
@@ -174,7 +247,7 @@
 								<f:ajax event="change" listener="#{workRequestModel.handleStatusChange()}" render="@form" ></f:ajax>
 							</p:selectOneMenu>
 							<br />
-							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inprogressworklist completedworklist worklist openprogressworklist"  ></p:commandButton>
+							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inp comp worklist openprogressworklist @(.counter)" oncomplete="toggleSubMenu()"  ></p:commandButton>
 					</p:panelGrid>
 				</h:form>	
 			</p:outputPanel>
@@ -185,6 +258,7 @@
 	<script>
 	var prev ;
 		function toggleSubMenu(id){
+			
 				if(id==undefined){
 					document.querySelector(".active").classList.remove("active");
 					document.getElementById(prev).classList.add("active");

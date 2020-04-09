@@ -16,28 +16,28 @@ import com.iManage.Bean.WorkRequestBean;
 import com.iManage.Client.WorkRequest;
 
 @ViewScoped
-@ManagedBean(name="workRequestModel" ,eager=true)
+@ManagedBean(name = "workRequestModel", eager = true)
 public class WorkRequestModel {
-	
-	@ManagedProperty(value="#{workRequestBean}")
+
+	@ManagedProperty(value = "#{workRequestBean}")
 	private WorkRequestBean workrequestBean;
 	private boolean renderComment;
 	private WorkRequestBean selectedworkRequest;
 	private List<WorkRequestBean> allWorksList;
+	private List<WorkRequestBean> completedWorksList;
+	private List<WorkRequestBean> inProgressWorksList;
+	private List<WorkRequestBean> openProgressWorksList;
 
-	
 	@PostConstruct
 	public void init() {
 		updateTables();
 	}
-	
-	
-	
+
 	public WorkRequestModel() {
 		selectedworkRequest = new WorkRequestBean();
 
 	}
-	
+
 	public WorkRequestBean getWorkrequestBean() {
 		return workrequestBean;
 	}
@@ -45,46 +45,47 @@ public class WorkRequestModel {
 	public void setWorkrequestBean(WorkRequestBean workrequestBean) {
 		this.workrequestBean = workrequestBean;
 	}
-	
 
-	public void deleteWorkRequest( WorkRequestBean delWork) {
+	public void deleteWorkRequest(WorkRequestBean delWork) {
+		
 		System.out.println(delWork.getRequestID());
 		FacesContext context = FacesContext.getCurrentInstance();
 		WorkRequest objj = new WorkRequest();
-		boolean updated = objj.deleteWorkRequest( delWork.getRequestID());
-		
-		if(updated) {
-			allWorksList.remove(delWork);
-	        context.addMessage(null, new FacesMessage("Work request deleted"));
+		boolean updated = objj.deleteWorkRequest(delWork.getRequestID());
 
-		}
-		else {
-			 context.addMessage(null, new FacesMessage("update failed"));
+		if (updated) {
+			allWorksList.remove(delWork);
+			context.addMessage(null, new FacesMessage("Work request deleted"));
+
+		} else {
+			context.addMessage(null, new FacesMessage("update failed"));
 		}
 	}
+
 	public void updateList() {
-		
-		PrimeFaces.current().executeScript("toggleSubMenu();");
+
+		//PrimeFaces.current().executeScript("toggleSubMenu();");
 		WorkRequest objj = new WorkRequest();
 		FacesContext context = FacesContext.getCurrentInstance();
-		boolean updated = objj.updateWorkRequest( selectedworkRequest.getRequestID(), selectedworkRequest.getName(),selectedworkRequest.getDescription(),selectedworkRequest.getStatus(),selectedworkRequest.getComment() );
+		boolean updated = objj.updateWorkRequest(selectedworkRequest.getRequestID(), selectedworkRequest.getName(),
+				selectedworkRequest.getDescription(), selectedworkRequest.getStatus(),
+				selectedworkRequest.getComment());
 		updateTables();
-		if(updated) {
-	        context.addMessage(null, new FacesMessage("Work request updated"));
+		if (updated) {
+			context.addMessage(null, new FacesMessage("Work request updated"));
 
-		}
-		else {
-			 context.addMessage(null, new FacesMessage("Delete failed"));
+		} else {
+			context.addMessage(null, new FacesMessage("Delete failed"));
 		}
 	}
-	
-	
+
 	public void addWorkRequest() {
 		System.out.println(" Came here");
 		System.out.println(workrequestBean.getName());
 		WorkRequest objj = new WorkRequest();
 		System.out.println(workrequestBean.getName());
-		objj.addWorkRequest(workrequestBean.getName(),workrequestBean.getRequestType(),workrequestBean.getDescription(),workrequestBean.getStatus());
+		objj.addWorkRequest(workrequestBean.getName(), workrequestBean.getRequestType(),
+				workrequestBean.getDescription(), workrequestBean.getStatus());
 		workrequestBean.setName("");
 		workrequestBean.setDescription("");
 		workrequestBean.setRequestType("");
@@ -93,22 +94,77 @@ public class WorkRequestModel {
 		PrimeFaces.current().executeScript("PF('dlg2').hide();");
 
 	}
-	public void updateTables()
-	{
+
+	public void updateTables() {
 		WorkRequest obj = new WorkRequest();
 		allWorksList = obj.getAll();
+		inProgressWorksList = updateinProgressWorksList();
+		completedWorksList = updatecompletedWorksList();
+		openProgressWorksList = updateopenProgressWorksList();
+		
 
-	}	
+	}
+	
+	public List<WorkRequestBean> updatecompletedWorksList() {
+		List<WorkRequestBean> filteredList = new ArrayList<WorkRequestBean>();
+		for (WorkRequestBean temp : allWorksList) {
+			if (temp.getStatus().equals("Completed")) {
+				filteredList.add(temp);
+			}
+		}
+		return filteredList;
+	}
+
+	public List<WorkRequestBean> updateinProgressWorksList() {
+		List<WorkRequestBean> filteredList = new ArrayList<WorkRequestBean>();
+		for (WorkRequestBean temp : allWorksList) {
+			if (temp.getStatus().equals("In Progress")) {
+				filteredList.add(temp);
+			}
+		}
+		return filteredList;
+	}
+
+	public List<WorkRequestBean> updateopenProgressWorksList() {
+		List<WorkRequestBean> filteredList = new ArrayList<WorkRequestBean>();
+		for (WorkRequestBean temp : allWorksList) {
+			if (temp.getStatus().equals("Open")) {
+				filteredList.add(temp);
+			}
+		}
+		return filteredList;
+	}
+
+	public void handleStatusChange() {
+		if (selectedworkRequest.getStatus().equals("Completed")) {
+			renderComment = true;
+		} else {
+			renderComment = false;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//Getters and Setteres
+	
+	
+	
+	
 	
 
 	public WorkRequestBean getSelectedworkRequest() {
 		return selectedworkRequest;
 	}
-	
+
 	public void setSelectedworkRequest(WorkRequestBean selectedworkRequest) {
 		this.selectedworkRequest = selectedworkRequest;
 	}
-
 
 	public List<WorkRequestBean> getAllWorksList() {
 		return allWorksList;
@@ -118,44 +174,6 @@ public class WorkRequestModel {
 		this.allWorksList = allWorkList;
 	}
 
-	public List<WorkRequestBean> completedWorksList(){
-		List<WorkRequestBean> filteredList = new ArrayList<WorkRequestBean>();
-		for(WorkRequestBean temp : allWorksList) {
-			if(temp.getStatus().equals("Completed")) {
-				filteredList.add(temp);
-			}
-		}
-		return filteredList;
-	}
-	
-	public List<WorkRequestBean> inProgressWorksList(){
-		List<WorkRequestBean> filteredList = new ArrayList<WorkRequestBean>();
-		for(WorkRequestBean temp : allWorksList) {
-			if(temp.getStatus().equals("In Progress")) {
-				filteredList.add(temp);
-			}
-		}
-		return filteredList;
-	}
-	public List<WorkRequestBean> openProgressWorksList(){
-		List<WorkRequestBean> filteredList = new ArrayList<WorkRequestBean>();
-		for(WorkRequestBean temp : allWorksList) {
-			if(temp.getStatus().equals("Open")) {
-				filteredList.add(temp);
-			}
-		}
-		return filteredList;
-	}
-	
-	public void handleStatusChange() {
-		if(selectedworkRequest.getStatus().equals("Completed")) {
-			renderComment= true;
-		}else {
-			renderComment= false;
-		}
-	}
-	
-
 	public boolean isRenderComment() {
 		return renderComment;
 	}
@@ -163,7 +181,29 @@ public class WorkRequestModel {
 	public void setRenderComment(boolean renderComment) {
 		this.renderComment = renderComment;
 	}
-	
-	
+
+	public List<WorkRequestBean> getCompletedWorksList() {
+		return completedWorksList;
+	}
+
+	public void setCompletedWorksList(List<WorkRequestBean> completedWorksList) {
+		this.completedWorksList = completedWorksList;
+	}
+
+	public List<WorkRequestBean> getInProgressWorksList() {
+		return inProgressWorksList;
+	}
+
+	public void setInProgressWorksList(List<WorkRequestBean> inProgressWorksList) {
+		this.inProgressWorksList = inProgressWorksList;
+	}
+
+	public List<WorkRequestBean> getOpenProgressWorksList() {
+		return openProgressWorksList;
+	}
+
+	public void setOpenProgressWorksList(List<WorkRequestBean> openProgressWorksList) {
+		this.openProgressWorksList = openProgressWorksList;
+	}
 
 }
