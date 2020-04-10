@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.iManageServer.Pojo.CommentsPojo;
 import com.iManageServer.Pojo.WorkRequestPojo;
 
 public class WorkDAO {
@@ -216,5 +217,68 @@ public class WorkDAO {
 		
 		
 		return (queryexecuted == 1)?true:false;
+	}
+
+	
+	
+	
+	public boolean addComment(int id, String comment) {
+		int queryexecuted = 0;
+		String query = "INSERT INTO requests_comments (request_id,comment) values (?,?)";
+	
+		System.out.println("Connecting to Database");
+		Connection conn = null;
+		 
+        try {
+            conn = ConnectDB.getConnection();
+            if (conn != null) {
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                pstmt.setInt(1, id);
+                pstmt.setString(2, comment);
+                queryexecuted = pstmt.executeUpdate();
+            }
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return false;
+        } finally {
+            ConnectDB.close(conn);
+        }
+		
+		
+		return (queryexecuted == 1)?true:false;
+		
+	}
+
+	
+	
+	public List<CommentsPojo> getComments(int requestId) {
+		
+		System.out.println(requestId);
+		List<CommentsPojo> temp = new ArrayList<CommentsPojo>();
+		String query = "SELECT id,comment from requests_comments WHERE request_id = ? ";
+		
+
+		System.out.println("Connecting to Database");
+		Connection conn = null;
+		 
+        try {
+        	conn = ConnectDB.getConnection();
+            if (conn != null) {
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                pstmt.setInt(1, requestId);
+                ResultSet rs= pstmt.executeQuery();
+                while(rs.next()) {
+            		temp.add(new CommentsPojo( rs.getInt(1),rs.getString(2)));
+                }
+            }
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return null;
+        } finally {
+            ConnectDB.close(conn);
+        }
+	
+		return temp;
+	
 	}
 }

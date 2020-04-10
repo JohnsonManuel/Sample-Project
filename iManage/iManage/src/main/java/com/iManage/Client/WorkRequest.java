@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.iManage.Bean.CommentsBean;
 import com.iManage.Bean.WorkRequestBean;
 
 public class WorkRequest {
@@ -85,6 +86,45 @@ public class WorkRequest {
 
 			 return result;
 		}
+
+
+		public boolean addComment(int id, String comment) {
+			
+			 Client client = ClientBuilder.newClient();
+			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("comment").path("add");
+			 
+			 System.out.println("getAll() "+target.getUri());
+			 Form form = new Form();
+			 form.param("id", String.valueOf(id));
+			 form.param("comment", comment);
+			 boolean result= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
+			 log.trace("updated? "+result);
+
+			 return result;
+			
+		}
+
+
+		public List<CommentsBean> getComments(int key) {
+
+
+			 log.trace("Get all comments of "+ key);
+			 
+			 Client client = ClientBuilder.newClient();
+			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("comment").path("getcomments");
+			 System.out.println("getAll() "+target.getUri());
+			 Form form = new Form();
+			 form.param("id", String.valueOf(key));
+			 List<CommentsBean> response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Response.class).readEntity(new GenericType<List<CommentsBean>>(){}) ;
+			 log.trace("Response list size "+response.size());
+			 return response;
+			
+			
+			
+		}
+
+
+	
 
 
 		

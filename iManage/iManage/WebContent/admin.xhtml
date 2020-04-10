@@ -72,6 +72,8 @@
 		</p:outputPanel>
 		
 		<div class="ui-g-10 ui-sm-12" id="main-panel">
+			<p:growl id="messages"></p:growl>
+		
 			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); "  >
 				<div class="ui-g-12" style="height: 100%;">
 					<ul id="menu-options-sidebar">
@@ -152,7 +154,7 @@
 						<h:outputText value="#{list.status}" />
 					</p:column>
 					<p:column headerText="Edit" >
-							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform" onclick="toggleSubMenu('edit');"></p:commandButton>
+							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform comments-panel" onclick="toggleSubMenu('edit');"></p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
@@ -216,40 +218,66 @@
 				</p:dataTable>
 			</p:outputPanel>
 				
-			<p:outputPanel styleClass="display-panels ui-g-12 " id="edit">
+			<p:outputPanel styleClass="display-panels ui-g-12 ui-sm-12" id="edit">
 				<p:commandButton value="Back" onclick="toggleSubMenu();" icon="pi pi-chevron-left" ></p:commandButton>
 				<h:form id="editform" >
-					<h2>Edit Work Request</h2>
-					<p:growl id="messages"></p:growl>
+					<h2><h:outputText value="Ticket ID : #{workRequestModel.selectedworkRequest.requestType}-#{workRequestModel.selectedworkRequest.requestID}" /></h2>
 					
-					<p:panelGrid columns="2" layout="grid" id="edit-panel">
-							<h:outputText value="Ticket ID : #{workRequestModel.selectedworkRequest.requestType}-#{workRequestModel.selectedworkRequest.requestID}" />
-							<br />
-							
-							<h:outputLabel value="Subject:" for="selectedName"></h:outputLabel>
-							<h:inputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" styleClass="ui-g-12" > </h:inputText>
+						<p:panelGrid columns="2" layout="grid" id="edit-panel" styleClass="ui-g-6">
 								
-							
-							<p:outputLabel value="Type:" for="selectedType"></p:outputLabel>
-							<h:inputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true" styleClass="ui-g-6" ></h:inputText>
-							
-							<p:outputLabel value="Description:" for="selectedDescription"></p:outputLabel>
-							<h:inputTextarea  id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}"  rows="6"  styleClass="ui-g-12"  readonly="true"  style="resize: none"  ></h:inputTextarea>
-							
-							<p:outputLabel  value="Add Comment" for="selectedcomment"  rendered="#{workRequestModel.renderComment}" ></p:outputLabel>
-							<h:inputTextarea  id="selectedcomment" value="#{workRequestModel.selectedworkRequest.comment}" rendered="#{workRequestModel.renderComment}" rows="10" required="true" styleClass="ui-g-12"  style="resize: none;"  ></h:inputTextarea>
-													
-							<p:outputLabel value="Status:" for="selectedStatus"></p:outputLabel>
-							<p:selectOneMenu  id="selectedStatus" value="#{workRequestModel.selectedworkRequest.status}"  style="width:100px;" >
-								<f:selectItem itemLabel="Open" itemValue="Open"  />
-								<f:selectItem itemLabel="In Progress" itemValue="In Progress" />
-								<f:selectItem itemLabel="Completed" itemValue="Completed"></f:selectItem>
-								<f:ajax event="change" listener="#{workRequestModel.handleStatusChange()}" render="@form" ></f:ajax>
-							</p:selectOneMenu>
-							<br />
-							<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inp comp worklist openprogressworklist @(.counter)" oncomplete="toggleSubMenu()"  ></p:commandButton>
-					</p:panelGrid>
-				</h:form>	
+								<h:outputLabel value="Subject:" for="selectedName"></h:outputLabel>
+								<h:inputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" styleClass="ui-g-12" > </h:inputText>
+									
+								
+								<p:outputLabel value="Type:" for="selectedType"></p:outputLabel>
+								<h:inputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true" styleClass="ui-g-6" ></h:inputText>
+								
+								<p:outputLabel value="Description:" for="selectedDescription"></p:outputLabel>
+								<h:inputTextarea  id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}"  rows="6"  styleClass="ui-g-12"  readonly="true"  style="resize: none"  ></h:inputTextarea>
+								
+								<p:outputLabel  value="Add Comment" for="selectedcomment"  rendered="#{workRequestModel.renderComment}" ></p:outputLabel>
+								<h:inputTextarea  id="selectedcomment" value="#{workRequestModel.selectedworkRequest.comment}" rendered="#{workRequestModel.renderComment}" rows="10" required="true" styleClass="ui-g-12"  style="resize: none;"  ></h:inputTextarea>
+														
+								<p:outputLabel value="Status:" for="selectedStatus"></p:outputLabel>
+								<p:selectOneMenu  id="selectedStatus" value="#{workRequestModel.selectedworkRequest.status}"  style="width:100px;" >
+									<f:selectItem itemLabel="Open" itemValue="Open"  />
+									<f:selectItem itemLabel="In Progress" itemValue="In Progress" />
+									<f:selectItem itemLabel="Completed" itemValue="Completed"></f:selectItem>
+									<f:ajax event="change" listener="#{workRequestModel.handleStatusChange()}" render="@form" ></f:ajax>
+								</p:selectOneMenu>
+								<br />
+								<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inp comp worklist openprogressworklist @(.counter)" oncomplete="toggleSubMenu()"  ></p:commandButton>
+						</p:panelGrid>
+				</h:form>
+				<h:form id="comments-panel" >
+					<p:outputPanel styleClass="ui-g-6 ui-sm-12">
+					
+						COmments section
+						
+							<p:outputPanel >
+							<ui:repeat var="commentList"
+								value="#{workRequestModel.request_comments(workRequestModel.selectedworkRequest.requestID)}" >
+								<div class="comment-layout">
+									<p>
+										<h:outputText value="#{commentList.comment}"></h:outputText>
+									</p>
+									<h:commandLink value="Edit" />
+									<h:commandLink value="delete" />
+								</div>
+							</ui:repeat>
+						</p:outputPanel>
+						<p:outputPanel>
+							<h:inputTextarea style="width:100%;resize:none;"
+								value="#{commentsBean.comment}" update="messages">
+							</h:inputTextarea>
+							<p:commandButton value="Add "
+								action="#{workRequestModel.addComment()}" update="comments-panel messages"/>
+							<p:commandButton value="cancel" />
+						</p:outputPanel>
+
+					</p:outputPanel>
+				</h:form>
+
 			</p:outputPanel>
 		</div>
 	</div>

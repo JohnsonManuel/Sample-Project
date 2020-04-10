@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 
+import com.iManage.Bean.CommentsBean;
 import com.iManage.Bean.WorkRequestBean;
 import com.iManage.Client.WorkRequest;
 
@@ -21,12 +22,24 @@ public class WorkRequestModel {
 
 	@ManagedProperty(value = "#{workRequestBean}")
 	private WorkRequestBean workrequestBean;
+	
+	@ManagedProperty(value = "#{commentsBean}")
+	private CommentsBean commentsBean;
+
+
+	
 	private boolean renderComment;
 	private WorkRequestBean selectedworkRequest;
 	private List<WorkRequestBean> allWorksList;
 	private List<WorkRequestBean> completedWorksList;
 	private List<WorkRequestBean> inProgressWorksList;
 	private List<WorkRequestBean> openProgressWorksList;
+	private List<CommentsBean> comments;
+	
+	private CommentsBean selectedcommentsBean;
+	
+	private String comment;
+	//private List<String> comments;
 
 	@PostConstruct
 	public void init() {
@@ -62,6 +75,7 @@ public class WorkRequestModel {
 		}
 	}
 
+	
 	public void updateList() {
 
 		//PrimeFaces.current().executeScript("toggleSubMenu();");
@@ -75,7 +89,7 @@ public class WorkRequestModel {
 			context.addMessage(null, new FacesMessage("Work request updated"));
 
 		} else {
-			context.addMessage(null, new FacesMessage("Delete failed"));
+			context.addMessage(null, new FacesMessage("update failed"));
 		}
 	}
 
@@ -144,8 +158,26 @@ public class WorkRequestModel {
 	}
 	
 	
+	public List<CommentsBean> request_comments(int key){	
+		WorkRequest objj = new WorkRequest();
+		return objj.getComments(key);
+		
+		
+	}
 	
-	
+	public void addComment() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		WorkRequest objj = new WorkRequest();
+		System.out.println(selectedworkRequest.getRequestID()+" "+commentsBean.getComment());
+		boolean updated = objj.addComment(selectedworkRequest.getRequestID(),commentsBean.getComment());
+		System.out.println(updated);
+		if (updated) {
+			context.addMessage(null, new FacesMessage("Work request updated"));
+			commentsBean.setComment("");
+		} else {
+			context.addMessage(null, new FacesMessage("Delete failed"));
+		}
+	}
 	
 	
 	
@@ -205,5 +237,48 @@ public class WorkRequestModel {
 	public void setOpenProgressWorksList(List<WorkRequestBean> openProgressWorksList) {
 		this.openProgressWorksList = openProgressWorksList;
 	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public CommentsBean getSelectedcommentsBean() {
+		return selectedcommentsBean;
+	}
+
+	public void setSelectedcommentsBean(CommentsBean selectedcommentsBean) {
+		this.selectedcommentsBean = selectedcommentsBean;
+	}
+
+	public CommentsBean getCommentsBean() {
+		return commentsBean;
+	}
+
+	public void setCommentsBean(CommentsBean commentsBean) {
+		this.commentsBean = commentsBean;
+	}
+
+	public List<CommentsBean> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<CommentsBean> comments) {
+		this.comments = comments;
+	}
+	
+	
+
+
+//	public List<String> getComments() {
+//		return comments;
+//	}
+//
+//	public void setComments(List<String> comments) {
+//		this.comments = comments;
+//	}
 
 }

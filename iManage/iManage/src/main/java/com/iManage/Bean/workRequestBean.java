@@ -6,6 +6,7 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 @ManagedBean(name="workRequestBean",eager=true)
 public class WorkRequestBean {
+	
 	private int requestID;
 	private String name;
 	private String requestType;
