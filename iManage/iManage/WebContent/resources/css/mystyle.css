@@ -8,22 +8,22 @@ body {
 	padding:12px 10px ;
 }
 
-.customForm .ui-widget-content{
+#newWorkForm .ui-widget-content{
 	border:none;
 }
-.customForm{
+#newWorkForm{
 	height:100%;
 	position: relative;
 }
 
-.customForm .customForm_Footer{
+#newWorkForm .customForm_Footer{
 	position: absolute;
     bottom: 0;
     height: 55px;
     text-align: right;
 }
 
-.customForm .ui-panelgrid{
+#newWorkForm .ui-panelgrid{
 	height: calc(100% - 55px);
 	overflow:auto;
 }
@@ -231,12 +231,22 @@ body {
 
 
 .comment-layout{
-	background: #ffffff;
+	background: #bed8ff;
     padding: 10px 10px;
     margin-bottom: 5px;
     color: black;
     border-radius: 12px;
 }
+.comment-layout a ,#comments-panel a{
+	color: #5d5dd5d1;
+	text-decoration: none;
+}
+.comment-layout a:hover ,#comments-panel a:hover{
+	color: #5d5dd5;
+	text-decoration: underline;
+}
+
+
 
 @media only screen and (max-width:640px) {
 	#nav-panel {

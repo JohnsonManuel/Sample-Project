@@ -11,7 +11,7 @@ import java.util.Base64;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import com.iManage.Bean.LoginBean;
 import com.iManage.Client.Login;
 
-@RequestScoped
+@SessionScoped
 @ManagedBean(name="loginModel",eager=true)
 public class loginModel {
 	private static final Logger log = LogManager.getLogger(loginModel.class);	
@@ -31,6 +31,9 @@ public class loginModel {
 	private LoginBean loginBean;	
 	
 	
+
+	private String currentUser;
+	private String userType;
 	
 	public String validateUser() {
 		log.trace("Validating user ");
@@ -41,9 +44,18 @@ public class loginModel {
 		
 		if(!user.isEmpty()) {
 			log.trace("User exists and is of type "+user);
+			
+			userType = user;
 			loginBean.setUserType(user);
+			
+			System.out.println(loginBean.getUsername());
+			
+
+			currentUser= loginBean.getUsername();
+			//reset values
 			loginBean.setUsername("");
 			loginBean.setPassword("");	
+			
 			String captcha = login.getCaptchaString();
 			log.trace("Getting capthca from server...");
 			loginBean.setCaptcha(captcha);
@@ -63,12 +75,13 @@ public class loginModel {
 	public String validateCaptcha() {
 		log.trace("Validating Captcha");
 		System.out.println(loginBean.getCaptcha());
+		
 		if(loginBean.getCaptcha().equals(loginBean.getCaptchaText())) {
 			log.trace("Entered captcah is valid");
 			loginBean.setCaptchaText("");
 			loginBean.setCaptcha("");
 			loginBean.setCaptcha64("");
-			loginBean.setUsername("");
+		
 			if(loginBean.getUserType().equals("admin")) {
 				return "admin?faces-redirect=true";
 			}else {
@@ -125,5 +138,22 @@ public class loginModel {
 	public void setLoginBean(LoginBean loginBean) {
 		this.loginBean = loginBean;
 	}
+
+	public String getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUser(String currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
 	
+
 }

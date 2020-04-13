@@ -51,16 +51,16 @@
 					</h:outputLink>
 				</li>
 				<li>
+					<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
+						<div class="ui-g-10"><h:outputText value="Open" /></div>
+						<div class="ui-g-2"> <p><h:outputText id="nav-panel_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
+					</h:outputLink></li>
+				<li>
 					<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');" styleClass="ui-g menu-option ">
 						<div class="ui-g-10"><h:outputText value="In Progress" /></div>
 						<div class="ui-g-2"> <p><h:outputText id="nav-panel_inp"  styleClass="counter" value="#{fn:length(workRequestModel.inProgressWorksList)}" /></p> </div>
 					</h:outputLink>
 				</li>
-				<li>
-					<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
-						<div class="ui-g-10"><h:outputText value="Open" /></div>
-						<div class="ui-g-2"> <p><h:outputText id="nav-panel_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
-					</h:outputLink></li>
 				<li>
 					<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');" styleClass="ui-g menu-option" >
 						<div class="ui-g-10"><h:outputText value="Completed" /></div>
@@ -86,16 +86,17 @@
 							</h:outputLink>	
 						</li>
 						<li>
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
+								<div class="ui-g-10"><h:outputText value="Open" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="sidebar_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
+							</h:outputLink></li>
+						<li>
 							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');" styleClass="ui-g menu-option ">
 								<div class="ui-g-10"><h:outputText value="In Progress" /></div>
 								<div class="ui-g-2"> <p><h:outputText id="sidebar_inp"  styleClass="counter" value="#{fn:length(workRequestModel.inProgressWorksList)}" /></p> </div>
 							</h:outputLink>
 						</li>
-						<li>
-							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
-								<div class="ui-g-10"><h:outputText value="Open" /></div>
-								<div class="ui-g-2"> <p><h:outputText id="sidebar_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
-							</h:outputLink></li>
+						
 						<li>
 							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');" styleClass="ui-g menu-option" >
 								<div class="ui-g-10"><h:outputText value="Completed" /></div>
@@ -184,7 +185,7 @@
 					</p:column>
 					<p:column headerText="Comment">
 						<h:outputText value="#{list.comment}" />
-					</p:column>
+					</p:column>	
 				</p:dataTable>
 			</p:outputPanel>
 			
@@ -213,7 +214,7 @@
 					</p:column>
 					<!-- sortBy="#{list.status}" -->
 					<p:column headerText="Edit" >
-							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform " onclick="toggleSubMenu('edit');"></p:commandButton>
+							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform comments-panel" onclick="toggleSubMenu('edit');"></p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</p:outputPanel>
@@ -223,12 +224,11 @@
 				<h:form id="editform" >
 					<h2><h:outputText value="Ticket ID : #{workRequestModel.selectedworkRequest.requestType}-#{workRequestModel.selectedworkRequest.requestID}" /></h2>
 					
-						<p:panelGrid columns="2" layout="grid" id="edit-panel" styleClass="ui-g-6">
+						<p:panelGrid columns="2" layout="grid" id="edit-panel" styleClass="ui-g-6 ui-sm-12">
 								
 								<h:outputLabel value="Subject:" for="selectedName"></h:outputLabel>
 								<h:inputText id="selectedName" value="#{workRequestModel.selectedworkRequest.name}" styleClass="ui-g-12" > </h:inputText>
 									
-								
 								<p:outputLabel value="Type:" for="selectedType"></p:outputLabel>
 								<h:inputText id="selectedType" value="#{workRequestModel.selectedworkRequest.requestType}" readonly="true" styleClass="ui-g-6" ></h:inputText>
 								
@@ -246,38 +246,37 @@
 									<f:ajax event="change" listener="#{workRequestModel.handleStatusChange()}" render="@form" ></f:ajax>
 								</p:selectOneMenu>
 								<br />
-								<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="messages inp comp worklist openprogressworklist @(.counter)" oncomplete="toggleSubMenu()"  ></p:commandButton>
+								<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="editform messages inp comp worklist openprogressworklist @(.counter)"   ></p:commandButton>
 						</p:panelGrid>
 				</h:form>
 				<h:form id="comments-panel" >
 					<p:outputPanel styleClass="ui-g-6 ui-sm-12">
-					
-						COmments section
-						
-							<p:outputPanel >
+						<p><b>Comments :</b></p>	
+						<p:outputPanel >
 							<ui:repeat var="commentList"
 								value="#{workRequestModel.request_comments(workRequestModel.selectedworkRequest.requestID)}" >
 								<div class="comment-layout">
 									<p>
 										<h:outputText value="#{commentList.comment}"></h:outputText>
 									</p>
-									<h:commandLink value="Edit" />
-									<h:commandLink value="delete" />
+									<p:commandLink value="delete" action="#{workRequestModel.deleteComment(commentList.id)}" update="comments-panel messages"/>
 								</div>
 							</ui:repeat>
 						</p:outputPanel>
-						<p:outputPanel>
-							<h:inputTextarea style="width:100%;resize:none;"
-								value="#{commentsBean.comment}" update="messages">
-							</h:inputTextarea>
-							<p:commandButton value="Add "
-								action="#{workRequestModel.addComment()}" update="comments-panel messages"/>
-							<p:commandButton value="cancel" />
-						</p:outputPanel>
-
+						<p:panelGrid  columns="1" styleClass="ui-g-12">
+								<p:commandLink value="Add Comment" action="#{workRequestModel.toggleCommentPanel()}" rendered="#{not workRequestModel.renderCommentPanel}" 
+								update="comments-panel"	/>
+								<p:outputPanel rendered="#{workRequestModel.renderCommentPanel}">
+									<p>Add Comment:</p>
+									<h:inputTextarea  rows="3" style="width:100%;resize:none;" styleClass="ui-g-12"
+									value="#{commentsBean.comment}" update="messages"   >
+									</h:inputTextarea>
+									<p:commandButton value="Add " action="#{workRequestModel.addComment()}" update="comments-panel messages" />
+									<p:commandButton value="cancel" action="#{workRequestModel.toggleCommentPanel()}" update="comments-panel" />
+								</p:outputPanel>
+						</p:panelGrid>
 					</p:outputPanel>
 				</h:form>
-
 			</p:outputPanel>
 		</div>
 	</div>

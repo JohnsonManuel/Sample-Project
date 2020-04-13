@@ -2,7 +2,6 @@ package com.iManageServer.Dao;
 
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,12 +24,9 @@ public class WorkDAO {
 		System.out.println("Connecting to Database");
 		Connection conn = null;
 		 
-        try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-            String DBuser = "sa";
-            String DBpass = "Jmred1234";
-            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
+        try {        	
+
+        	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, user);
@@ -41,54 +37,41 @@ public class WorkDAO {
                 }
             }
  
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return null;
         } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            ConnectDB.close(conn);
         }
 		System.out.println(user_type);
 		
 		return user_type;
 	}
 	
-	public boolean addWorkRequestToDB(String name, String type, String description, String status) {
+	public boolean addWorkRequestToDB(String assignedBy,String name, String type, String description, String status) {
 		int queryexecuted = 0;
-		String query = "INSERT INTO work_requests (request_name,request_type,request_description,request_status) values (?,?,?,?)";
+		String query = "INSERT INTO work_requests (assigned_by,request_name,request_type,request_description,request_status) values (?,?,?,?,?)";
 	
 		System.out.println("Connecting to Database");
 		Connection conn = null;
 		 
         try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-            String DBuser = "sa";
-            String DBpass = "Jmred1234";
-            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
+        	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, name);
-                pstmt.setString(2, type);
-                pstmt.setString(3, description);
-                pstmt.setString(4, status);
+                pstmt.setString(1, assignedBy);
+                pstmt.setString(2, name);
+                pstmt.setString(3, type);
+                pstmt.setString(4, description);
+                pstmt.setString(5, status);
                 queryexecuted = pstmt.executeUpdate();
             }
  
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+        }  catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return false;
         } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            ConnectDB.close(conn);
         }
 		
 		
@@ -102,44 +85,61 @@ public class WorkDAO {
         for (int i = 0; i < length; i++) {
         	finalString.append(chars[(int) Math.round(Math.random()*(chars.length - 1))]);
         }
-        
 		return finalString.toString();
 	}
 	
-	public List<WorkRequestPojo> getAllWorkRequests(){
+public List<WorkRequestPojo> getAllWorkRequests(){
 		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
 		String query = "SELECT id,request_name,request_type,request_description,request_status,comments from work_requests ";
 		
-
 		System.out.println("Connecting to Database");
 		Connection conn = null;
 		 
         try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-            String DBuser = "sa";
-            String DBpass = "Jmred1234";
-            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
+        	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
-                
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
             		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6) ));
                 }
             }
  
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return null;
         } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
+            ConnectDB.close(conn);
+        }
+	
+		return temp;
+	}
+	public List<WorkRequestPojo> getAllWorkRequests(String user){
+		
+		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
+		String query = "SELECT id,request_name,request_type,request_description,request_status,comments from work_requests WHERE assigned_by = ? ";
+		
+		System.out.println(user);
+		System.out.println("Connecting to Database");
+		Connection conn = null;
+		 
+        try {
+        	conn = ConnectDB.getConnection();
+            if (conn != null) {
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                pstmt.setString(1, user);
+                ResultSet rs= pstmt.executeQuery();
+                while(rs.next()) {
+            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6) ));
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             }
+ 
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return null;
+        } finally {
+            ConnectDB.close(conn);
         }
 	
 		return temp;
@@ -153,11 +153,7 @@ public class WorkDAO {
 		Connection conn = null;
 		 
         try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-            String DBuser = "sa";
-            String DBpass = "Jmred1234";
-            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
+        	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, status);
@@ -168,16 +164,11 @@ public class WorkDAO {
                 queryexecuted = pstmt.executeUpdate();
             }
  
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return false;
         } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            ConnectDB.close(conn);
         }
 		
 		
@@ -192,36 +183,24 @@ public class WorkDAO {
 		Connection conn = null;
 		 
         try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-            String DBuser = "sa";
-            String DBpass = "Jmred1234";
-            conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
+        	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setInt(1, id);
                 queryexecuted = pstmt.executeUpdate();
             }
  
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return false;
         } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            ConnectDB.close(conn);
         }
 		
 		
 		return (queryexecuted == 1)?true:false;
 	}
 
-	
-	
-	
 	public boolean addComment(int id, String comment) {
 		int queryexecuted = 0;
 		String query = "INSERT INTO requests_comments (request_id,comment) values (?,?)";
@@ -249,8 +228,6 @@ public class WorkDAO {
 		
 	}
 
-	
-	
 	public List<CommentsPojo> getComments(int requestId) {
 		
 		System.out.println(requestId);
@@ -280,5 +257,30 @@ public class WorkDAO {
 	
 		return temp;
 	
+	}
+
+	public boolean deleteComment(int id) {
+		int queryexecuted = 0;
+		String query = "DELETE FROM requests_comments WHERE id = ? ";
+	
+		System.out.println("Connecting to Database");
+		Connection conn = null;
+		 
+        try {
+        	conn = ConnectDB.getConnection();
+            if (conn != null) {
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                pstmt.setInt(1, id);
+                queryexecuted = pstmt.executeUpdate();
+            }
+ 
+        } catch (SQLException ex) {
+        	System.out.println("Login error -->" + ex.getMessage());
+        	return false;
+        } finally {
+            ConnectDB.close(conn);
+        }
+        
+		return (queryexecuted == 1)?true:false;
 	}
 }

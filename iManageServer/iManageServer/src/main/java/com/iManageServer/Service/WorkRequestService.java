@@ -18,9 +18,9 @@ public class WorkRequestService {
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addNewWorkRequest( @FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status ) {
+	public boolean addNewWorkRequest( @FormParam("assignedBy") String assignedBy ,@FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status ) {
 		WorkDAO dao = new WorkDAO();
-		return dao.addWorkRequestToDB(name,type,description,status);
+		return dao.addWorkRequestToDB(assignedBy,name,type,description,status);
 	}
 	
 	@POST
@@ -29,6 +29,14 @@ public class WorkRequestService {
 	public boolean updateWorkRequest(  @FormParam("id") int id,@FormParam("name") String name,@FormParam("description") String description,@FormParam("status") String status,@FormParam("comment") String comment   ) {
 		WorkDAO dao = new WorkDAO();
 		return dao.updateRequestToDB(id,name,description,status,comment);
+	}
+	
+	@POST
+	@Path("allreq")
+	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
+	public List<WorkRequestPojo> getAllWorkRequests(@FormParam("user") String user) {
+		WorkDAO dao = new WorkDAO();
+		return dao.getAllWorkRequests(user);
 	}
 	
 	@GET

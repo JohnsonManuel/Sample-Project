@@ -17,18 +17,26 @@ public class CommentService {
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addNewWorkRequest( @FormParam("id") int id,@FormParam("comment") String comment ) {
+	public boolean addComment( @FormParam("id") int id,@FormParam("comment") String comment ) {
 		WorkDAO dao = new WorkDAO();
 		return dao.addComment(id,comment);
 	}
 
 	
-	@POST
+	@POST	
 	@Path("getcomments")
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public List<CommentsPojo> getAllWorkRequests( @FormParam("id") int id ) {
+	public List<CommentsPojo> getComments( @FormParam("id") int id ) {
 		WorkDAO dao = new WorkDAO();
 		return dao.getComments(id);
+	}
+	
+	@POST	
+	@Path("delete")
+	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
+	public boolean deleteComment( @FormParam("id") int id ) {
+		WorkDAO dao = new WorkDAO();
+		return dao.deleteComment(id);
 	}
 	
 	

@@ -4,7 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" >
 
 <h:head>
 	<title>Home</title>
@@ -15,6 +16,9 @@
 </h:head>
 
 <h:body>
+<f:metadata>
+    <f:viewParam id="user" name="user" value="#{workRequestModel.currentUser}" />
+</f:metadata>
 	<div class="ui-g" id="nav-bar" style="align-items:center;font-size:14px;">
 		<p:outputPanel styleClass="ui-g ui-g-8 ui-sm-6">
 			<p:commandButton id="menubutton" icon="pi pi-bars"  onclick="PF('sidebar').show()" />
@@ -23,7 +27,7 @@
 		</p:outputPanel>
 		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-6" >
 		<h:outputLink id="profile-tab">
-			<span><h:outputText value="User name" /></span>
+			<span><h:outputText value="#{workRequestModel.currentUser}" /></span>
 			<h:graphicImage name="profile.png" library="images" id="user-img"></h:graphicImage>
 		</h:outputLink>
 		</p:outputPanel>
@@ -31,43 +35,15 @@
 	
 	<!-- Main Wrapper -->
 	<div class="ui-g" id="main-wrapper">
-	
-	    <div class="ui-g-2" id="nav-panel" >
-			<ul id="menu-options">
-				<li><span style="font-size:20px;">Menu</span></li>
-				<li><hr/></li>
-						<li>
-							<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
-								<div class="ui-g-10"><h:outputText value="All Requests" /></div>
-								<div class="ui-g-2"> <p><h:outputText id="sidebar_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
-							</h:outputLink>	
-						</li>
-						<li>
-							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');" styleClass="ui-g menu-option ">
-								<div class="ui-g-10"><h:outputText value="In Progress" /></div>
-								<div class="ui-g-2"> <p><h:outputText id="sidebar_inp"  styleClass="counter" value="#{fn:length(workRequestModel.inProgressWorksList)}" /></p> </div>
-							</h:outputLink>
-						</li>
-						<li>
-							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
-								<div class="ui-g-10"><h:outputText value="Open" /></div>
-								<div class="ui-g-2"> <p><h:outputText id="sidebar_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
-							</h:outputLink></li>
-						<li>
-							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');" styleClass="ui-g menu-option" >
-								<div class="ui-g-10"><h:outputText value="Completed" /></div>
-								<div class="ui-g-2"> <p><h:outputText id="sidebar_comp" styleClass="counter" value="#{fn:length(workRequestModel.completedWorksList)}" /></p> </div>					
-							</h:outputLink>
-						</li>
-			</ul>
-			<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); " >
+		<p:growl id="messages"></p:growl>
+		<p:sidebar widgetVar="sidebar" baseZIndex="10000" style="background: rgb(244, 245, 247); " >
 				<div class="ui-g-12" style="height: 100%;">
 					<ul id="menu-options-sidebar">
 						<li><span style="font-size: 20px;">Menu</span></li>
 						<li><hr /></li>
 						<li>
 							<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
-								<div class="ui-g-10"><h:outputText value="All Requests" /></div>
+								<div class="ui-g-10"><h:outputText value="My Requests" /></div>
 								<div class="ui-g-2"> <p><h:outputText id="sidebar_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
 							</h:outputLink>	
 						</li>
@@ -92,13 +68,42 @@
 						<li><p:commandButton value="Create" type="button" styleClass="btn-sidebar"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show();PF('sidebar').hide();" ></p:commandButton></li>
 					</ul>
 				</div>
-			</p:sidebar>
+		</p:sidebar>
+	    <div class="ui-g-2" id="nav-panel" >
+			<ul id="menu-options">
+				<li><span style="font-size:20px;">Menu</span></li>
+				<li><hr/></li>
+						<li>
+							<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
+								<div class="ui-g-10"><h:outputText value="My Requests" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="nav-panel_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
+							</h:outputLink>	
+						</li>
+						<li>
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');" styleClass="ui-g menu-option ">
+								<div class="ui-g-10"><h:outputText value="In Progress" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="nav-panel_inp"  styleClass="counter" value="#{fn:length(workRequestModel.inProgressWorksList)}" /></p> </div>
+							</h:outputLink>
+						</li>
+						<li>
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
+								<div class="ui-g-10"><h:outputText value="Open" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="nav-panel_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
+							</h:outputLink></li>
+						<li>
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');" styleClass="ui-g menu-option" >
+								<div class="ui-g-10"><h:outputText value="Completed" /></div>
+								<div class="ui-g-2"> <p><h:outputText id="nav-panel_comp" styleClass="counter" value="#{fn:length(workRequestModel.completedWorksList)}" /></p> </div>					
+							</h:outputLink>
+						</li>
+			</ul>
+			
 		</div>
 		<div class="ui-g-10 ui-sm-12" >
 
 			<p:dialog header="Create request" widgetVar="dlg2" modal="true"
-				positionType="absolute" width="60%" height="600" resizable="false" draggable="false">
-				<h:form styleClass="customForm">
+				positionType="absolute" width="80%" height="600" resizable="false" draggable="false">
+				<h:form id="newWorkForm">
 					<p:panelGrid columns="1" layout="grid" >
 						<p:outputLabel for="name" value="Subject"></p:outputLabel>
 						<p:inputText id="name" value="#{workRequestBean.name}" styleClass="ui-g-12" required="true"></p:inputText>
@@ -118,9 +123,10 @@
 						<p:outputLabel for="desc" value="Description"></p:outputLabel>
 						<p:inputTextarea id="desc"  counter="word-counter" value="#{workRequestBean.description}"  styleClass="ui-g-12 ui-sm-12" rows="10" required="true"  maxlength="300" counterTemplate="{0} characters remaining." autoResize="false"/>
 						<h:outputText id="word-counter"/>
+						
 					</p:panelGrid>
 					<p:outputPanel styleClass="customForm_Footer ui-g-12">
-						<p:commandButton value="Submit" styleClass="btn" action="#{workRequestModel.addWorkRequest()}"  update="worklist DeleteForm:completedworklist inprogressworklist openprogressworklist @(.counter) "  />
+						<p:commandButton value="Submit" styleClass="btn" action="#{workRequestModel.addWorkRequest()}"  update="all inp open comp newWorkForm worklist DeleteForm  @(.counter) messages"  />
 					</p:outputPanel>					
 				</h:form>
 			</p:dialog>
