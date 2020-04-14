@@ -120,7 +120,9 @@ public class WorkRequestModel {
 		
 		
 		objj.addWorkRequest(currentUser,workrequestBean.getName(), workrequestBean.getRequestType(),
-				workrequestBean.getDescription(), workrequestBean.getStatus());
+				workrequestBean.getDescription(), 
+				//hard coded - to make all status as open
+				"Open");
 		
 		workrequestBean.setName("");
 		workrequestBean.setDescription("");
@@ -174,6 +176,7 @@ public class WorkRequestModel {
 	
 	public List<CommentsBean> request_comments(int key){	
 		WorkRequest objj = new WorkRequest();
+		System.out.println("The comments of key "+key);
 		return objj.getComments(key);
 		
 		

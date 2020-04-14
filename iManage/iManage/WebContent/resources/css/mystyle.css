@@ -7,6 +7,9 @@ body {
 .ui-datatable tbody td{
 	padding:12px 10px ;
 }
+.ui-shadow {
+	box-shadow:none !important;
+}
 
 #newWorkForm .ui-widget-content{
 	border:none;
@@ -255,7 +258,7 @@ body {
 	#menubutton {
 		display: inline-block;
 	}
-	.btn {
+	#header-btn{
 		display: none;
 	}
 	#banner_wrapper, #login_wrapper {

@@ -38,15 +38,21 @@ public class loginModel {
 	public String validateUser() {
 		log.trace("Validating user ");
 		Login login = new Login();
-		String user = login.checkuserinDB(loginBean.getUsername(),loginBean.getPassword());
+		String user_type = login.checkuserinDB(loginBean.getUsername(),loginBean.getPassword());
 		
 		log.trace("User");
 		
-		if(!user.isEmpty()) {
-			log.trace("User exists and is of type "+user);
+		if(!user_type.isEmpty()) {
+			log.trace("User exists and is of type "+user_type);
 			
-			userType = user;
-			loginBean.setUserType(user);
+			
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user",loginBean.getUsername());
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user-type",user_type);
+
+
+			
+			userType = user_type;
+			loginBean.setUserType(user_type);
 			
 			System.out.println(loginBean.getUsername());
 			

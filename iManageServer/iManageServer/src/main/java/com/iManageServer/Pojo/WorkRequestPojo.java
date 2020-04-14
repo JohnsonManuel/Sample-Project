@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="WorkRequestBean")
 public class WorkRequestPojo {
 
+	private String requestedBy;
 	private int requestID;
 	private String name;
 	private String requestType;
@@ -17,7 +18,7 @@ public class WorkRequestPojo {
 		
 	}
 	
-	public WorkRequestPojo(int requestID,String name, String requestType, String description, String status,String comment) {
+	public WorkRequestPojo(int requestID,String name, String requestedBy,String requestType, String description, String status,String comment) {
 		super();
 		this.name = name;
 		this.requestType = requestType;
@@ -25,6 +26,7 @@ public class WorkRequestPojo {
 		this.status = status;
 		this.requestID = requestID;
 		this.comment= comment;
+		this.requestedBy= requestedBy;
 	}
 	@XmlElement(name ="name")
 	public String getName() {
@@ -63,13 +65,21 @@ public class WorkRequestPojo {
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
 	}
-
+	@XmlElement(name ="comment")
 	public String getComment() {
 		return comment;
 	}
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+	@XmlElement(name ="requestedBy")
+	public String getRequestedBy() {
+		return requestedBy;
+	}
+
+	public void setRequestedBy(String requestedBy) {
+		this.requestedBy = requestedBy;
 	}
 	
 	

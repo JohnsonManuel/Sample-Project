@@ -91,7 +91,7 @@ public class WorkDAO {
 public List<WorkRequestPojo> getAllWorkRequests(){
 		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT id,request_name,request_type,request_description,request_status,comments from work_requests ";
+		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments from work_requests ";
 		
 		System.out.println("Connecting to Database");
 		Connection conn = null;
@@ -102,7 +102,7 @@ public List<WorkRequestPojo> getAllWorkRequests(){
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
-            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6) ));
+            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7) ));
                 }
             }
  
@@ -118,7 +118,7 @@ public List<WorkRequestPojo> getAllWorkRequests(){
 	public List<WorkRequestPojo> getAllWorkRequests(String user){
 		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT id,request_name,request_type,request_description,request_status,comments from work_requests WHERE assigned_by = ? ";
+		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments from work_requests WHERE assigned_by = ? ";
 		
 		System.out.println(user);
 		System.out.println("Connecting to Database");
@@ -131,7 +131,7 @@ public List<WorkRequestPojo> getAllWorkRequests(){
                 pstmt.setString(1, user);
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
-            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6) ));
+            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7) ));
                 }
             }
  

@@ -33,7 +33,7 @@ public class LoginService{
 	public String GetCaptcha() {
 		WorkDAO work = new WorkDAO();
 		String temp = work.getcaptcha(6);	
-		log.trace("Sending captcha"+temp);
+		log.trace("Sending captcha: "+temp);
 
 		return temp;
 	}

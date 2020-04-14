@@ -6,7 +6,7 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 @ManagedBean(name="workRequestBean",eager=true)
 public class WorkRequestBean {
-	
+	private String requestedBy;
 	private int requestID;
 	private String name;
 	private String requestType;
@@ -65,6 +65,16 @@ public class WorkRequestBean {
 	}
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
+	}
+
+
+	public String getRequestedBy() {
+		return requestedBy;
+	}
+
+
+	public void setRequestedBy(String requestedBy) {
+		this.requestedBy = requestedBy;
 	}
 	
 

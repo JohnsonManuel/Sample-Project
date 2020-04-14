@@ -30,7 +30,6 @@
 					<p:commandButton value="Logout" action="#{loginModel.logout()}" ></p:commandButton>
 				</p:outputPanel>
 			</h:outputLink>
-			
 		</p:outputPanel>
 		
 	</div>
@@ -80,25 +79,25 @@
 						<li><span style="font-size: 16px;">Menu</span></li>
 						<li><hr /></li>
 						<li>
-							<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
+							<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');PF('sidebar').hide();" styleClass="ui-g menu-option current">
 								<div class="ui-g-10"><h:outputText value="All Requests" /></div>
 								<div class="ui-g-2"> <p><h:outputText id="sidebar_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
 							</h:outputLink>	
 						</li>
 						<li>
-							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');" styleClass="ui-g menu-option" >
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'open');PF('sidebar').hide();" styleClass="ui-g menu-option" >
 								<div class="ui-g-10"><h:outputText value="Open" /></div>
 								<div class="ui-g-2"> <p><h:outputText id="sidebar_opn"  styleClass="counter" value="#{fn:length(workRequestModel.openProgressWorksList)}" /></p> </div>
 							</h:outputLink></li>
 						<li>
-							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');" styleClass="ui-g menu-option ">
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'inp');PF('sidebar').hide();" styleClass="ui-g menu-option ">
 								<div class="ui-g-10"><h:outputText value="In Progress" /></div>
 								<div class="ui-g-2"> <p><h:outputText id="sidebar_inp"  styleClass="counter" value="#{fn:length(workRequestModel.inProgressWorksList)}" /></p> </div>
 							</h:outputLink>
 						</li>
 						
 						<li>
-							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');" styleClass="ui-g menu-option" >
+							<h:outputLink value="javascript:void(0)" onclick="toggleMenus(this,'comp');PF('sidebar').hide();" styleClass="ui-g menu-option" >
 								<div class="ui-g-10"><h:outputText value="Completed" /></div>
 								<div class="ui-g-2"> <p><h:outputText id="sidebar_comp" styleClass="counter" value="#{fn:length(workRequestModel.completedWorksList)}" /></p> </div>					
 							</h:outputLink>
@@ -119,7 +118,14 @@
 					</p:column>
 					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
 						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-					</p:column>					
+					</p:column>
+					
+					
+					 <p:column headerText="Assigner">
+						<h:outputText value="#{list.requestedBy}" />
+					</p:column>		
+					
+								
 					<p:column headerText="Name" sortBy="#{list.name}" >
 						<h:outputText value="#{list.name}" />
 					</p:column>
@@ -144,7 +150,10 @@
 						</p:column>
 					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
 						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-					</p:column>					
+					</p:column>		
+					<p:column headerText="Assigner">
+						<h:outputText value="#{list.requestedBy}" />
+					</p:column>				
 					<p:column headerText="Name" sortBy="#{list.name}" >
 						<h:outputText value="#{list.name}" />
 					</p:column>
@@ -173,7 +182,10 @@
 					</p:column>
 					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
 						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-					</p:column>					
+					</p:column>
+					<p:column headerText="Assigner">
+						<h:outputText value="#{list.requestedBy}" />
+					</p:column>						
 					<p:column headerText="Name" sortBy="#{list.name}" >
 						<h:outputText value="#{list.name}" />
 					</p:column>
@@ -203,6 +215,9 @@
 					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
 						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
 					</p:column>
+					<p:column headerText="Assigner">
+						<h:outputText value="#{list.requestedBy}" />
+					</p:column>	
 					<p:column headerText="Name" sortBy="#{list.name}" >
 						<h:outputText value="#{list.name}" />
 					</p:column>
