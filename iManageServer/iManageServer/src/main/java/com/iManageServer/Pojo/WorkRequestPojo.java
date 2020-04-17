@@ -13,12 +13,13 @@ public class WorkRequestPojo {
 	private String description;
 	private String status;
 	private String comment;
-	
+	private String team;
+
 	public WorkRequestPojo() {
 		
 	}
 	
-	public WorkRequestPojo(int requestID,String name, String requestedBy,String requestType, String description, String status,String comment) {
+	public WorkRequestPojo(int requestID,String name, String requestedBy,String requestType, String description, String status,String comment,String team) {
 		super();
 		this.name = name;
 		this.requestType = requestType;
@@ -27,6 +28,7 @@ public class WorkRequestPojo {
 		this.requestID = requestID;
 		this.comment= comment;
 		this.requestedBy= requestedBy;
+		this.team = team;
 	}
 	@XmlElement(name ="name")
 	public String getName() {
@@ -80,6 +82,14 @@ public class WorkRequestPojo {
 
 	public void setRequestedBy(String requestedBy) {
 		this.requestedBy = requestedBy;
+	}
+
+	public String getTeam() {
+		return team;
+	}
+
+	public void setTeam(String team) {
+		this.team = team;
 	}
 	
 	

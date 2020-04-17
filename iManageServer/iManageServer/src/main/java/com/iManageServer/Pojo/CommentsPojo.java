@@ -9,11 +9,13 @@ public class CommentsPojo {
 	
 	private int id;
 	private String comment;
+	private String time;
 	
-	public CommentsPojo(int id, String comment) {
+	public CommentsPojo(int id, String comment,String time) {
 		super();
 		this.id=id;
 		this.comment=comment;
+		this.setTime(time);
 	}
 	@XmlElement(name ="id")
 	public int getId() {
@@ -29,6 +31,13 @@ public class CommentsPojo {
 	}
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+	@XmlElement(name ="time")
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
 	}
 	
 	

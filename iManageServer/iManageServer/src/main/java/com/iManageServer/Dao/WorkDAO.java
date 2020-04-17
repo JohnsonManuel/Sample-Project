@@ -8,18 +8,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.iManageServer.Pojo.CommentsPojo;
 import com.iManageServer.Pojo.WorkRequestPojo;
 
 public class WorkDAO {
 	
 	
-	public String checkuserinDB(String user,String pass) {
+	public String[] checkuserinDB(String user,String pass) {
 		
-		String user_type = null;
-		String query = "SELECT user_type from userlogin_details where username = ? and password = ?";
+		String response[] = new String[2];
+		String query = "SELECT user_type,team from userlogin_details where username = ? and password = ?";
 		
-		System.out.println(user_type);
+		System.out.println(response[0]+" "+response[1]);
 
 		System.out.println("Connecting to Database");
 		Connection conn = null;
@@ -33,7 +32,8 @@ public class WorkDAO {
                 pstmt.setString(2, pass);
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
-                	user_type = rs.getString("user_type");
+                	response[0] = rs.getString("user_type");
+                	response[1] = rs.getString("team");
                 }
             }
  
@@ -43,14 +43,14 @@ public class WorkDAO {
         } finally {
             ConnectDB.close(conn);
         }
-		System.out.println(user_type);
 		
-		return user_type;
+		
+		return response;
 	}
 	
-	public boolean addWorkRequestToDB(String assignedBy,String name, String type, String description, String status) {
+	public boolean addWorkRequestToDB(String assignedBy,String name, String type, String description, String status,String team) {
 		int queryexecuted = 0;
-		String query = "INSERT INTO work_requests (assigned_by,request_name,request_type,request_description,request_status) values (?,?,?,?,?)";
+		String query = "INSERT INTO work_requests (assigned_by,request_name,request_type,request_description,request_status,team) values (?,?,?,?,?,?)";
 	
 		System.out.println("Connecting to Database");
 		Connection conn = null;
@@ -64,6 +64,7 @@ public class WorkDAO {
                 pstmt.setString(3, type);
                 pstmt.setString(4, description);
                 pstmt.setString(5, status);
+                pstmt.setString(6, team);
                 queryexecuted = pstmt.executeUpdate();
             }
  
@@ -88,10 +89,10 @@ public class WorkDAO {
 		return finalString.toString();
 	}
 	
-public List<WorkRequestPojo> getAllWorkRequests(){
+public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments from work_requests ";
+		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests where team = ?";
 		
 		System.out.println("Connecting to Database");
 		Connection conn = null;
@@ -100,9 +101,10 @@ public List<WorkRequestPojo> getAllWorkRequests(){
         	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
+                pstmt.setString(1, team);
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
-            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7) ));
+            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8) ));
                 }
             }
  
@@ -115,10 +117,10 @@ public List<WorkRequestPojo> getAllWorkRequests(){
 	
 		return temp;
 	}
-	public List<WorkRequestPojo> getAllWorkRequests(String user){
+	public List<WorkRequestPojo> getAllWorkRequestsUser(String user){
 		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments from work_requests WHERE assigned_by = ? ";
+		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests WHERE assigned_by = ? ";
 		
 		System.out.println(user);
 		System.out.println("Connecting to Database");
@@ -131,7 +133,7 @@ public List<WorkRequestPojo> getAllWorkRequests(){
                 pstmt.setString(1, user);
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
-            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7) ));
+            		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8) ));
                 }
             }
  
@@ -201,86 +203,7 @@ public List<WorkRequestPojo> getAllWorkRequests(){
 		return (queryexecuted == 1)?true:false;
 	}
 
-	public boolean addComment(int id, String comment) {
-		int queryexecuted = 0;
-		String query = "INSERT INTO requests_comments (request_id,comment) values (?,?)";
 	
-		System.out.println("Connecting to Database");
-		Connection conn = null;
-		 
-        try {
-            conn = ConnectDB.getConnection();
-            if (conn != null) {
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setInt(1, id);
-                pstmt.setString(2, comment);
-                queryexecuted = pstmt.executeUpdate();
-            }
-        } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
-        	return false;
-        } finally {
-            ConnectDB.close(conn);
-        }
-		
-		
-		return (queryexecuted == 1)?true:false;
-		
-	}
-
-	public List<CommentsPojo> getComments(int requestId) {
-		
-		System.out.println(requestId);
-		List<CommentsPojo> temp = new ArrayList<CommentsPojo>();
-		String query = "SELECT id,comment from requests_comments WHERE request_id = ? ";
-		
-
-		System.out.println("Connecting to Database");
-		Connection conn = null;
-		 
-        try {
-        	conn = ConnectDB.getConnection();
-            if (conn != null) {
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setInt(1, requestId);
-                ResultSet rs= pstmt.executeQuery();
-                while(rs.next()) {
-            		temp.add(new CommentsPojo( rs.getInt(1),rs.getString(2)));
-                }
-            }
-        } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
-        	return null;
-        } finally {
-            ConnectDB.close(conn);
-        }
 	
-		return temp;
 	
-	}
-
-	public boolean deleteComment(int id) {
-		int queryexecuted = 0;
-		String query = "DELETE FROM requests_comments WHERE id = ? ";
-	
-		System.out.println("Connecting to Database");
-		Connection conn = null;
-		 
-        try {
-        	conn = ConnectDB.getConnection();
-            if (conn != null) {
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setInt(1, id);
-                queryexecuted = pstmt.executeUpdate();
-            }
- 
-        } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
-        	return false;
-        } finally {
-            ConnectDB.close(conn);
-        }
-        
-		return (queryexecuted == 1)?true:false;
-	}
 }

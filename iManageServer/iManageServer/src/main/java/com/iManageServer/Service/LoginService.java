@@ -21,7 +21,7 @@ public class LoginService{
 	@POST
 	@Path("user")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String validateUser(@FormParam("user")String user,@FormParam("pass")String pass) {
+	public String[] validateUser(@FormParam("user")String user,@FormParam("pass")String pass) {
 		log.trace("Request received with paramaeters "+user+" "+pass );
 		WorkDAO workDAO = new WorkDAO();
 		return workDAO.checkuserinDB(user, pass);

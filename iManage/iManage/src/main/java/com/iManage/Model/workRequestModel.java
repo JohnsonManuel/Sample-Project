@@ -1,7 +1,11 @@
 package com.iManage.Model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -10,6 +14,9 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Encoder;
+import org.owasp.esapi.Validator;
 import org.primefaces.PrimeFaces;
 
 import com.iManage.Bean.CommentsBean;
@@ -26,14 +33,13 @@ public class WorkRequestModel {
 	@ManagedProperty(value = "#{commentsBean}")
 	private CommentsBean commentsBean;
 	
-	@ManagedProperty(value = "#{loginModel}")
-	private loginModel loginModel;
 
 	
 	
 
 	private String currentUser;
 	private String userType;
+	private String team;
 	
 	private boolean renderComment;
 	private boolean renderCommentPanel = false;
@@ -47,12 +53,18 @@ public class WorkRequestModel {
 	private CommentsBean selectedcommentsBean;
 	
 	private String comment;
-	//private List<String> comments;
+	
+	
+	Encoder encoder = ESAPI.encoder();
+	Validator validator = ESAPI.validator();
 
 	@PostConstruct
 	public void init() {
-		currentUser=loginModel.getCurrentUser();
-		userType= loginModel.getUserType();
+		System.out.println("POST CONSTRUCT CALLED");
+		Map<String ,Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+		currentUser = (String) sessionMap.get("user");
+		userType= (String) sessionMap.get("user-type");
+		team = (String) sessionMap.get("team");
 		updateTables();
 	}
 
@@ -64,12 +76,11 @@ public class WorkRequestModel {
 		WorkRequest obj = new WorkRequest();
 		
 		if(userType.equals("admin") ) {
-			allWorksList = obj.getAll();
+			allWorksList = obj.getAllAdmin(team);
 		}else {
-			allWorksList = obj.getAll(currentUser);
+			allWorksList = obj.getAllUser(currentUser);
 		}
 		
-		System.out.println(currentUser);
 		inProgressWorksList = updateinProgressWorksList();
 		completedWorksList = updatecompletedWorksList();
 		openProgressWorksList = updateopenProgressWorksList();
@@ -81,11 +92,11 @@ public class WorkRequestModel {
 
 	public void deleteWorkRequest(WorkRequestBean delWork) {
 		
-		System.out.println(delWork.getRequestID());
 		FacesContext context = FacesContext.getCurrentInstance();
 		WorkRequest objj = new WorkRequest();
 		boolean updated = objj.deleteWorkRequest(delWork.getRequestID());
-
+		updateTables();
+		
 		if (updated) {
 			allWorksList.remove(delWork);
 			context.addMessage(null, new FacesMessage("Work request deleted"));
@@ -101,17 +112,35 @@ public class WorkRequestModel {
 		PrimeFaces.current().executeScript("toggleSubMenu();");
 		WorkRequest objj = new WorkRequest();
 		FacesContext context = FacesContext.getCurrentInstance();
-		boolean updated = objj.updateWorkRequest(selectedworkRequest.getRequestID(), selectedworkRequest.getName(),
-				selectedworkRequest.getDescription(), selectedworkRequest.getStatus(),
-				selectedworkRequest.getComment());
+		
+		boolean updated ;
+		boolean check1,check2;
+		
+		check1 = validator.isValidInput("summary", encoder.canonicalize( selectedworkRequest.getName()), "Special", 1024, false);
+		check2 = validator.isValidInput("summary", encoder.canonicalize( selectedworkRequest.getComment()), "Special", 1024, true);
+		if(check1&&check2) {
+			updated = objj.updateWorkRequest(selectedworkRequest.getRequestID(), selectedworkRequest.getName(),
+					selectedworkRequest.getDescription(), selectedworkRequest.getStatus(),
+					selectedworkRequest.getComment());
+		}else {
+			updated=false;
+		}
+		
 		updateTables();
 		renderComment=false;
 		if (updated) {
 			context.addMessage(null, new FacesMessage("Work request updated"));
 
-		} else {
-			context.addMessage(null, new FacesMessage("update failed"));
-		}
+			} else {
+					if(check1||check2) {
+						System.out.println(check1+" "+check2);
+					context.addMessage(null, new FacesMessage("Malicious input "));
+		
+				}else {
+					context.addMessage(null, new FacesMessage("update failed "));
+		
+				}
+			}
 	}
 
 	public void addWorkRequest() {	
@@ -122,7 +151,7 @@ public class WorkRequestModel {
 		objj.addWorkRequest(currentUser,workrequestBean.getName(), workrequestBean.getRequestType(),
 				workrequestBean.getDescription(), 
 				//hard coded - to make all status as open
-				"Open");
+				"Open",workrequestBean.getTeam());
 		
 		workrequestBean.setName("");
 		workrequestBean.setDescription("");
@@ -165,6 +194,8 @@ public class WorkRequestModel {
 		return filteredList;
 	}
 
+	
+	
 	public void handleStatusChange() {
 		if (selectedworkRequest.getStatus().equals("Completed")) {
 			renderComment = true;
@@ -173,10 +204,14 @@ public class WorkRequestModel {
 		}
 	}
 	
+	public void getcomments(int key) {
+		WorkRequest objj = new WorkRequest();
+		comments= objj.getComments(key);
+	}
+	
 	
 	public List<CommentsBean> request_comments(int key){	
 		WorkRequest objj = new WorkRequest();
-		System.out.println("The comments of key "+key);
 		return objj.getComments(key);
 		
 		
@@ -185,9 +220,9 @@ public class WorkRequestModel {
 	public void addComment() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		WorkRequest objj = new WorkRequest();
-		System.out.println(selectedworkRequest.getRequestID()+" "+commentsBean.getComment());
-		boolean updated = objj.addComment(selectedworkRequest.getRequestID(),commentsBean.getComment());
-		System.out.println(updated);
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date date = new Date();
+		boolean updated = objj.addComment(selectedworkRequest.getRequestID(),commentsBean.getComment(),dateFormat.format(date));
 		if (updated) {
 			toggleCommentPanel();
 			context.addMessage(null, new FacesMessage("Comment added"));
@@ -204,7 +239,6 @@ public class WorkRequestModel {
 		WorkRequest objj = new WorkRequest();
 		
 		boolean updated = objj.deleteComments(id);
-		System.out.println(updated);
 		if (updated) {
 			context.addMessage(null, new FacesMessage("Comment Deleted"));
 			commentsBean.setComment("");
@@ -220,14 +254,11 @@ public class WorkRequestModel {
 		
 	}
 	
+
+	
+	
 	
 	//Getters and Setteres
-	
-	
-	
-	
-	
-
 	public WorkRequestBean getSelectedworkRequest() {
 		return selectedworkRequest;
 	}
@@ -316,15 +347,6 @@ public class WorkRequestModel {
 		this.renderCommentPanel = renderCommentPanel;
 	}
 
-
-	public loginModel getLoginModel() {
-		return loginModel;
-	}
-
-	public void setLoginModel(loginModel loginModel) {
-		this.loginModel = loginModel;
-	}
-
 	public String getCurrentUser() {
 		return currentUser;
 	}
@@ -347,6 +369,14 @@ public class WorkRequestModel {
 
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+
+	public String getTeam() {
+		return team;
+	}
+
+	public void setTeam(String team) {
+		this.team = team;
 	}
 
 

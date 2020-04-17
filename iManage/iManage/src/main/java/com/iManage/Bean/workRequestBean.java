@@ -13,7 +13,7 @@ public class WorkRequestBean {
 	private String description;
 	private String status;
 	private String comment;
-	
+	private String team;
 	
 	public WorkRequestBean() {
 	}
@@ -75,6 +75,16 @@ public class WorkRequestBean {
 
 	public void setRequestedBy(String requestedBy) {
 		this.requestedBy = requestedBy;
+	}
+
+
+	public String getTeam() {
+		return team;
+	}
+
+
+	public void setTeam(String team) {
+		this.team = team;
 	}
 	
 

@@ -16,24 +16,59 @@
 </h:head>
 
 <h:body>
+	<p:dialog header="Live Comments" widgetVar="cmnt-dlg" modal="true"
+		positionType="absolute" width="60%" height="600" resizable="false"
+		draggable="false">
+		<p:outputPanel id="comments-table" >
+					<p> <h:outputText value="Comments:"></h:outputText> </p>
+					<p:outputPanel rendered="#{empty workRequestModel.comments}"
+							styleClass="information-panel">
+							<h:graphicImage name="empty-comments.jpg" library="images"></h:graphicImage>
+							<p><h:outputText value="This request does't have any comments yet!"></h:outputText></p>
+						</p:outputPanel>
+					<p:outputPanel rendered="#{not empty workRequestModel.comments}">
+						<ui:repeat var="commentList" value="#{workRequestModel.comments}">
+							<div class="comment-layout">
+								<p class="time"><h:outputText value="Added on :#{commentList.time}"></h:outputText></p>
+								<p><h:outputText value="#{commentList.comment}"></h:outputText></p>
+							</div>
+						</ui:repeat>
+					</p:outputPanel>
+				</p:outputPanel>
+	</p:dialog>
+
 	<div class="ui-g" id="nav-bar" >
 		<p:outputPanel styleClass="ui-g ui-g-8 ui-sm-6">
 			<p:commandButton id="menubutton" icon="pi pi-bars"  onclick="PF('sidebar').show()" />
-			<h3 style="margin:0;font-size:26px;"><h:outputText value="iManage"/></h3>
+			<h3 style="margin:0;font-size:26px; color:black;"><span style="color:#5d5dd5;">i</span>Manage</h3>
 		</p:outputPanel>
 		
 		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-6" >
 			<h:outputLink id="profile-tab" onclick="toggleVisibility('profile-tab-menu');" value="javascript:void(0)" >
-				<span><h:outputText value="User name" /></span>
+				<span><h:outputText value="#{workRequestModel.currentUser}" /></span>
 				<h:graphicImage name="profile.png" library="images" id="user-img"></h:graphicImage>
 				<p:outputPanel id="profile-tab-menu" style="display:none;" >
-					<p:commandButton value="Logout" action="#{loginModel.logout()}" ></p:commandButton>
+					<h:form>
+						<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-4,ui-g-8" styleClass="profile-panel">
+							<h:outputText value="User : "></h:outputText>
+							<h:outputText value="#{workRequestModel.currentUser}"></h:outputText>
+							<h:outputText value="Role : "></h:outputText>
+							<h:outputText value="#{(workRequestModel.userType == 'admin')?('Manager'):('Team Member')}"></h:outputText>
+							<h:outputText value="Team : "></h:outputText>
+							<h:outputText value="#{workRequestModel.team}"></h:outputText>
+						</p:panelGrid>
+						<p:commandButton value="Logout" action="#{loginModel.logout()}" ></p:commandButton>
+					</h:form>
 				</p:outputPanel>
 			</h:outputLink>
 		</p:outputPanel>
 		
 	</div>
-	
+	<p:dialog widgetVar="description-dialog" header="Description" width="80%" height="300" resizable="false" draggable="false" modal="true">
+		<p:outputPanel id="description-panel">
+			<h:outputText value="#{workRequestModel.selectedworkRequest.description}"></h:outputText>
+		</p:outputPanel>
+	</p:dialog>
 	<!-- Main Wrapper -->
 	<div class="ui-g" id="main-wrapper">
 		
@@ -107,135 +142,143 @@
 			</p:sidebar>
 			
 			<p:outputPanel styleClass="display-panels active ui-g-12" id="all">
-				<h2><h:outputText value="Admin Page"></h:outputText> </h2>
-				<p:outputPanel  rendered="#{empty workRequestModel.allWorksList}" styleClass="information-panel">
-					<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
-					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
-				</p:outputPanel>
-				<p:dataTable var="list" value="#{workRequestModel.allWorksList}" id="worklist" rendered="#{not empty workRequestModel.allWorksList}" reflow="true">
-				    <p:column headerText="Id">
-						<h:outputText value="#{list.requestType}-#{list.requestID}" />
-					</p:column>
-					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
-						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-					</p:column>
-					
-					
-					 <p:column headerText="Assigner">
-						<h:outputText value="#{list.requestedBy}" />
-					</p:column>		
-					
-								
-					<p:column headerText="Name" sortBy="#{list.name}" >
-						<h:outputText value="#{list.name}" />
-					</p:column>
-					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
-						<h:outputText value="#{list.description}" />
-					</p:column>
-					<p:column headerText="Status" sortBy="#{list.status}"   >
-						<h:outputText value="#{list.status}" />
-					</p:column>
-				</p:dataTable>
-			</p:outputPanel>
-			<p:outputPanel styleClass="display-panels ui-g-12" id="inp">
-				<h2>In progress requests</h2>
-				<p:outputPanel  rendered="#{empty workRequestModel.inProgressWorksList}" styleClass="information-panel">
-					<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
-					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
-				</p:outputPanel>
-				<p:dataTable   var="list" value="#{workRequestModel.inProgressWorksList}" rendered="#{not empty workRequestModel.inProgressWorksList}"
-					id="inprogressworklist" reflow="true">
-					<p:column headerText="Id">
+				<p:outputPanel id="all-panel"> 
+					<h2><h:outputText value="All Requests"/><p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="all-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<p:outputPanel  rendered="#{empty workRequestModel.allWorksList}" styleClass="information-panel">
+						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
+						<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+					</p:outputPanel>
+					<p:dataTable var="list" value="#{workRequestModel.allWorksList}" id="worklist" rendered="#{not empty workRequestModel.allWorksList}" reflow="true">
+					    <p:column headerText="Id">
 							<h:outputText value="#{list.requestType}-#{list.requestID}" />
 						</p:column>
-					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
-						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-					</p:column>		
-					<p:column headerText="Assigner">
-						<h:outputText value="#{list.requestedBy}" />
-					</p:column>				
-					<p:column headerText="Name" sortBy="#{list.name}" >
-						<h:outputText value="#{list.name}" />
-					</p:column>
-					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
-						<h:outputText value="#{list.description}" />
-					</p:column>
-					<p:column headerText="Status"   >
-						<h:outputText value="#{list.status}" />
-					</p:column>
-					<p:column headerText="Edit" >
-							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform comments-panel" onclick="toggleSubMenu('edit');"></p:commandButton>
-					</p:column>
-				</p:dataTable>
+						<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+							<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+						</p:column>
+						 <p:column headerText="Assigner" sortBy="#{list.requestedBy}">
+							<h:outputText value="#{list.requestedBy}" />
+						</p:column>		
+						<p:column headerText="Name" sortBy="#{list.name}" >
+							<h:outputText value="#{list.name}" />
+						</p:column>
+						<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
+							<h:outputText value="#{list.description}" />
+							<p:commandButton styleClass="expand-btn" value="..." action="#{workRequestModel.setSelectedworkRequest(list)}" update="description-panel" oncomplete="PF('description-dialog').show();"></p:commandButton>
+						</p:column>
+						<p:column>
+							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{workRequestModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
+						</p:column>	
+						<p:column headerText="Status" sortBy="#{list.status}"   >
+							<h:outputText value="#{list.status}" />
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</p:outputPanel>
+			<p:outputPanel styleClass="display-panels ui-g-12" id="inp">
+				<p:outputPanel id="inp-panel">
+					<h2>In progress requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="inp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<p:outputPanel  rendered="#{empty workRequestModel.inProgressWorksList}" styleClass="information-panel">
+						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
+						<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+					</p:outputPanel>
+					<p:dataTable   var="list" value="#{workRequestModel.inProgressWorksList}" rendered="#{not empty workRequestModel.inProgressWorksList}"
+						id="inprogressworklist" reflow="true">
+						<p:column headerText="Id">
+								<h:outputText value="#{list.requestType}-#{list.requestID}" />
+							</p:column>
+						<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+							<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+						</p:column>		
+						<p:column headerText="Assigner" sortBy="#{list.requestedBy}">
+							<h:outputText value="#{list.requestedBy}" />
+						</p:column>				
+						<p:column headerText="Name" sortBy="#{list.name}" >
+							<h:outputText value="#{list.name}" />
+						</p:column>
+						<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
+							<h:outputText value="#{list.description}" />
+							<p:commandButton styleClass="expand-btn" value="..." action="#{workRequestModel.setSelectedworkRequest(list)}" update="description-panel" oncomplete="PF('description-dialog').show();"></p:commandButton>
+						</p:column>
+						<p:column>
+							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{workRequestModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
+						</p:column>	
+						<p:column headerText="Edit" >
+								<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform comments-panel" onclick="toggleSubMenu('edit');"></p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
 			</p:outputPanel>
 			
 			<p:outputPanel styleClass="display-panels ui-g-12" id="comp">
-				<h2>Completed requests</h2>
-				<p:outputPanel  rendered="#{empty workRequestModel.completedWorksList}" styleClass="information-panel">
-					<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
-					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+				<p:outputPanel id="comp-panel">
+					<h2>Completed requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="comp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<p:outputPanel  rendered="#{empty workRequestModel.completedWorksList}" styleClass="information-panel">
+						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
+						<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+					</p:outputPanel>
+					<p:dataTable var="list" value="#{workRequestModel.completedWorksList}" rendered="#{not empty workRequestModel.completedWorksList}"
+						id="completedworklist" reflow="true">
+						<p:column headerText="Id">
+								<h:outputText value="#{list.requestType}-#{list.requestID}" />
+						</p:column>
+						<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+							<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+						</p:column>
+						<p:column headerText="Assigner" sortBy="#{list.requestedBy}" >
+							<h:outputText value="#{list.requestedBy}" />
+						</p:column>						
+						<p:column headerText="Name" sortBy="#{list.name}" >
+							<h:outputText value="#{list.name}" />
+						</p:column>
+						<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
+							<h:outputText value="#{list.description}" />
+							<p:commandButton styleClass="expand-btn" value="..." action="#{workRequestModel.setSelectedworkRequest(list)}" update="description-panel" oncomplete="PF('description-dialog').show();"></p:commandButton>
+						</p:column>
+						<p:column>
+							<p:commandButton style="font-size:14px;" value="View Comments" action="#{workRequestModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
+						</p:column>	
+						
+						<p:column headerText="End Note">
+							<h:outputText value="#{list.comment}" />
+						</p:column>	
+					</p:dataTable>
 				</p:outputPanel>
-				<p:dataTable var="list" value="#{workRequestModel.completedWorksList}" rendered="#{not empty workRequestModel.completedWorksList}"
-					id="completedworklist" reflow="true">
-					<p:column headerText="Id">
-							<h:outputText value="#{list.requestType}-#{list.requestID}" />
-					</p:column>
-					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
-						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-					</p:column>
-					<p:column headerText="Assigner">
-						<h:outputText value="#{list.requestedBy}" />
-					</p:column>						
-					<p:column headerText="Name" sortBy="#{list.name}" >
-						<h:outputText value="#{list.name}" />
-					</p:column>
-					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
-						<h:outputText value="#{list.description}" />
-					</p:column>
-					<p:column headerText="Status"   >
-						<h:outputText value="#{list.status}" />
-					</p:column>
-					<p:column headerText="Comment">
-						<h:outputText value="#{list.comment}" />
-					</p:column>	
-				</p:dataTable>
 			</p:outputPanel>
 			
 			<p:outputPanel styleClass="display-panels ui-g-12" id="open">
-				<h2>Open requests</h2>
-				<p:outputPanel  rendered="#{empty workRequestModel.openProgressWorksList}" styleClass="information-panel">
-					<h:graphicImage name="empty.jpg" library="images"></h:graphicImage>
-					<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+				<p:outputPanel id="open-panel">
+					<h2>Open requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<p:outputPanel  rendered="#{empty workRequestModel.openProgressWorksList}" styleClass="information-panel">
+						<h:graphicImage name="empty.jpg" library="images"></h:graphicImage>
+						<p> <h:outputText value="You're all caugth up here !"></h:outputText> </p>
+					</p:outputPanel>
+					<p:dataTable var="list" value="#{workRequestModel.openProgressWorksList}" rendered="#{not empty workRequestModel.openProgressWorksList}"
+						id="openprogressworklist" reflow="true">
+						<p:column headerText="Id" sortBy="#{list.requestType}-#{list.requestID}">
+								<h:outputText value="#{list.requestType}-#{list.requestID}" />
+						</p:column>
+						<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
+							<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+						</p:column>
+						<p:column headerText="Assigner" sortBy="#{list.requestedBy}">
+							<h:outputText value="#{list.requestedBy}" />
+						</p:column>	
+						<p:column headerText="Name" sortBy="#{list.name}" >
+							<h:outputText value="#{list.name}" />
+						</p:column>
+						<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
+							<h:outputText value="#{list.description}" />
+							<p:commandButton styleClass="expand-btn" value="..." action="#{workRequestModel.setSelectedworkRequest(list)}" update="description-panel" oncomplete="PF('description-dialog').show();"></p:commandButton>
+						</p:column>
+						<p:column headerText="Edit" >
+								<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform comments-panel" onclick="toggleSubMenu('edit');"></p:commandButton>
+						</p:column>
+					</p:dataTable>
 				</p:outputPanel>
-				<p:dataTable var="list" value="#{workRequestModel.openProgressWorksList}" rendered="#{not empty workRequestModel.openProgressWorksList}"
-					id="openprogressworklist" reflow="true">
-					<p:column headerText="Id" sortBy="#{list.requestType}-#{list.requestID}">
-							<h:outputText value="#{list.requestType}-#{list.requestID}" />
-					</p:column>
-					<p:column headerText="Type" styleClass="type" sortBy="#{list.requestType}">
-						<h:graphicImage name="#{list.requestType}.svg" library="images" styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-					</p:column>
-					<p:column headerText="Assigner">
-						<h:outputText value="#{list.requestedBy}" />
-					</p:column>	
-					<p:column headerText="Name" sortBy="#{list.name}" >
-						<h:outputText value="#{list.name}" />
-					</p:column>
-					<p:column headerText="Description" styleClass="singleLine" sortBy="#{list.description}"  >
-						<h:outputText value="#{list.description}" />
-					</p:column>
-					<p:column headerText="Status"   >
-						<h:outputText value="#{list.status}" />
-					</p:column>
-					<!-- sortBy="#{list.status}" -->
-					<p:column headerText="Edit" >
-							<p:commandButton  value="Select" action="#{workRequestModel.setSelectedworkRequest(list)}" update="editform comments-panel" onclick="toggleSubMenu('edit');"></p:commandButton>
-					</p:column>
-				</p:dataTable>
 			</p:outputPanel>
 				
 			<p:outputPanel styleClass="display-panels ui-g-12 ui-sm-12" id="edit">
-				<p:commandButton value="Back" onclick="toggleSubMenu();" icon="pi pi-chevron-left" ></p:commandButton>
+				<p:commandButton value="Back" onclick="toggleSubMenu();" icon="pi pi-chevron-left" update="editform messages"  ></p:commandButton>
 				<h:form id="editform" >
 					<h2><h:outputText value="Ticket ID : #{workRequestModel.selectedworkRequest.requestType}-#{workRequestModel.selectedworkRequest.requestID}" /></h2>
 					
@@ -250,7 +293,7 @@
 								<p:outputLabel value="Description:" for="selectedDescription"></p:outputLabel>
 								<h:inputTextarea  id="selectedDescription" value="#{workRequestModel.selectedworkRequest.description}"  rows="6"  styleClass="ui-g-12"  readonly="true"  style="resize: none"  ></h:inputTextarea>
 								
-								<p:outputLabel  value="Add Comment" for="selectedcomment"  rendered="#{workRequestModel.renderComment}" ></p:outputLabel>
+								<p:outputLabel  value="Add End Note" for="selectedcomment"  rendered="#{workRequestModel.renderComment}" ></p:outputLabel>
 								<h:inputTextarea  id="selectedcomment" value="#{workRequestModel.selectedworkRequest.comment}" rendered="#{workRequestModel.renderComment}" rows="10" required="true" styleClass="ui-g-12"  style="resize: none;"  ></h:inputTextarea>
 														
 								<p:outputLabel value="Status:" for="selectedStatus"></p:outputLabel>
@@ -261,7 +304,7 @@
 									<f:ajax event="change" listener="#{workRequestModel.handleStatusChange()}" render="@form" ></f:ajax>
 								</p:selectOneMenu>
 								<br />
-								<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="editform messages inp comp worklist openprogressworklist @(.counter)"   ></p:commandButton>
+								<p:commandButton value="update" action="#{workRequestModel.updateList()}" update="editform messages inp-panel open-panel comp-panel all-panel openprogressworklist @(.counter)"   ></p:commandButton>
 						</p:panelGrid>
 				</h:form>
 				<h:form id="comments-panel" >
@@ -271,9 +314,8 @@
 							<ui:repeat var="commentList"
 								value="#{workRequestModel.request_comments(workRequestModel.selectedworkRequest.requestID)}" >
 								<div class="comment-layout">
-									<p>
-										<h:outputText value="#{commentList.comment}"></h:outputText>
-									</p>
+									<p class="time"><h:outputText value="Added on: #{commentList.time}"></h:outputText></p>
+									<p><h:outputText value="#{commentList.comment}"></h:outputText></p>
 									<p:commandLink value="delete" action="#{workRequestModel.deleteComment(commentList.id)}" update="comments-panel messages"/>
 								</div>
 							</ui:repeat>

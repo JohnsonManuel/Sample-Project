@@ -10,7 +10,7 @@ public class CommentsBean {
 	
 	private int id;
 	private String comment;
-	
+	private String time;
 	
 	public int getId() {
 		return id;
@@ -24,6 +24,13 @@ public class CommentsBean {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
+	}
+
 	
 	
 }

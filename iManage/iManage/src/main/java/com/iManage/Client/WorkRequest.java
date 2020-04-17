@@ -23,7 +23,7 @@ public class WorkRequest {
 		
 		
 	
-		public void addWorkRequest(String currentUser,String name, String type, String description, String status) {
+		public void addWorkRequest(String currentUser,String name, String type, String description, String status,String team) {
 			 log.trace("Adding work-request .......");
 			 Client client = ClientBuilder.newClient();
 			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("add");
@@ -33,32 +33,33 @@ public class WorkRequest {
 			 form.param("type", type);
 			 form.param("description", description);
 			 form.param("status", status);
+			 form.param("team", team);
 			 boolean workadded= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
 			 if(workadded) { log.trace("Work-request added");}else{log.trace("Work-request not added");}
 		}
 
 
 	// http://localhost:8181/iManageServer/rest/Work/allreq
-		public List<WorkRequestBean> getAll() {
+		public List<WorkRequestBean> getAllAdmin(String teamName) {
 			 log.trace("Get all Reuests List");
 			 
 			 Client client = ClientBuilder.newClient();
-			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("allreq");
+			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("allreqadmin");
 			 System.out.println("getAll() "+target.getUri());
-			 
-			 List<WorkRequestBean> response = target.request(MediaType.APPLICATION_JSON).get(Response.class).readEntity(new GenericType<List<WorkRequestBean>>(){}) ;
+			 Form form = new Form();
+			 form.param("team", teamName);
+			 List<WorkRequestBean> response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Response.class).readEntity(new GenericType<List<WorkRequestBean>>(){}) ;
 			 log.trace("Response list size "+response.size());
 			 return response;
 			}
-		public List<WorkRequestBean> getAll(String user) {
+		public List<WorkRequestBean> getAllUser(String user) {
 		 log.trace("Get all Reuests List");
 		 
 		 Client client = ClientBuilder.newClient();
-		 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("allreq");
+		 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("allrequser");
 		 System.out.println("getAll() "+target.getUri());
 		 Form form = new Form();
 		 form.param("user", user);
-		 
 
 		 List<WorkRequestBean> response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Response.class).readEntity(new GenericType<List<WorkRequestBean>>(){}) ;
 		 log.trace("Response list size "+response.size());
@@ -105,7 +106,7 @@ public class WorkRequest {
 		}
 
 
-		public boolean addComment(int id, String comment) {
+		public boolean addComment(int id, String comment,String time) {
 			
 			 Client client = ClientBuilder.newClient();
 			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("comment").path("add");
@@ -114,6 +115,7 @@ public class WorkRequest {
 			 Form form = new Form();
 			 form.param("id", String.valueOf(id));
 			 form.param("comment", comment);
+			 form.param("time",time);
 			 boolean result= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
 			 log.trace("updated? "+result);
 

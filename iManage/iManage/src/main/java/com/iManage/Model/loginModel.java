@@ -6,8 +6,13 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -15,8 +20,12 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Encoder;
+import org.owasp.esapi.Validator;
 
 import com.iManage.Bean.LoginBean;
 import com.iManage.Client.Login;
@@ -30,34 +39,54 @@ public class loginModel {
 	@ManagedProperty(value="#{loginBean}")
 	private LoginBean loginBean;	
 	
-	
+	private String response[] ;
 
-	private String currentUser;
-	private String userType;
+	
+	Encoder encoder = ESAPI.encoder();
+	Validator validator = ESAPI.validator();
+	
+	
+	
+//	public static void main(String[] args) {
+//		loginModel obj = new loginModel();
+//		
+//		System.out.println( 
+//				obj.validator.isValidInput("Username", obj.encoder.canonicalize("12345666ababababababhdbsajbjdfHJAHJBDJA_"), "SafeString", 40, true)
+//				);
+//		
+//	}
 	
 	public String validateUser() {
+		
+		
+		
 		log.trace("Validating user ");
 		Login login = new Login();
-		String user_type = login.checkuserinDB(loginBean.getUsername(),loginBean.getPassword());
+		boolean isSafeusername = validator.isValidInput("Username", encoder.canonicalize(loginBean.getUsername()), "UserName", 40, false);
+		boolean isSafepassword = validator.isValidInput("password", encoder.canonicalize(loginBean.getPassword()), "Special", 40, false);
+
+		if(isSafeusername&& isSafepassword) {
+			log.trace("Esapi passes for Login input");
+			response = login.checkuserinDB(loginBean.getUsername(),getEncryptText(loginBean.getPassword()));
+		}else {
+			log.trace("Esapi failed for Login input");
+			response = new String[2];
+		}
+	
+	
 		
+
 		log.trace("User");
 		
-		if(!user_type.isEmpty()) {
-			log.trace("User exists and is of type "+user_type);
+		if(response[0]!=null) {
+			log.trace("User exists and is of type "+response[0]);
 			
-			
+					
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user",loginBean.getUsername());
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user-type",user_type);
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user-type",response[0]);
 
+			loginBean.setUserType(response[0]);			
 
-			
-			userType = user_type;
-			loginBean.setUserType(user_type);
-			
-			System.out.println(loginBean.getUsername());
-			
-
-			currentUser= loginBean.getUsername();
 			//reset values
 			loginBean.setUsername("");
 			loginBean.setPassword("");	
@@ -79,10 +108,18 @@ public class loginModel {
 	}
 	
 	public String validateCaptcha() {
+		boolean isSafetext = validator.isValidInput("Captcha", encoder.canonicalize(loginBean.getCaptchaText()), "SafeString", 7, false);
+
+		
+		
 		log.trace("Validating Captcha");
 		System.out.println(loginBean.getCaptcha());
 		
-		if(loginBean.getCaptcha().equals(loginBean.getCaptchaText())) {
+		if(loginBean.getCaptcha().equals(loginBean.getCaptchaText()) && isSafetext ) {
+			log.trace("Esapi passes for captcha input");
+
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("team",response[1]);
+
 			log.trace("Entered captcah is valid");
 			loginBean.setCaptchaText("");
 			loginBean.setCaptcha("");
@@ -95,13 +132,18 @@ public class loginModel {
 			}
 		}
 		else {
+			log.trace("Esapi failed for captcha input or validation failed");
+
+			loginBean.setCaptchaText("");
 			FacesContext context = FacesContext.getCurrentInstance();
 	        context.addMessage(null, new FacesMessage("invalid Captcha"));
-			return null;
+			return null ;
 		}
 	}
 	
 	public String logout() {
+		
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		return "login?faces-redirect=true";
 		
 	}
@@ -136,6 +178,42 @@ public class loginModel {
 		return encodedString;
 		
 	}
+	
+//	public static void main(String[] args) {
+//		System.out.println(getEncryptText("admin2"));
+//	}
+	
+	
+	
+	public static String getEncryptText( String plainText) {
+		  String salt = "SecretText";
+		  int iterations = 10000;
+	      int keyLength = 512;
+	      
+		  byte[] hashedBytes = hashPassword(plainText.toCharArray(),salt.getBytes(), iterations, keyLength);
+		  String hashedString = Hex.encodeHexString(hashedBytes);
+		  
+		  return hashedString;
+
+	}
+
+    public static byte[] hashPassword( final char[] password, final byte[] salt, final int iterations, final int keyLength ) {
+
+        try {
+            SecretKeyFactory skf = SecretKeyFactory.getInstance( "PBKDF2WithHmacSHA512" );
+            PBEKeySpec spec = new PBEKeySpec( password, salt, iterations, keyLength );
+            SecretKey key = skf.generateSecret( spec );
+            byte[] res = key.getEncoded( );
+            return res;
+        } catch ( NoSuchAlgorithmException | InvalidKeySpecException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+	
+	
+	
+	
+	
 
 	public LoginBean getLoginBean() {
 		return loginBean;
@@ -145,21 +223,6 @@ public class loginModel {
 		this.loginBean = loginBean;
 	}
 
-	public String getCurrentUser() {
-		return currentUser;
-	}
-
-	public void setCurrentUser(String currentUser) {
-		this.currentUser = currentUser;
-	}
-
-	public String getUserType() {
-		return userType;
-	}
-
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
-	
+		
 
 }

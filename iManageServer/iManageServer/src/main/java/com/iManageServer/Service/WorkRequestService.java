@@ -3,7 +3,6 @@ package com.iManageServer.Service;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -18,9 +17,9 @@ public class WorkRequestService {
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addNewWorkRequest( @FormParam("assignedBy") String assignedBy ,@FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status ) {
+	public boolean addNewWorkRequest( @FormParam("assignedBy") String assignedBy ,@FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status ,@FormParam("team") String team) {
 		WorkDAO dao = new WorkDAO();
-		return dao.addWorkRequestToDB(assignedBy,name,type,description,status);
+		return dao.addWorkRequestToDB(assignedBy,name,type,description,status,team);
 	}
 	
 	@POST
@@ -32,19 +31,19 @@ public class WorkRequestService {
 	}
 	
 	@POST
-	@Path("allreq")
+	@Path("allrequser")
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public List<WorkRequestPojo> getAllWorkRequests(@FormParam("user") String user) {
+	public List<WorkRequestPojo> getAllWorkRequestsUser(@FormParam("user") String user) {
 		WorkDAO dao = new WorkDAO();
-		return dao.getAllWorkRequests(user);
+		return dao.getAllWorkRequestsUser(user);
 	}
 	
-	@GET
-	@Path("allreq")
+	@POST
+	@Path("allreqadmin")
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public List<WorkRequestPojo> getAllWorkRequests() {
+	public List<WorkRequestPojo> getAllWorkRequestsAdmin(@FormParam("team") String team) {
 		WorkDAO dao = new WorkDAO();
-		return dao.getAllWorkRequests();
+		return dao.getAllWorkRequestsAdmin(team);
 	}
 	
 	@POST

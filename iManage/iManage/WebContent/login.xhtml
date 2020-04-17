@@ -33,9 +33,13 @@
 					<p:panelGrid columns="2" layout="grid"
 						columnClasses="ui-g-6,ui-g-6">
 						<p:outputLabel for="username" value="Username:" />
-						<p:inputText id="username" styleClass="ui-g-12" value="#{loginBean.username}" />
+						<p:inputText id="username" styleClass="ui-g-12" value="#{loginBean.username}" >
+							
+						</p:inputText>
 						<p:outputLabel for="password" value="Password:" />
-						<p:password id="password" styleClass="ui-g-12" value="#{loginBean.password}" />
+						<p:password id="password" styleClass="ui-g-12" value="#{loginBean.password}" >
+							
+						</p:password>
 						<br />
 						<p:commandButton value="Login"  widgetVar="loginButton" onclick="PF('loginButton').disable()" oncomplete="PF('loginButton').enable()"  id="login-btn" update="messages" action="#{loginModel.validateUser()}"   ></p:commandButton>
 					</p:panelGrid>
