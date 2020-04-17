@@ -8,10 +8,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.iManageServer.Pojo.WorkRequestPojo;
 
 public class WorkDAO {
-	
+	private static final Logger log = LogManager.getLogger("mainLogger");	
+
 	
 	public String[] checkuserinDB(String user,String pass) {
 		
@@ -20,7 +24,7 @@ public class WorkDAO {
 		
 		System.out.println(response[0]+" "+response[1]);
 
-		System.out.println("Connecting to Database");
+log.trace("Connecting to Database");
 		Connection conn = null;
 		 
         try {        	
@@ -38,7 +42,7 @@ public class WorkDAO {
             }
  
         } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
+        	log.error("Connection error");
         	return null;
         } finally {
             ConnectDB.close(conn);
@@ -52,7 +56,7 @@ public class WorkDAO {
 		int queryexecuted = 0;
 		String query = "INSERT INTO work_requests (assigned_by,request_name,request_type,request_description,request_status,team) values (?,?,?,?,?,?)";
 	
-		System.out.println("Connecting to Database");
+		log.trace("Connecting to Database");
 		Connection conn = null;
 		 
         try {
@@ -69,7 +73,7 @@ public class WorkDAO {
             }
  
         }  catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
+        	log.error("Connection error");
         	return false;
         } finally {
             ConnectDB.close(conn);
@@ -94,7 +98,7 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
 		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests where team = ?";
 		
-		System.out.println("Connecting to Database");
+		log.trace("Connecting to Database");
 		Connection conn = null;
 		 
         try {
@@ -109,7 +113,7 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
             }
  
         } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
+        	log.error("Connection error");
         	return null;
         } finally {
             ConnectDB.close(conn);
@@ -123,7 +127,7 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests WHERE assigned_by = ? ";
 		
 		System.out.println(user);
-		System.out.println("Connecting to Database");
+		log.trace("Connecting to Database");
 		Connection conn = null;
 		 
         try {
@@ -138,7 +142,7 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
             }
  
         } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
+        	log.error("Connection error");
         	return null;
         } finally {
             ConnectDB.close(conn);
@@ -151,7 +155,7 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 		int queryexecuted = 0;
 		String query = "UPDATE work_requests  SET request_status = ? , request_name = ? , request_description = ? ,comments = ? WHERE id= ?";
 	
-		System.out.println("Connecting to Database");
+		log.trace("Connecting to Database");
 		Connection conn = null;
 		 
         try {
@@ -167,10 +171,10 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
             }
  
         } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
+        	log.error("Connection error");
         	return false;
         } finally {
-            ConnectDB.close(conn);
+            ConnectDB.close(conn);	
         }
 		
 		
@@ -181,7 +185,7 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 		int queryexecuted = 0;
 		String query = "DELETE FROM work_requests WHERE id = ? ";
 	
-		System.out.println("Connecting to Database");
+		log.trace("Connecting to Database");
 		Connection conn = null;
 		 
         try {
@@ -193,7 +197,8 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
             }
  
         } catch (SQLException ex) {
-        	System.out.println("Login error -->" + ex.getMessage());
+        	
+        	log.error("Connection error");
         	return false;
         } finally {
             ConnectDB.close(conn);

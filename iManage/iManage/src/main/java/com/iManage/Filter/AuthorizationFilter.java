@@ -13,8 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 @WebFilter(filterName = "AuthFilter", urlPatterns = { "*.xhtml" })
 public class AuthorizationFilter implements Filter {
+	private static final Logger log = LogManager.getLogger("mainLogger");	
 
 	public AuthorizationFilter() {
 	}
@@ -35,29 +40,20 @@ public class AuthorizationFilter implements Filter {
 
 			String reqURI = reqt.getRequestURI();
 			boolean passThrough = false;
+			boolean passThrough2= false;
 
-//			//this is the go to path
-//			System.out.println(reqURI);
-//			//this is the from path
-//			System.out.println(reqt.getContextPath());
 
 			if(reqURI.indexOf("/login.xhtml")>=0 && ses!=null) {
-				System.out.println("page hit");
 				if(ses.getAttribute("user-type")!=null && ses.getAttribute("team")!=null) {
 				resp.sendRedirect(reqt.getContextPath()+"/"+ses.getAttribute("user-type").toString()+".xhtml");
 				}
 				
 			}
 			
-			
-			
 			if (ses != null) {
-				System.out.println("The sit hot");
 				if (ses.getAttribute("user") != null && ses.getAttribute("team") != null ) {
 					if (ses.getAttribute("user-type") != null) {
-
 						if (reqURI.indexOf("/admin.xhtml") >= 0) {
-							
 							 if( ses.getAttribute("user-type").equals("admin")) {
 								 passThrough = true;
 							 }else {
@@ -65,10 +61,8 @@ public class AuthorizationFilter implements Filter {
 									 passThrough= false;
 								 }else {
 									 resp.sendRedirect(reqt.getContextPath()+"/"+ses.getAttribute("user-type").toString()+".xhtml");
-
 								 }
 							 }
-							
 						}
 						if (reqURI.indexOf("/user.xhtml") >= 0) {
 							if( ses.getAttribute("user-type").equals("user")) {
@@ -78,7 +72,6 @@ public class AuthorizationFilter implements Filter {
 									 passThrough= false;
 								 }else {
 									 resp.sendRedirect(reqt.getContextPath()+"/"+ses.getAttribute("user-type").toString()+".xhtml");
-
 								 }
 							 }
 						}
@@ -87,34 +80,24 @@ public class AuthorizationFilter implements Filter {
 			} else {
 					passThrough = false;
 			}
+			
+			
+			if((reqURI.indexOf("/captcha.xhtml")>=0 )) {
+				if(ses!=null) {
+					if(ses.getAttribute("user")!=null  &&  ses.getAttribute("team")==null) {
+						passThrough2= true;
+					}
+				}
+			}
 
-			System.out.println(reqt.getContextPath());
-
-			
-			
-			
-			
-			
-//			if((ses != null)&&reqURI.indexOf("/captcha.xhtml")>=0) {
-//				passThrough=(?false:true;				
-//			}
-			
-			
-			
-			
-
-			System.out.println("GO TO " + reqURI);
-
-			if (reqURI.indexOf("/login.xhtml") >= 0 || reqURI.contains("javax.faces.resource") || passThrough ||reqURI.indexOf("/captcha.xhtml")>=0 ) {
-				System.out.println("chain ");
-				System.out.println("Still came here");
+			if (reqURI.indexOf("/login.xhtml") >= 0 || reqURI.contains("javax.faces.resource") || passThrough ||passThrough2) {
+				log.info("GO TO : " + reqURI);
 				chain.doFilter(request, response);
 			} else {
-				System.out.println("Redirect");
 				resp.sendRedirect(reqt.getContextPath() + "/login.xhtml");
 			}
 		} catch (Exception e) {
-			System.out.println("Error");
+			log.error("authorixation filter error !");
 			e.printStackTrace();
 		}
 	}

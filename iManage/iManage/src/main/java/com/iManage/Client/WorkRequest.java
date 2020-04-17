@@ -18,12 +18,12 @@ import com.iManage.Bean.CommentsBean;
 import com.iManage.Bean.WorkRequestBean;
 
 public class WorkRequest {
-	private static final Logger log = LogManager.getLogger(WorkRequest.class);	
+	private static final Logger log = LogManager.getLogger("mainLogger");	
 
 		
 		
 	
-		public void addWorkRequest(String currentUser,String name, String type, String description, String status,String team) {
+		public boolean addWorkRequest(String currentUser,String name, String type, String description, String status,String team) {
 			 log.trace("Adding work-request .......");
 			 Client client = ClientBuilder.newClient();
 			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("add");
@@ -36,6 +36,8 @@ public class WorkRequest {
 			 form.param("team", team);
 			 boolean workadded= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
 			 if(workadded) { log.trace("Work-request added");}else{log.trace("Work-request not added");}
+			 return workadded;
+			
 		}
 
 

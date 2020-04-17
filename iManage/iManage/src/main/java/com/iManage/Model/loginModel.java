@@ -33,7 +33,7 @@ import com.iManage.Client.Login;
 @SessionScoped
 @ManagedBean(name="loginModel",eager=true)
 public class loginModel {
-	private static final Logger log = LogManager.getLogger(loginModel.class);	
+	private static final Logger log = LogManager.getLogger("mainLogger");	
 
 	
 	@ManagedProperty(value="#{loginBean}")

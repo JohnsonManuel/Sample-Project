@@ -115,6 +115,8 @@
 		</div>
 
 		<div class="ui-g-10 ui-sm-12" id="main-panel" >
+		
+		
 			<p:dialog widgetVar="description-dialog" header="Description"
 				width="80%" height="300" resizable="false" draggable="false"
 				modal="true">
@@ -153,7 +155,6 @@
 					</p:outputPanel>					
 				</h:form>
 			</p:dialog >
-				
 			<p:dialog header="Live Comments"  widgetVar="cmnt-dlg"  modal="true" positionType="absolute" width="80%" height="600" resizable="false" draggable="false" >
 				<p:outputPanel id="comments-table" >
 					<p> <h:outputText value="Comments:"></h:outputText> </p>
@@ -174,10 +175,10 @@
 			</p:dialog>
 			
 			
-			<p:outputPanel styleClass="display-panels ui-g-12 active" id="all">
+			<p:outputPanel styleClass="display-panels ui-g-12 active" id="all" rendered="#{comp['admin.allpanel']}">
 				<p:outputPanel id="all-panel"> 
 				
-					<h2>My Requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="all-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<h2>My Requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="all-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
 					<p:outputPanel  rendered="#{empty workRequestModel.allWorksList}" styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
 						<p> <h:outputText value="You're all caught up here !"></h:outputText> </p>
@@ -191,9 +192,10 @@
 							sortBy="#{list.requestType}">
 							<h:graphicImage name="#{list.requestType}.svg" library="images"
 								styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+								<h:outputText value="    #{list.requestType}" styleClass="type-text"></h:outputText>
 						</p:column>
 						<p:column headerText="Assigned Team">
-							<h:outputText value="#{list.team}" />
+							<h:outputText value="#{list.team} #{(list.team eq 'Service')?'Desk':'Team'}" />
 						</p:column>
 						
 						<p:column headerText="Name" sortBy="#{list.name}">
@@ -214,9 +216,9 @@
 				</p:outputPanel>
 			</p:outputPanel>
 			
-			<p:outputPanel styleClass="display-panels ui-g-12 " id="inp">
+			<p:outputPanel styleClass="display-panels ui-g-12 " id="inp" rendered="#{comp['user.inppanel']}">
 				<p:outputPanel id="inp-panel"> 
-					<h2>In progress requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="inp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<h2>In progress requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="inp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
 					<p:outputPanel  rendered="#{empty workRequestModel.inProgressWorksList}" styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
 						<p> <h:outputText value="You're all caught up here !"></h:outputText> </p>
@@ -230,9 +232,10 @@
 							sortBy="#{list.requestType}">
 							<h:graphicImage name="#{list.requestType}.svg" library="images"
 								styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+								<h:outputText value="    #{list.requestType}" styleClass="type-text"></h:outputText>
 						</p:column>
 						<p:column headerText="Assigned Team">
-							<h:outputText value="#{list.team}" />
+							<h:outputText value="#{list.team} #{(list.team eq 'Service')?'Desk':'Team'}" />
 						</p:column>
 						<p:column headerText="Name" sortBy="#{list.name}">
 							<h:outputText value="#{list.name}" />
@@ -251,9 +254,9 @@
 				</p:outputPanel>
 			</p:outputPanel>
 			
-			<p:outputPanel styleClass="display-panels ui-g-12 " id="open">
+			<p:outputPanel styleClass="display-panels ui-g-12 " id="open" rendered="#{comp['user.openpanel']}">
 				<p:outputPanel id="open-panel"> 
-					<h2>Open requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<h2>Open requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
 					<p:outputPanel  rendered="#{empty workRequestModel.openProgressWorksList}" styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
 						<p> <h:outputText value="You're all caught up here !"></h:outputText> </p>
@@ -268,9 +271,10 @@
 							sortBy="#{list.requestType}">
 							<h:graphicImage name="#{list.requestType}.svg" library="images"
 								styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+								<h:outputText value="    #{list.requestType}" styleClass="type-text"></h:outputText>
 						</p:column>
 						<p:column headerText="Assigned Team">
-							<h:outputText value="#{list.team}" />
+							<h:outputText value="#{list.team} #{(list.team eq 'Service')?'Desk':'Team'}" />
 						</p:column>
 						<p:column headerText="Name" sortBy="#{list.name}">
 							<h:outputText value="#{list.name}" />
@@ -287,9 +291,9 @@
 				</p:outputPanel>
 			</p:outputPanel>
 	
-			<p:outputPanel styleClass="display-panels ui-g-12 " id="comp">
+			<p:outputPanel styleClass="display-panels ui-g-12 " id="comp" rendered="#{comp['user.comppanel']}">
 				<p:outputPanel id="comp-panel"> 
-					<h2>Completed requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" update="comp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<h2>Completed requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="comp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
 					<p:outputPanel  rendered="#{empty workRequestModel.completedWorksList}" styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
 						<p> <h:outputText value="You're all caught up here !"></h:outputText> </p>
@@ -304,9 +308,10 @@
 								sortBy="#{list.requestType}">
 								<h:graphicImage name="#{list.requestType}.svg" library="images"
 									styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+								<h:outputText value="    #{list.requestType}" styleClass="type-text"></h:outputText>
 							</p:column>
 							<p:column headerText="Assigned Team">
-								<h:outputText value="#{list.team}" />
+								<h:outputText value="#{list.team} #{(list.team eq 'Service')?'Desk':'Team'}" />
 							</p:column>
 							<p:column headerText="Name" sortBy="#{list.name}">
 								<h:outputText value="#{list.name}" />

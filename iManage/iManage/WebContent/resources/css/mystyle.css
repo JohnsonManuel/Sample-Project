@@ -294,8 +294,29 @@ float: right;
     width: 30px;
     height: 30px;
     font-size: 16px !important;
+    
+   
+    }
+    
+    /*
+.btn-refresh{
+	 background: #767aef;
+    color: white;
+    border: none;
+    border-radius: 50%;
 }
+.btn-refresh:hover{
+	background:#656af1;
+	
+}*/
+.type-text{
+	display:none;
+}
+
 @media only screen and (max-width:640px) {
+	.type-text{
+	display:inline;
+}
 	#nav-panel {
 		display: none;
 	}

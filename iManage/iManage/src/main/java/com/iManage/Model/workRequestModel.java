@@ -14,6 +14,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Encoder;
 import org.owasp.esapi.Validator;
@@ -27,15 +29,14 @@ import com.iManage.Client.WorkRequest;
 @ManagedBean(name = "workRequestModel", eager = true)
 public class WorkRequestModel {
 
+	private static final Logger log = LogManager.getLogger("mainLogger");	
+
+	
 	@ManagedProperty(value = "#{workRequestBean}")
 	private WorkRequestBean workrequestBean;
 	
 	@ManagedProperty(value = "#{commentsBean}")
 	private CommentsBean commentsBean;
-	
-
-	
-	
 
 	private String currentUser;
 	private String userType;
@@ -60,7 +61,6 @@ public class WorkRequestModel {
 
 	@PostConstruct
 	public void init() {
-		System.out.println("POST CONSTRUCT CALLED");
 		Map<String ,Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		currentUser = (String) sessionMap.get("user");
 		userType= (String) sessionMap.get("user-type");
@@ -98,10 +98,12 @@ public class WorkRequestModel {
 		updateTables();
 		
 		if (updated) {
+			log.trace("Work request of id "+delWork.getRequestID()+" has been deleted");
 			allWorksList.remove(delWork);
 			context.addMessage(null, new FacesMessage("Work request deleted"));
 
 		} else {
+			log.trace("Work request of id "+delWork.getRequestID()+" wasn't deleted");
 			context.addMessage(null, new FacesMessage("Delete failed"));
 		}
 	}
@@ -129,14 +131,18 @@ public class WorkRequestModel {
 		updateTables();
 		renderComment=false;
 		if (updated) {
+			log.trace("Work request of id "+selectedworkRequest.getRequestID()+" has been added");
 			context.addMessage(null, new FacesMessage("Work request updated"));
 
 			} else {
 					if(check1||check2) {
 						System.out.println(check1+" "+check2);
+						log.trace(check1+" "+check2+" "+ "Malicious input detected");
 					context.addMessage(null, new FacesMessage("Malicious input "));
 		
 				}else {
+					log.trace("Work request of id "+selectedworkRequest.getRequestID()+" hasn't  been added");
+
 					context.addMessage(null, new FacesMessage("update failed "));
 		
 				}
@@ -144,21 +150,52 @@ public class WorkRequestModel {
 	}
 
 	public void addWorkRequest() {	
-
+		FacesContext context = FacesContext.getCurrentInstance();
 		WorkRequest objj = new WorkRequest();
 		
+		boolean response ;
+		boolean check1,check2;
 		
-		objj.addWorkRequest(currentUser,workrequestBean.getName(), workrequestBean.getRequestType(),
-				workrequestBean.getDescription(), 
-				//hard coded - to make all status as open
-				"Open",workrequestBean.getTeam());
+		check1 = validator.isValidInput("summary", encoder.canonicalize(workrequestBean.getName()), "Special", 1024, false);
+		check2 = validator.isValidInput("description", encoder.canonicalize( workrequestBean.getDescription()), "Special", 1024, false);
 		
-		workrequestBean.setName("");
-		workrequestBean.setDescription("");
-		workrequestBean.setRequestType("");
-		workrequestBean.setStatus("");
-		updateTables();
-		PrimeFaces.current().executeScript("PF('dlg2').hide();");
+		if(check1&&check2) {
+			
+				response = objj.addWorkRequest(currentUser,workrequestBean.getName(),
+													workrequestBean.getRequestType(),
+													workrequestBean.getDescription(),
+																			  "Open",
+															workrequestBean.getTeam()
+														  );}
+		else {
+				response =false;}
+		
+		if(response ) {
+			
+			log.trace("Work request has been added");
+			workrequestBean.setName("");
+			workrequestBean.setDescription("");
+			workrequestBean.setRequestType("");
+			workrequestBean.setStatus("");
+			
+			context.addMessage(null, new FacesMessage("Work request added"));
+
+			updateTables();
+			PrimeFaces.current().executeScript("PF('dlg2').hide();");
+		}else {
+			if((check1&&check2)) {
+				log.trace(check1+" "+check2+" "+ "Malicious input detected");
+
+				context.addMessage(null, new FacesMessage("Work request add error"));
+			}
+			else {
+				log.trace("Work request hasn't  been added");
+				context.addMessage(null, new FacesMessage("Remove special charcters and Try again !"));
+
+			}
+		}
+		
+		
 
 	}
 
@@ -222,13 +259,23 @@ public class WorkRequestModel {
 		WorkRequest objj = new WorkRequest();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date date = new Date();
+		
+		
 		boolean updated = objj.addComment(selectedworkRequest.getRequestID(),commentsBean.getComment(),dateFormat.format(date));
+		
+		
+		
 		if (updated) {
+			
+			log.trace("Comment has been added");
+			
 			toggleCommentPanel();
 			context.addMessage(null, new FacesMessage("Comment added"));
 			commentsBean.setComment("");
 			
 		} else {
+			log.trace("Comment hasn't been added");
+
 			context.addMessage(null, new FacesMessage("Unable to add comment"));
 		}
 	}
@@ -240,9 +287,13 @@ public class WorkRequestModel {
 		
 		boolean updated = objj.deleteComments(id);
 		if (updated) {
+			log.trace("Comment has been deleted");
+
 			context.addMessage(null, new FacesMessage("Comment Deleted"));
 			commentsBean.setComment("");
 		} else {
+			log.trace("Comment hasn't been deleted");
+
 			context.addMessage(null, new FacesMessage("Delete failed"));
 		}
 	}

@@ -16,13 +16,13 @@ import com.iManageServer.Dao.WorkDAO;
 
 @Path("login")
 public class LoginService{
-	private static final Logger log = LogManager.getLogger(LoginService.class);	
+	private static final Logger log = LogManager.getLogger("mainLogger");	
 
 	@POST
 	@Path("user")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String[] validateUser(@FormParam("user")String user,@FormParam("pass")String pass) {
-		log.trace("Request received with paramaeters "+user+" "+pass );
+		log.trace("POST Request received with paramaeters "+user+" "+pass );
 		WorkDAO workDAO = new WorkDAO();
 		return workDAO.checkuserinDB(user, pass);
 	}
@@ -31,6 +31,8 @@ public class LoginService{
 	@Path("captcha")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String GetCaptcha() {
+		log.trace("POST Request received " );
+
 		WorkDAO work = new WorkDAO();
 		String temp = work.getcaptcha(6);	
 		log.trace("Sending captcha: "+temp);

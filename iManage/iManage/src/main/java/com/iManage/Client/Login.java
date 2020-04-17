@@ -9,10 +9,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Login {
-	private static final Logger log = LogManager.getLogger(Login.class);	
+	private static final Logger log = LogManager.getLogger("mainLogger");	
 
 	public String[] checkuserinDB(String user,String pass) {
-		 log.trace("Sending request with parameterrs User: "+user+" Pass: "+pass);
+		 log.trace("Sending request with parameterrs User and pass ");
 		 Client client = ClientBuilder.newClient();
 		 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("login").path("user");
 		 System.out.println(target.getUri());
