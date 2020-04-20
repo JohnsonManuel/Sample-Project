@@ -1,9 +1,6 @@
 package com.iManage.Model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,21 +32,20 @@ public class WorkRequestModel {
 	@ManagedProperty(value = "#{workRequestBean}")
 	private WorkRequestBean workrequestBean;
 	
-	@ManagedProperty(value = "#{commentsBean}")
-	private CommentsBean commentsBean;
+	
+	
 
 	private String currentUser;
 	private String userType;
 	private String team;
 	
 	private boolean renderComment;
-	private boolean renderCommentPanel = false;
 	private WorkRequestBean selectedworkRequest;
 	private List<WorkRequestBean> allWorksList;
 	private List<WorkRequestBean> completedWorksList;
 	private List<WorkRequestBean> inProgressWorksList;
 	private List<WorkRequestBean> openProgressWorksList;
-	private List<CommentsBean> comments;
+	
 	
 	private CommentsBean selectedcommentsBean;
 	
@@ -121,9 +117,7 @@ public class WorkRequestModel {
 		check1 = validator.isValidInput("summary", encoder.canonicalize( selectedworkRequest.getName()), "Special", 1024, false);
 		check2 = validator.isValidInput("summary", encoder.canonicalize( selectedworkRequest.getComment()), "Special", 1024, true);
 		if(check1&&check2) {
-			updated = objj.updateWorkRequest(selectedworkRequest.getRequestID(), selectedworkRequest.getName(),
-					selectedworkRequest.getDescription(), selectedworkRequest.getStatus(),
-					selectedworkRequest.getComment());
+			updated = objj.updateWorkRequest(selectedworkRequest);
 		}else {
 			updated=false;
 		}
@@ -156,17 +150,16 @@ public class WorkRequestModel {
 		boolean response ;
 		boolean check1,check2;
 		
+		workrequestBean.setRequestedBy(currentUser);
+		workrequestBean.setStatus("Open");
+		
+		
 		check1 = validator.isValidInput("summary", encoder.canonicalize(workrequestBean.getName()), "Special", 1024, false);
 		check2 = validator.isValidInput("description", encoder.canonicalize( workrequestBean.getDescription()), "Special", 1024, false);
 		
 		if(check1&&check2) {
 			
-				response = objj.addWorkRequest(currentUser,workrequestBean.getName(),
-													workrequestBean.getRequestType(),
-													workrequestBean.getDescription(),
-																			  "Open",
-															workrequestBean.getTeam()
-														  );}
+				response = objj.addWorkRequest(workrequestBean);}
 		else {
 				response =false;}
 		
@@ -241,10 +234,6 @@ public class WorkRequestModel {
 		}
 	}
 	
-	public void getcomments(int key) {
-		WorkRequest objj = new WorkRequest();
-		comments= objj.getComments(key);
-	}
 	
 	
 	public List<CommentsBean> request_comments(int key){	
@@ -254,56 +243,7 @@ public class WorkRequestModel {
 		
 	}
 	
-	public void addComment() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		WorkRequest objj = new WorkRequest();
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date date = new Date();
-		
-		
-		boolean updated = objj.addComment(selectedworkRequest.getRequestID(),commentsBean.getComment(),dateFormat.format(date));
-		
-		
-		
-		if (updated) {
-			
-			log.trace("Comment has been added");
-			
-			toggleCommentPanel();
-			context.addMessage(null, new FacesMessage("Comment added"));
-			commentsBean.setComment("");
-			
-		} else {
-			log.trace("Comment hasn't been added");
-
-			context.addMessage(null, new FacesMessage("Unable to add comment"));
-		}
-	}
 	
-	
-	public void deleteComment(int id) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		WorkRequest objj = new WorkRequest();
-		
-		boolean updated = objj.deleteComments(id);
-		if (updated) {
-			log.trace("Comment has been deleted");
-
-			context.addMessage(null, new FacesMessage("Comment Deleted"));
-			commentsBean.setComment("");
-		} else {
-			log.trace("Comment hasn't been deleted");
-
-			context.addMessage(null, new FacesMessage("Delete failed"));
-		}
-	}
-	
-	
-	public void toggleCommentPanel() {
-		commentsBean.setComment("");
-		renderCommentPanel = !renderCommentPanel;
-		
-	}
 	
 
 	
@@ -374,30 +314,11 @@ public class WorkRequestModel {
 		this.selectedcommentsBean = selectedcommentsBean;
 	}
 
-	public CommentsBean getCommentsBean() {
-		return commentsBean;
-	}
+	
 
-	public void setCommentsBean(CommentsBean commentsBean) {
-		this.commentsBean = commentsBean;
-	}
 
-	public List<CommentsBean> getComments() {
-		return comments;
-	}
 
-	public void setComments(List<CommentsBean> comments) {
-		this.comments = comments;
-	}
-
-	public boolean isRenderCommentPanel() {
-		return renderCommentPanel;
-	}
-
-	public void setRenderCommentPanel(boolean renderCommentPanel) {
-		this.renderCommentPanel = renderCommentPanel;
-	}
-
+	
 	public String getCurrentUser() {
 		return currentUser;
 	}

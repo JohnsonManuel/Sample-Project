@@ -13,6 +13,8 @@
 	<h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
 	<h:outputStylesheet name="components.css" library="primefaces" />
 	<h:outputStylesheet name="mystyle.css" library="css" />
+	<h:outputScript name="script.js" library="js"></h:outputScript>
+	
 </h:head>
 
 <h:body>
@@ -114,7 +116,7 @@
 			</ul>
 		</div>
 
-		<div class="ui-g-10 ui-sm-12" id="main-panel" >
+		<div class="ui-g-10 ui-sm-12 " id="main-panel" >
 		
 		
 			<p:dialog widgetVar="description-dialog" header="Description"
@@ -146,7 +148,7 @@
 							<f:selectItem itemLabel="General" itemValue="General" />
 						</p:selectOneMenu>
 						<p:outputLabel for="desc" value="Description"></p:outputLabel>
-						<p:inputTextarea id="desc"  counter="word-counter" value="#{workRequestBean.description}"  styleClass="ui-g-12 ui-sm-12" rows="10" required="true"  maxlength="300" counterTemplate="{0} characters remaining." autoResize="false"/>
+						<p:inputTextarea id="desc"  counter="word-counter" value="#{workRequestBean.description}"  styleClass="ui-g-12 ui-sm-12" rows="10" required="true"  maxlength="500" counterTemplate="{0} characters remaining." autoResize="false"/>
 						<h:outputText id="word-counter"/>
 						
 					</p:panelGrid>
@@ -158,13 +160,13 @@
 			<p:dialog header="Live Comments"  widgetVar="cmnt-dlg"  modal="true" positionType="absolute" width="80%" height="600" resizable="false" draggable="false" >
 				<p:outputPanel id="comments-table" >
 					<p> <h:outputText value="Comments:"></h:outputText> </p>
-					<p:outputPanel rendered="#{empty workRequestModel.comments}"
+					<p:outputPanel rendered="#{empty commentsModel.comments}"
 							styleClass="information-panel">
 							<h:graphicImage name="empty-comments.jpg" library="images"></h:graphicImage>
 							<p><h:outputText value="This request does't have any comments yet!"></h:outputText></p>
 						</p:outputPanel>
-					<p:outputPanel rendered="#{not empty workRequestModel.comments}">
-						<ui:repeat var="commentList" value="#{workRequestModel.comments}">
+					<p:outputPanel rendered="#{not empty commentsModel.comments}">
+						<ui:repeat var="commentList" value="#{commentsModel.comments}">
 							<div class="comment-layout">
 								<p class="time"><h:outputText value="Added on :#{commentList.time}"></h:outputText></p>
 								<p><h:outputText value="#{commentList.comment}"></h:outputText></p>
@@ -206,7 +208,7 @@
 							<p:commandButton styleClass="expand-btn" value="..." action="#{workRequestModel.setSelectedworkRequest(list)}" update="description-panel" oncomplete="PF('description-dialog').show();"></p:commandButton>
 						</p:column>
 						<p:column>
-							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{workRequestModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
+							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{commentsModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
 						</p:column>	
 						<p:column headerText="Status" sortBy="#{list.status}">
 							<h:outputText value="#{list.status}" />
@@ -245,7 +247,7 @@
 							<p:commandButton styleClass="expand-btn" value="..." action="#{workRequestModel.setSelectedworkRequest(list)}" update="description-panel" oncomplete="PF('description-dialog').show();"></p:commandButton>
 						</p:column>
 						<p:column>
-							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{workRequestModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
+							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{commentsModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
 						</p:column>	
 						<p:column headerText="Status" sortBy="#{list.status}">
 							<h:outputText value="#{list.status}" />
@@ -284,7 +286,7 @@
 							<p:commandButton styleClass="expand-btn" value="..." action="#{workRequestModel.setSelectedworkRequest(list)}" update="description-panel" oncomplete="PF('description-dialog').show();"></p:commandButton>
 						</p:column>
 						<p:column>
-							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{workRequestModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
+							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{commentsModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
 						</p:column>	
 					</p:dataTable>
 					</h:form>
@@ -325,7 +327,7 @@
 									oncomplete="PF('description-dialog').show();"></p:commandButton>
 							</p:column>
 							<p:column>
-								<p:commandButton value="View Comments" style="font-size:14px;"  action="#{workRequestModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
+								<p:commandButton value="View Comments" style="font-size:14px;"  action="#{commentsModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
 							</p:column>	
 							<p:column headerText="End Note">
 								<h:outputText value="#{list.comment}" />
@@ -341,49 +343,5 @@
 		</div>
 		
 	</div>
-	<script>
-		function toggleSubMenu(id){
-				document.querySelector(".active").classList.remove("active");
-				document.getElementById(id).classList.add("active");
-			return false;
-			}
-
-		function toggleMenus(e, id) {
-			var elements = document.getElementsByClassName('current');
-			while (elements.length > 0) {
-				elements[0].classList.remove('current');
-			}
-
-			if(document.getElementById('menu-options').contains(e)){
-				var children = document.querySelectorAll("#menu-options li a");
-				var index = Array.prototype.indexOf.call(children, e);
-				var sidebarMenu = document.querySelectorAll("#menu-options-sidebar li a");
-				sidebarMenu[index].classList.add("current");
-	
-			}else{
-				var children = document.querySelectorAll("#menu-options-sidebar li a");
-				var index = Array.prototype.indexOf.call(children, e);
-				var sideMenu = document.querySelectorAll("#menu-options li a");
-				sideMenu[index].classList.add("current");
-			}
-	
-			document.querySelector(".active").classList.remove("active");
-			document.getElementById(id).classList.add("active");
-	
-			e.classList.add("current");
-			
-			return false;
-		}
-		
-		
-		function toggleVisibility(id) {
-			var x = document.getElementById(id);
-			if (x.style.display === "none") {
-				x.style.display = "block";
-			} else {
-				x.style.display = "none";
-			}
-		}
-	</script>
 </h:body>
 </html>

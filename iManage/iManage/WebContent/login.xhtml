@@ -31,7 +31,7 @@
 					<p:growl id="messages"></p:growl>
 					<h2>Login</h2>
 					<p:panelGrid columns="2" layout="grid"
-						columnClasses="ui-g-6,ui-g-6">
+						columnClasses="ui-g-6 ui-sm-4,ui-g-6 ui-sm-8">
 						<p:outputLabel for="username" value="Username:" />
 						<p:inputText id="username" styleClass="ui-g-12" value="#{loginBean.username}" >
 							
@@ -41,7 +41,7 @@
 							
 						</p:password>
 						<br />
-						<p:commandButton value="Login"  widgetVar="loginButton" onclick="PF('loginButton').disable()" oncomplete="PF('loginButton').enable()"  id="login-btn" update="messages" action="#{loginModel.validateUser()}"   ></p:commandButton>
+						<p:commandButton value="Login"  widgetVar="loginButton" onclick="PF('loginButton').disable()" oncomplete="PF('loginButton').enable()"  styleClass="login-btn" update="messages" action="#{loginModel.validateUser()}"   ></p:commandButton>
 					</p:panelGrid>
 				</h:form>
 			</p:outputPanel>

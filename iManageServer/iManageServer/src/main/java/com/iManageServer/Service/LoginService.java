@@ -10,21 +10,21 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.iManageServer.Dao.WorkDAO;
+import com.iManageServer.Dao.LoginDAO;
 
 
 
 @Path("login")
 public class LoginService{
 	private static final Logger log = LogManager.getLogger("mainLogger");	
+	LoginDAO login = new LoginDAO();
 
 	@POST
 	@Path("user")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String[] validateUser(@FormParam("user")String user,@FormParam("pass")String pass) {
 		log.trace("POST Request received with paramaeters "+user+" "+pass );
-		WorkDAO workDAO = new WorkDAO();
-		return workDAO.checkuserinDB(user, pass);
+		return login.checkuserinDB(user, pass);
 	}
 	
 	@GET
@@ -33,8 +33,7 @@ public class LoginService{
 	public String GetCaptcha() {
 		log.trace("POST Request received " );
 
-		WorkDAO work = new WorkDAO();
-		String temp = work.getcaptcha(6);	
+		String temp = login.getcaptcha(6);	
 		log.trace("Sending captcha: "+temp);
 
 		return temp;

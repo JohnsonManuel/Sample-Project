@@ -4,8 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ConnectDB {
 
+	private static final Logger log = LogManager.getLogger("mainLogger");
+
+	
 	public static Connection getConnection() {
 		
 		 
@@ -29,7 +35,9 @@ public class ConnectDB {
 	public static void close(Connection con) {
 		try {
             if (con != null && !con.isClosed()) {
-                con.close();
+                log.trace("Connection closed");
+            	con.close();
+                
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

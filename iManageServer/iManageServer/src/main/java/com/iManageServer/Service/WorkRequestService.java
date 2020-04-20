@@ -18,29 +18,25 @@ import com.iManageServer.Pojo.WorkRequestPojo;
 public class WorkRequestService {
 
 	private static final Logger log = LogManager.getLogger("mainLogger");	
+	
+	WorkDAO dao = new WorkDAO();
 
 	
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addNewWorkRequest( @FormParam("assignedBy") String assignedBy ,@FormParam("name") String name,@FormParam("type") String type,@FormParam("description") String description,@FormParam("status") String status ,@FormParam("team") String team) {
-		
-		log.trace("POST Request received with paramaeters "+assignedBy+" "+name+" "+type+" "+description+" "+status+" "+team);
+	public boolean addNewWorkRequest(WorkRequestPojo workrequestbean) {
 
-		WorkDAO dao = new WorkDAO();
-		return dao.addWorkRequestToDB(assignedBy,name,type,description,status,team);
+		return dao.addWorkRequestToDB(workrequestbean);
 	}
+	
 	
 	@POST
 	@Path("update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean updateWorkRequest(  @FormParam("id") int id,@FormParam("name") String name,@FormParam("description") String description,@FormParam("status") String status,@FormParam("comment") String comment   ) {
-		
-		log.trace("POST Request received with paramaeters "+id+" "+name+" "+comment+" "+description+" "+status);
+	public boolean updateWorkRequest( WorkRequestPojo workrequestbean) {
 
-		
-		WorkDAO dao = new WorkDAO();
-		return dao.updateRequestToDB(id,name,description,status,comment);
+		return dao.updateRequestToDB(workrequestbean);
 	}
 	
 	@POST
@@ -50,7 +46,6 @@ public class WorkRequestService {
 		
 		log.trace("POST Request received with paramaeters "+user);
 
-		WorkDAO dao = new WorkDAO();
 		return dao.getAllWorkRequestsUser(user);
 	}
 	
@@ -62,7 +57,6 @@ public class WorkRequestService {
 		log.trace("POST Request received with paramaeters "+team);
 
 		
-		WorkDAO dao = new WorkDAO();
 		return dao.getAllWorkRequestsAdmin(team);
 	}
 	
@@ -74,8 +68,6 @@ public class WorkRequestService {
 		log.trace("POST Request received with paramaeters "+id);
 
 		
-		System.out.println(id);
-		WorkDAO dao = new WorkDAO();
 		return dao.deleteWorkRequests(id);
 	}
 	

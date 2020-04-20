@@ -14,11 +14,13 @@ import com.iManageServer.Pojo.CommentsPojo;
 @Path("comment")
 public class CommentService {
 
+	CommentsDAO dao = new CommentsDAO();
+
+	
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean addComment( @FormParam("id") int id,@FormParam("comment") String comment, @FormParam("time") String time ) {
-		CommentsDAO dao = new CommentsDAO();
 		return dao.addComment(id,comment,time);
 	}
 
@@ -27,7 +29,7 @@ public class CommentService {
 	@Path("getcomments")
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
 	public List<CommentsPojo> getComments( @FormParam("id") int id ) {
-		CommentsDAO dao = new CommentsDAO();
+
 		return dao.getComments(id);
 	}
 	
@@ -35,7 +37,7 @@ public class CommentService {
 	@Path("delete")
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
 	public boolean deleteComment( @FormParam("id") int id ) {
-		CommentsDAO dao = new CommentsDAO();
+
 		return dao.deleteComment(id);
 	}
 	

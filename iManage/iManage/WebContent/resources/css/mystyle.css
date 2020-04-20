@@ -10,6 +10,21 @@ body {
 .ui-shadow {
 	box-shadow:none !important;
 }
+
+.login-btn{
+	
+	float:right;
+}
+
+
+
+
+
+#wrapper_centered .ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell{
+		margin: 0 auto;
+	text-align: center;
+	padding: 20px 0;
+		}
 #profile-tab-menu .ui-widget-content{
 	border:none !important;
 }
@@ -65,8 +80,6 @@ body {
 
 
 #nav-bar {
-	align-items: center;
-    font-size: 14px;
     z-index: 1;
 	padding: 0 10px;
 	height: 56px;
@@ -278,7 +291,6 @@ body {
     top: 0;
     bottom:0;
     margin:auto 0;
-	/*margin-top:18px;*/
     right: 6px;
     width: 20px;
     height: 20px;
@@ -313,7 +325,7 @@ float: right;
 	display:none;
 }
 
-@media only screen and (max-width:640px) {
+@media only screen and (max-width:1024px) {
 	.type-text{
 	display:inline;
 }
@@ -321,21 +333,36 @@ float: right;
 		display: none;
 	}
 	#menubutton {
-	    margin-right: 20px;
+	    margin-right: 5px;
 		display: inline-block;
 	}
 	#header-btn{
 		display: none;
 	}
-	#banner_wrapper, #login_wrapper {
-		height: 50vh;
+	#banner_wrapper{
+		height: 30vh;
 	}
+	#login_wrapper {
+		height:70vh
+	}
+	
+	#banner img {
+	width:120px;
+	vertical-align:middle;
+	}
+	
+	#banner h2 {
+	display:inline-block;
+	}
+	
 	#login_form {
 		position: absolute;
 		top: 0;
 		transform: translate(-50%, 0);
 	}
 	#banner {
-		width: 200px;
+		width: 100%;
 	}
 }
+
+@media only screen and (max-width:642px) {

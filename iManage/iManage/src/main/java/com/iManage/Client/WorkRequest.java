@@ -19,22 +19,16 @@ import com.iManage.Bean.WorkRequestBean;
 
 public class WorkRequest {
 	private static final Logger log = LogManager.getLogger("mainLogger");	
-
+	private static String BASE_PATH = "http://localhost:8181/iManageServer/rest/Work";
 		
 		
 	
-		public boolean addWorkRequest(String currentUser,String name, String type, String description, String status,String team) {
+		public boolean addWorkRequest(WorkRequestBean workrequestbean) {
 			 log.trace("Adding work-request .......");
-			 Client client = ClientBuilder.newClient();
-			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("add");
-			 Form form = new Form();
-			 form.param("assignedBy", currentUser);
-			 form.param("name",name);
-			 form.param("type", type);
-			 form.param("description", description);
-			 form.param("status", status);
-			 form.param("team", team);
-			 boolean workadded= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
+			 WebTarget target = WorkRequest.getWebTarget().path("add");
+			
+			 
+			 boolean workadded= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(workrequestbean,MediaType.APPLICATION_JSON),Boolean.class);
 			 if(workadded) { log.trace("Work-request added");}else{log.trace("Work-request not added");}
 			 return workadded;
 			
@@ -45,8 +39,7 @@ public class WorkRequest {
 		public List<WorkRequestBean> getAllAdmin(String teamName) {
 			 log.trace("Get all Reuests List");
 			 
-			 Client client = ClientBuilder.newClient();
-			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("allreqadmin");
+			 WebTarget target = WorkRequest.getWebTarget().path("allreqadmin");
 			 System.out.println("getAll() "+target.getUri());
 			 Form form = new Form();
 			 form.param("team", teamName);
@@ -57,8 +50,7 @@ public class WorkRequest {
 		public List<WorkRequestBean> getAllUser(String user) {
 		 log.trace("Get all Reuests List");
 		 
-		 Client client = ClientBuilder.newClient();
-		 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("allrequser");
+		 WebTarget target = WorkRequest.getWebTarget().path("allrequser");
 		 System.out.println("getAll() "+target.getUri());
 		 Form form = new Form();
 		 form.param("user", user);
@@ -72,20 +64,10 @@ public class WorkRequest {
 		
 
 
-		public boolean  updateWorkRequest(int id ,String name, String description, String status, String comment) {
-			log.trace("Updating worklist ");
-
-			 Client client = ClientBuilder.newClient();
-			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("update");
-			 
-			 System.out.println("getAll() "+target.getUri());
-			 Form form = new Form();
-			 form.param("id", String.valueOf(id));
-			 form.param("name",name);
-			 form.param("description", description);
-			 form.param("status", status);
-			 form.param("comment", comment);
-			 boolean result= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Boolean.class);
+		public boolean  updateWorkRequest( WorkRequestBean workbean ) {
+			 log.trace("Updating worklist ");
+			 WebTarget target = WorkRequest.getWebTarget().path("update");
+			 boolean result= target.request(MediaType.APPLICATION_JSON).post(Entity.entity(workbean, MediaType.APPLICATION_JSON) ,Boolean.class);
 			 log.trace("updated? "+result);
 
 			 return result;
@@ -95,8 +77,7 @@ public class WorkRequest {
 		public boolean deleteWorkRequest(int requestID) {
 			log.trace("Deleting worklist ");
 
-			 Client client = ClientBuilder.newClient();
-			 WebTarget target = client.target("http://localhost:8181").path("iManageServer").path("rest").path("Work").path("delete");
+			 WebTarget target = WorkRequest.getWebTarget().path("delete");
 			 
 			 System.out.println("getAll() "+target.getUri());
 			 Form form = new Form();
@@ -107,6 +88,8 @@ public class WorkRequest {
 			 return result;
 		}
 
+		
+		
 
 		public boolean addComment(int id, String comment,String time) {
 			
@@ -161,6 +144,12 @@ public class WorkRequest {
 			return result;
 		}
 
+		public static WebTarget getWebTarget() {
+			
+			 Client client = ClientBuilder.newClient();
+			 WebTarget target = client.target(BASE_PATH);
+			return target;
+		}
 
 	
 

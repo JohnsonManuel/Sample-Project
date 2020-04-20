@@ -17,42 +17,13 @@ public class WorkDAO {
 	private static final Logger log = LogManager.getLogger("mainLogger");	
 
 	
-	public String[] checkuserinDB(String user,String pass) {
-		
-		String response[] = new String[2];
-		String query = "SELECT user_type,team from userlogin_details where username = ? and password = ?";
-		
-		System.out.println(response[0]+" "+response[1]);
-
-log.trace("Connecting to Database");
-		Connection conn = null;
-		 
-        try {        	
-
-        	conn = ConnectDB.getConnection();
-            if (conn != null) {
-                PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, user);
-                pstmt.setString(2, pass);
-                ResultSet rs= pstmt.executeQuery();
-                while(rs.next()) {
-                	response[0] = rs.getString("user_type");
-                	response[1] = rs.getString("team");
-                }
-            }
- 
-        } catch (SQLException ex) {
-        	log.error("Connection error");
-        	return null;
-        } finally {
-            ConnectDB.close(conn);
-        }
-		
-		
-		return response;
-	}
 	
-	public boolean addWorkRequestToDB(String assignedBy,String name, String type, String description, String status,String team) {
+	
+	public boolean addWorkRequestToDB( WorkRequestPojo pojo ) {
+		
+		log.trace("Executing addWorkRequestToDB method");
+
+		
 		int queryexecuted = 0;
 		String query = "INSERT INTO work_requests (assigned_by,request_name,request_type,request_description,request_status,team) values (?,?,?,?,?,?)";
 	
@@ -63,17 +34,21 @@ log.trace("Connecting to Database");
         	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, assignedBy);
-                pstmt.setString(2, name);
-                pstmt.setString(3, type);
-                pstmt.setString(4, description);
-                pstmt.setString(5, status);
-                pstmt.setString(6, team);
+                pstmt.setString(1, pojo.getRequestedBy() );
+                pstmt.setString(2, pojo.getName() );
+                pstmt.setString(3, pojo.getRequestType() );
+                pstmt.setString(4, pojo.getDescription() );
+                pstmt.setString(5, pojo.getStatus()  );
+                pstmt.setString(6, pojo.getTeam() );
+                
+                log.trace("Executing query "+ query);
+                
                 queryexecuted = pstmt.executeUpdate();
             }
  
         }  catch (SQLException ex) {
         	log.error("Connection error");
+        	System.out.println(ex.getMessage());
         	return false;
         } finally {
             ConnectDB.close(conn);
@@ -83,17 +58,12 @@ log.trace("Connecting to Database");
 		return (queryexecuted == 1)?true:false;
 	}
 
-	public String getcaptcha(int length) {
-        String elegibleChars = "ABCDEFGHJKLMNPQRSTUVWXY"+"abcdefghjkmnpqrstuvwxy"+"123456789";
-        char[] chars = elegibleChars.toCharArray();
-        StringBuffer finalString = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-        	finalString.append(chars[(int) Math.round(Math.random()*(chars.length - 1))]);
-        }
-		return finalString.toString();
-	}
+	
 	
 public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
+	
+		log.trace("Executing getAllWorkRequestsAdmin method");
+
 		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
 		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests where team = ?";
@@ -106,6 +76,10 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, team);
+                
+                log.trace("Executing query "+ query);
+
+                
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
             		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8) ));
@@ -123,6 +97,9 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 	}
 	public List<WorkRequestPojo> getAllWorkRequestsUser(String user){
 		
+		log.trace("Executing getAllWorkRequestsUser method");
+
+		
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
 		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests WHERE assigned_by = ? ";
 		
@@ -135,6 +112,10 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, user);
+                
+                log.trace("Executing query "+ query);
+
+                
                 ResultSet rs= pstmt.executeQuery();
                 while(rs.next()) {
             		temp.add(new WorkRequestPojo( rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8) ));
@@ -151,7 +132,13 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 		return temp;
 	}
 	
-	public boolean updateRequestToDB(int id,String name, String description, String status ,String comment) {
+	public boolean updateRequestToDB(
+			WorkRequestPojo bean
+			) {
+		
+		log.trace("Executing updateRequestToDB method");
+
+		
 		int queryexecuted = 0;
 		String query = "UPDATE work_requests  SET request_status = ? , request_name = ? , request_description = ? ,comments = ? WHERE id= ?";
 	
@@ -162,11 +149,15 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
         	conn = ConnectDB.getConnection();
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, status);
-                pstmt.setString(2, name);
-                pstmt.setString(3, description);
-                pstmt.setString(4, comment);
-                pstmt.setInt(5, id);
+                pstmt.setString(1, bean.getStatus());
+                pstmt.setString(2, bean.getName());
+                pstmt.setString(3, bean.getDescription());
+                pstmt.setString(4, bean.getComment());
+                pstmt.setInt(5, bean.getRequestID());
+                
+                log.trace("Executing query "+ query);
+
+                
                 queryexecuted = pstmt.executeUpdate();
             }
  
@@ -182,6 +173,10 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
 	}
 
 	public boolean deleteWorkRequests(int id) {
+		
+		log.trace("Executing deleteWorkRequests method");
+
+		
 		int queryexecuted = 0;
 		String query = "DELETE FROM work_requests WHERE id = ? ";
 	
@@ -193,6 +188,10 @@ public List<WorkRequestPojo> getAllWorkRequestsAdmin(String team){
             if (conn != null) {
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setInt(1, id);
+                
+                log.trace("Executing query "+ query);
+
+                
                 queryexecuted = pstmt.executeUpdate();
             }
  
