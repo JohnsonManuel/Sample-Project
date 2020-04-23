@@ -4,21 +4,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class LoginDAO {
+
 	private static final Logger log = LogManager.getLogger("mainLogger");
 
-	public String[] checkuserinDB(String user, String pass) {
+	public Map<String, String> checkuserinDB(String user, String pass) {
 
 		log.trace("Executing checkuserinDB method");
 
-		String response[] = new String[2];
+		Map<String, String> response = new HashMap<String, String>();
 		String query = "SELECT user_type,team from userlogin_details where username = ? and password = ?";
-
-		System.out.println(response[0] + " " + response[1]);
 
 		log.trace("Connecting to Database");
 		Connection conn = null;
@@ -35,9 +36,12 @@ public class LoginDAO {
 
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
-					response[0] = rs.getString("user_type");
-					response[1] = rs.getString("team");
+					response.put("user_type", rs.getString("user_type"));
+					response.put("team", rs.getString("team"));
 				}
+
+				log.trace("Response is  " + response.get("user_type") + " " + response.get("teams"));
+
 			}
 
 		} catch (SQLException ex) {

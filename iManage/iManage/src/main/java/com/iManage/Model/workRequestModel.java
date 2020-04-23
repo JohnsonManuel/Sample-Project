@@ -26,40 +26,34 @@ import com.iManage.Client.WorkRequest;
 @ManagedBean(name = "workRequestModel", eager = true)
 public class WorkRequestModel {
 
-	private static final Logger log = LogManager.getLogger("mainLogger");	
+	private static final Logger log = LogManager.getLogger("mainLogger");
 
-	
 	@ManagedProperty(value = "#{workRequestBean}")
 	private WorkRequestBean workrequestBean;
-	
-	
-	
 
 	private String currentUser;
 	private String userType;
 	private String team;
-	
+
 	private boolean renderComment;
 	private WorkRequestBean selectedworkRequest;
 	private List<WorkRequestBean> allWorksList;
 	private List<WorkRequestBean> completedWorksList;
 	private List<WorkRequestBean> inProgressWorksList;
 	private List<WorkRequestBean> openProgressWorksList;
-	
-	
+
 	private CommentsBean selectedcommentsBean;
-	
+
 	private String comment;
-	
-	
+
 	Encoder encoder = ESAPI.encoder();
 	Validator validator = ESAPI.validator();
 
 	@PostConstruct
 	public void init() {
-		Map<String ,Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		currentUser = (String) sessionMap.get("user");
-		userType= (String) sessionMap.get("user-type");
+		userType = (String) sessionMap.get("user-type");
 		team = (String) sessionMap.get("team");
 		updateTables();
 	}
@@ -68,132 +62,126 @@ public class WorkRequestModel {
 		selectedworkRequest = new WorkRequestBean();
 
 	}
+
 	public void updateTables() {
 		WorkRequest obj = new WorkRequest();
-		
-		if(userType.equals("admin") ) {
+
+		if (userType.equals("admin")) {
 			allWorksList = obj.getAllAdmin(team);
-		}else {
+		} else {
 			allWorksList = obj.getAllUser(currentUser);
 		}
-		
+
 		inProgressWorksList = updateinProgressWorksList();
 		completedWorksList = updatecompletedWorksList();
 		openProgressWorksList = updateopenProgressWorksList();
-		
 
 	}
 
-	
-
 	public void deleteWorkRequest(WorkRequestBean delWork) {
-		
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		WorkRequest objj = new WorkRequest();
 		boolean updated = objj.deleteWorkRequest(delWork.getRequestID());
 		updateTables();
-		
+
 		if (updated) {
-			log.trace("Work request of id "+delWork.getRequestID()+" has been deleted");
+			log.trace("Work request of id " + delWork.getRequestID() + " has been deleted");
 			allWorksList.remove(delWork);
 			context.addMessage(null, new FacesMessage("Work request deleted"));
 
 		} else {
-			log.trace("Work request of id "+delWork.getRequestID()+" wasn't deleted");
+			log.trace("Work request of id " + delWork.getRequestID() + " wasn't deleted");
 			context.addMessage(null, new FacesMessage("Delete failed"));
 		}
 	}
 
-	
 	public void updateList() {
 
-		PrimeFaces.current().executeScript("toggleSubMenu();");
 		WorkRequest objj = new WorkRequest();
 		FacesContext context = FacesContext.getCurrentInstance();
-		
-		boolean updated ;
-		boolean check1,check2;
-		
-		check1 = validator.isValidInput("summary", encoder.canonicalize( selectedworkRequest.getName()), "Special", 1024, false);
-		check2 = validator.isValidInput("summary", encoder.canonicalize( selectedworkRequest.getComment()), "Special", 1024, true);
-		if(check1&&check2) {
+
+		boolean updated;
+		boolean check1, check2;
+
+		check1 = validator.isValidInput("summary", encoder.canonicalize(selectedworkRequest.getName()), "Special", 1024,
+				false);
+		check2 = validator.isValidInput("summary", encoder.canonicalize(selectedworkRequest.getComment()), "Special",
+				1024, true);
+
+		if (check1 && check2) {
 			updated = objj.updateWorkRequest(selectedworkRequest);
-		}else {
-			updated=false;
+		} else {
+			updated = false;
 		}
-		
+
 		updateTables();
-		renderComment=false;
+		renderComment = false;
 		if (updated) {
-			log.trace("Work request of id "+selectedworkRequest.getRequestID()+" has been added");
+			log.trace("Work request of id " + selectedworkRequest.getRequestID() + " has been added");
 			context.addMessage(null, new FacesMessage("Work request updated"));
 
-			} else {
-					if(check1||check2) {
-						System.out.println(check1+" "+check2);
-						log.trace(check1+" "+check2+" "+ "Malicious input detected");
-					context.addMessage(null, new FacesMessage("Malicious input "));
-		
-				}else {
-					log.trace("Work request of id "+selectedworkRequest.getRequestID()+" hasn't  been added");
+		} else {
+			if (check1 || check2) {
+				System.out.println(check1 + " " + check2);
+				log.trace(check1 + " " + check2 + " " + "Malicious input detected");
+				context.addMessage(null, new FacesMessage("Malicious input "));
 
-					context.addMessage(null, new FacesMessage("update failed "));
-		
-				}
+			} else {
+				log.trace("Work request of id " + selectedworkRequest.getRequestID() + " hasn't  been added");
+
+				context.addMessage(null, new FacesMessage("update failed "));
+
 			}
+		}
 	}
 
-	public void addWorkRequest() {	
+	public void addWorkRequest() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		WorkRequest objj = new WorkRequest();
-		
-		boolean response ;
-		boolean check1,check2;
-		
+
+		boolean response;
+		boolean check1, check2;
+
 		workrequestBean.setRequestedBy(currentUser);
 		workrequestBean.setStatus("Open");
-		
-		
-		check1 = validator.isValidInput("summary", encoder.canonicalize(workrequestBean.getName()), "Special", 1024, false);
-		check2 = validator.isValidInput("description", encoder.canonicalize( workrequestBean.getDescription()), "Special", 1024, false);
-		
-		if(check1&&check2) {
-			
-				response = objj.addWorkRequest(workrequestBean);}
-		else {
-				response =false;}
-		
-		if(response ) {
-			
+
+		check1 = validator.isValidInput("summary", encoder.canonicalize(workrequestBean.getName()), "Special", 1024,
+				false);
+		check2 = validator.isValidInput("description", encoder.canonicalize(workrequestBean.getDescription()),
+				"Special", 1024, false);
+
+		if (check1 && check2) {
+
+			response = objj.addWorkRequest(workrequestBean);
+		} else {
+			response = false;
+		}
+
+		if (response) {
 			log.trace("Work request has been added");
 			workrequestBean.setName("");
 			workrequestBean.setDescription("");
 			workrequestBean.setRequestType("");
 			workrequestBean.setStatus("");
-			
+
 			context.addMessage(null, new FacesMessage("Work request added"));
 
 			updateTables();
 			PrimeFaces.current().executeScript("PF('dlg2').hide();");
-		}else {
-			if((check1&&check2)) {
-				log.trace(check1+" "+check2+" "+ "Malicious input detected");
+		} else {
+			if ((check1 && check2)) {
+				log.trace(check1 + " " + check2 + " " + "Malicious input detected");
 
 				context.addMessage(null, new FacesMessage("Work request add error"));
-			}
-			else {
+			} else {
 				log.trace("Work request hasn't  been added");
 				context.addMessage(null, new FacesMessage("Remove special charcters and Try again !"));
 
 			}
 		}
-		
-		
-
 	}
 
-
-	
 	public List<WorkRequestBean> updatecompletedWorksList() {
 		List<WorkRequestBean> filteredList = new ArrayList<WorkRequestBean>();
 		for (WorkRequestBean temp : allWorksList) {
@@ -224,8 +212,6 @@ public class WorkRequestModel {
 		return filteredList;
 	}
 
-	
-	
 	public void handleStatusChange() {
 		if (selectedworkRequest.getStatus().equals("Completed")) {
 			renderComment = true;
@@ -233,23 +219,8 @@ public class WorkRequestModel {
 			renderComment = false;
 		}
 	}
-	
-	
-	
-	public List<CommentsBean> request_comments(int key){	
-		WorkRequest objj = new WorkRequest();
-		return objj.getComments(key);
-		
-		
-	}
-	
-	
-	
 
-	
-	
-	
-	//Getters and Setteres
+	// Getters and Setteres
 	public WorkRequestBean getSelectedworkRequest() {
 		return selectedworkRequest;
 	}
@@ -314,11 +285,6 @@ public class WorkRequestModel {
 		this.selectedcommentsBean = selectedcommentsBean;
 	}
 
-	
-
-
-
-	
 	public String getCurrentUser() {
 		return currentUser;
 	}
@@ -326,7 +292,7 @@ public class WorkRequestModel {
 	public void setCurrentUser(String currentUser) {
 		this.currentUser = currentUser;
 	}
-	
+
 	public WorkRequestBean getWorkrequestBean() {
 		return workrequestBean;
 	}
@@ -350,8 +316,5 @@ public class WorkRequestModel {
 	public void setTeam(String team) {
 		this.team = team;
 	}
-
-
-
 
 }

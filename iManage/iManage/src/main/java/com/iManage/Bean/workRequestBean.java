@@ -6,7 +6,7 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 @ManagedBean(name = "workRequestBean", eager = true)
 public class WorkRequestBean {
-	
+
 	private String requestedBy;
 	private int requestID;
 	private String name;

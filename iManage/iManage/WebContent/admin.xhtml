@@ -49,21 +49,20 @@
 	</p:dialog>
 
 	<div class="ui-g" id="nav-bar">
-		<p:outputPanel styleClass="ui-g ui-g-8 ui-sm-6">
+		<p:outputPanel styleClass="ui-g ui-g-8 ui-sm-10">
 			<p:commandButton id="menubutton" icon="pi pi-bars"
 				onclick="PF('sidebar').show()" />
-			<h3 style="margin: 0; font-size: 26px; color: black;">
-				<span style="color: #5d5dd5;">i</span>Manage
-			</h3>
+			<h3 class="logo"><span>i</span>Manage</h3>
+
 		</p:outputPanel>
 
-		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-6">
+		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-2">
 			<h:outputLink id="profile-tab"
 				onclick="toggleVisibility('profile-tab-menu');"
 				value="javascript:void(0)">
 				<span><h:outputText value="#{workRequestModel.currentUser}" /></span>
 				<h:graphicImage name="profile.png" library="images" id="user-img"></h:graphicImage>
-				<p:outputPanel id="profile-tab-menu" style="display:none;">
+				<p:outputPanel id="profile-tab-menu" >
 					<h:form>
 						<p:panelGrid layout="grid" columns="2"
 							columnClasses="ui-g-4,ui-g-8" styleClass="profile-panel">
@@ -97,7 +96,7 @@
 			<ul id="menu-options">
 
 
-				<li><span style="font-size: 20px;">Menu</span></li>
+				<li><h3 class="heading" >Work Requests</h3></li>
 				<li><hr /></li>
 				<li><h:outputLink value="javascript:void(0)"
 						onclick="toggleMenus(this,'all');"
@@ -159,7 +158,7 @@
 				style="background: rgb(244, 245, 247); ">
 				<div class="ui-g-12" style="height: 100%;">
 					<ul id="menu-options-sidebar">
-						<li><span style="font-size: 16px;">Menu</span></li>
+						<li><h3 class="heading" >Work Requests</h3></li>
 						<li><hr /></li>
 						<li><h:outputLink value="javascript:void(0)"
 								onclick="toggleMenus(this,'all');PF('sidebar').hide();"
@@ -237,7 +236,13 @@
 					<p:dataTable var="list" value="#{workRequestModel.allWorksList}"
 						id="worklist"
 						rendered="#{not empty workRequestModel.allWorksList}"
-						reflow="true">
+						reflow="true"
+						rows="15"
+						paginator="true"
+		                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+		                rowsPerPageTemplate="5,10,15">
+
 						<p:column headerText="Id">
 							<h:outputText value="#{list.requestType}-#{list.requestID}" />
 						</p:column>
@@ -293,7 +298,12 @@
 					<p:dataTable var="list"
 						value="#{workRequestModel.inProgressWorksList}"
 						rendered="#{not empty workRequestModel.inProgressWorksList}"
-						id="inprogressworklist" reflow="true">
+						id="inprogressworklist" reflow="true"
+						rows="15"
+						paginator="true"
+		                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+		                rowsPerPageTemplate="5,10,15">
 						<p:column headerText="Id">
 							<h:outputText value="#{list.requestType}-#{list.requestID}" />
 						</p:column>
@@ -353,7 +363,12 @@
 					<p:dataTable var="list"
 						value="#{workRequestModel.completedWorksList}"
 						rendered="#{not empty workRequestModel.completedWorksList}"
-						id="completedworklist" reflow="true">
+						id="completedworklist" reflow="true"
+						rows="15"
+						paginator="true"
+		                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+		                rowsPerPageTemplate="5,10,15">
 						<p:column headerText="Id">
 							<h:outputText value="#{list.requestType}-#{list.requestID}" />
 						</p:column>
@@ -411,7 +426,12 @@
 					<p:dataTable var="list"
 						value="#{workRequestModel.openProgressWorksList}"
 						rendered="#{not empty workRequestModel.openProgressWorksList}"
-						id="openprogressworklist" reflow="true">
+						id="openprogressworklist" reflow="true"
+						rows="15"
+						paginator="true"
+		                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+		                rowsPerPageTemplate="5,10,15">
 						<p:column headerText="Id"
 							sortBy="#{list.requestType}-#{list.requestID}">
 							<h:outputText value="#{list.requestType}-#{list.requestID}" />
@@ -497,7 +517,7 @@
 						<br />
 						<p:commandButton value="update"
 							action="#{workRequestModel.updateList()}"
-							update="editform messages inp-panel open-panel comp-panel all-panel openprogressworklist @(.counter)"></p:commandButton>
+							update="editform messages inp-panel open-panel comp-panel all-panel openprogressworklist @(.counter)" oncomplete="toggleSubMenu();"></p:commandButton>
 					</p:panelGrid>
 				</h:form>
 				<h:form id="comments-panel">
@@ -507,7 +527,7 @@
 						</p>
 						<p:outputPanel>
 							<ui:repeat var="commentList"
-								value="#{workRequestModel.request_comments(workRequestModel.selectedworkRequest.requestID)}">
+								value="#{commentsModel.request_comments(workRequestModel.selectedworkRequest.requestID)}">
 								<div class="comment-layout">
 									<p class="time">
 										<h:outputText value="Added on: #{commentList.time}"></h:outputText>

@@ -1,8 +1,13 @@
 package com.iManageServer.Service;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.NameBinding;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -16,33 +21,37 @@ public class CommentService {
 
 	CommentsDAO dao = new CommentsDAO();
 
-	
+	@NameBinding
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.TYPE, ElementType.METHOD })
+	public @interface Secured {
+	}
+
+	@Secured
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addComment( @FormParam("id") int id,@FormParam("comment") String comment, @FormParam("time") String time ) {
-		return dao.addComment(id,comment,time);
+	public boolean addComment(@FormParam("id") int id, @FormParam("comment") String comment,
+			@FormParam("time") String time) {
+		return dao.addComment(id, comment, time);
 	}
 
-	
-	@POST	
+	@Secured
+	@POST
 	@Path("getcomments")
-	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public List<CommentsPojo> getComments( @FormParam("id") int id ) {
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public List<CommentsPojo> getComments(@FormParam("id") int id) {
 
 		return dao.getComments(id);
 	}
-	
-	@POST	
+
+	@Secured
+	@POST
 	@Path("delete")
-	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-	public boolean deleteComment( @FormParam("id") int id ) {
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public boolean deleteComment(@FormParam("id") int id) {
 
 		return dao.deleteComment(id);
 	}
-	
-	
-	
-	
-	
+
 }

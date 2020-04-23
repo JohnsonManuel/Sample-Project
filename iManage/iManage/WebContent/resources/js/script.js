@@ -1,8 +1,16 @@
 var prev;
 
 function toggleSubMenu(id) {
-	document.querySelector(".active").classList.remove("active");
-	document.getElementById(id).classList.add("active");
+	console.log(prev);
+	if (id == undefined) {
+		document.querySelector(".active").classList.remove("active");
+		document.getElementById(prev).classList.add("active");
+	} else {
+		prev = document.getElementsByClassName('active')[0].id;
+		document.querySelector(".active").classList.remove("active");
+		document.getElementById(id).classList.add("active");
+	}
+
 	return false;
 }
 
@@ -36,7 +44,9 @@ function toggleMenus(e, id) {
 
 function toggleVisibility(id) {
 	var x = document.getElementById(id);
-	if (x.style.display === "none") {
+
+	
+	if (x.style.display === "none" ||x.style.display === "") {
 		x.style.display = "block";
 	} else {
 		x.style.display = "none";
