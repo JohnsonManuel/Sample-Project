@@ -43,7 +43,7 @@ public class WorkDAO {
 
 		} catch (SQLException ex) {
 			log.error("Connection error");
-			System.out.println(ex.getMessage());
+			log.error(ex.getMessage());
 			return false;
 		} finally {
 			ConnectDB.close(conn);
@@ -79,6 +79,7 @@ public class WorkDAO {
 
 		} catch (SQLException ex) {
 			log.error("Connection error");
+			log.error(ex.getMessage());
 			return null;
 		} finally {
 			ConnectDB.close(conn);
@@ -94,7 +95,6 @@ public class WorkDAO {
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
 		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests WHERE assigned_by = ? ";
 
-		System.out.println(user);
 		log.trace("Connecting to Database");
 		Connection conn = null;
 
@@ -115,6 +115,7 @@ public class WorkDAO {
 
 		} catch (SQLException ex) {
 			log.error("Connection error");
+			log.error(ex.getMessage());
 			return null;
 		} finally {
 			ConnectDB.close(conn);
@@ -150,6 +151,7 @@ public class WorkDAO {
 
 		} catch (SQLException ex) {
 			log.error("Connection error");
+			log.error(ex.getMessage());
 			return false;
 		} finally {
 			ConnectDB.close(conn);
@@ -180,8 +182,8 @@ public class WorkDAO {
 			}
 
 		} catch (SQLException ex) {
-
 			log.error("Connection error");
+			log.error(ex.getMessage());
 			return false;
 		} finally {
 			ConnectDB.close(conn);

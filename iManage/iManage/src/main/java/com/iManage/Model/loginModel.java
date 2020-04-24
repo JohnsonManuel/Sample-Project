@@ -46,6 +46,12 @@ public class loginModel {
 
 	Login login = new Login();
 
+	/**
+	 * Checks whether the entered credentials are valid and returns redirect string accordingly.
+	 * Session values "user" , "user-type" , "AUTHID" are set if credentials are valid
+	 * 
+	 * @return String - Returns the redirect string based on validation
+	 */
 	public String validateUser() {
 
 		log.trace("Validating user ");
@@ -56,14 +62,14 @@ public class loginModel {
 
 		if (isSafeusername && isSafepassword) {
 			log.trace("Esapi passes for Login input");
-
-			loginResponse = login.checkuserinDB(loginBean.getUsername(), getEncryptText(loginBean.getPassword()));
+			
+			loginResponse = login.checkuserinDB(loginBean.getUsername(), getEncryptText(loginBean.getPassword()) );
 		} else {
 			log.trace("Esapi failed for Login input");
 			loginResponse = null;
 		}
 
-		if (loginResponse.get("user_type") != null) {
+		if (null != loginResponse && loginResponse.get("user_type") != null) {
 			log.trace("User exists and is of type " + loginResponse.get("user_type"));
 
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", loginBean.getUsername());
@@ -79,7 +85,7 @@ public class loginModel {
 			loginBean.setUsername("");
 			loginBean.setPassword("");
 
-			String captcha = login.getCaptchaString(loginResponse.get("AUTHID"));
+			String captcha = login.getCaptchaString();
 
 			log.trace("Getting capthca from server...");
 			loginBean.setCaptcha(captcha);
@@ -96,6 +102,11 @@ public class loginModel {
 
 	}
 
+	/**
+	 * The entered captcha string is validated and redirect string is returned accordingly
+	 * Session valie of "team" is set on validation.
+	 * @return String - Returns the redirect string based on validation
+	 */
 	public String validateCaptcha() {
 		boolean isSafetext = validator.isValidInput("Captcha", encoder.canonicalize(loginBean.getCaptchaText()),
 				"SafeString", 7, false);
@@ -129,6 +140,11 @@ public class loginModel {
 		}
 	}
 
+	/**
+	 * Invalidates Session 
+	 * Redirects to login page
+	 * @return String Redirect String
+	 */
 	public String logout() {
 		login.logout();
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
@@ -136,6 +152,11 @@ public class loginModel {
 
 	}
 
+	/**
+	 * Converts the String into a Base64 encoded byte array 
+	 * @param str - STring to be converted
+	 * @return String - Base64encoded byte array
+	 */
 	public String ConvertTexttoBase64(String str) {
 
 		int width = 320;
@@ -166,10 +187,13 @@ public class loginModel {
 
 	}
 
-//	public static void main(String[] args) {
-//		System.out.println(getEncryptText("admin2"));
-//	}
-
+	/**
+	 * PBKDF2WithHmacSHA512 encryption
+	 * 
+	 * 
+	 * @param plainText
+	 * @return Hashed String
+	 */
 	public static String getEncryptText(String plainText) {
 		String salt = "SecretText";
 		int iterations = 10000;
@@ -182,6 +206,16 @@ public class loginModel {
 
 	}
 
+	/**
+	 * 
+	 * PBKDF2WithHmacSHA512 encryption
+	 * 
+	 * @param password
+	 * @param salt
+	 * @param iterations
+	 * @param keyLength
+	 * @return
+	 */
 	public static byte[] hashPassword(final char[] password, final byte[] salt, final int iterations,
 			final int keyLength) {
 
@@ -196,6 +230,9 @@ public class loginModel {
 		}
 	}
 
+	
+	//Getters and Setters
+	
 	public LoginBean getLoginBean() {
 		return loginBean;
 	}

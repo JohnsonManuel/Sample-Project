@@ -2,6 +2,7 @@ package com.iManage.Client;
 
 import java.util.List;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -22,6 +23,12 @@ public class WorkRequest {
 	private static final Logger log = LogManager.getLogger("mainLogger");
 	private static String BASE_PATH = "http://localhost:8181/iManageServer/rest/Work";
 
+	/**
+	 * Sends a POST request with the values of workrequestbean values to add to DB
+	 * 
+	 * @param workrequestbean
+	 * @return boolean - yes if the request succeeds , false otherwise
+	 */
 	public boolean addWorkRequest(WorkRequestBean workrequestbean) {
 		log.trace("Adding work-request .......");
 
@@ -39,6 +46,9 @@ public class WorkRequest {
 
 		} catch (NotAuthorizedException e) {
 			log.error("The Server rejected the request as authid is incorrect");
+			workadded = false;
+		}catch (BadRequestException e) {
+			log.error("Server ESAPI failed");
 			workadded = false;
 		}
 
@@ -63,6 +73,9 @@ public class WorkRequest {
 		} catch (NotAuthorizedException e) {
 			log.error("The Server rejected the request as authid is incorrect");
 			response = null;
+		}catch (BadRequestException e) {
+			log.error("Server ESAPI failed");
+			response = null;
 		}
 
 		log.trace("Response list size " + response.size());
@@ -86,12 +99,21 @@ public class WorkRequest {
 		} catch (NotAuthorizedException e) {
 			log.error("The Server rejected the request as authid is incorrect");
 			response = null;
+		}catch (BadRequestException e) {
+			log.error("Server ESAPI failed");
+			response = null;
 		}
 
 		log.trace("Response list size " + response.size());
 		return response;
 	}
 
+	/**
+	 * Sends a POST request with workbean with updated values
+	 * 
+	 * @param workbean
+	 * @return boolean - yes if the update succeeds , false otherwise
+	 */
 	public boolean updateWorkRequest(WorkRequestBean workbean) {
 		log.trace("Updating worklist ");
 		WebTarget target = WorkRequest.getWebTarget().path("update");
@@ -103,6 +125,9 @@ public class WorkRequest {
 		} catch (NotAuthorizedException e) {
 			log.error("The Server rejected the request as authid is incorrect");
 			result = false;
+		}catch (BadRequestException e) {
+			log.error("Server ESAPI failed");
+			result = false;
 		}
 
 		log.trace("updated? " + result);
@@ -110,6 +135,13 @@ public class WorkRequest {
 		return result;
 	}
 
+	/**
+	 * 
+	 * Sends a POST request to delete work request along with its comments to DB
+	 * 
+	 * @param requestID
+	 * @return boolean - yes if the update succeeds , false otherwise
+	 */
 	public boolean deleteWorkRequest(int requestID) {
 		log.trace("Deleting worklist ");
 
@@ -125,6 +157,9 @@ public class WorkRequest {
 
 		} catch (NotAuthorizedException e) {
 			log.error("The Server rejected the request as authid is incorrect");
+			result = false;
+		}catch (BadRequestException e) {
+			log.error("Server ESAPI failed");
 			result = false;
 		}
 

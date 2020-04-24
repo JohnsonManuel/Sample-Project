@@ -22,7 +22,7 @@ public class ConnectDB {
 			return conn;
 
 		} catch (Exception ex) {
-			System.out.println("Database.getConnection() Error -->" + ex.getMessage());
+			log.trace("Database.getConnection() Error -->" + ex.getMessage());
 			return null;
 		}
 

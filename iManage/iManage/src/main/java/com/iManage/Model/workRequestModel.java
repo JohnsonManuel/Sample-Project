@@ -48,6 +48,7 @@ public class WorkRequestModel {
 
 	Encoder encoder = ESAPI.encoder();
 	Validator validator = ESAPI.validator();
+	WorkRequest obj = new WorkRequest();
 
 	@PostConstruct
 	public void init() {
@@ -63,8 +64,8 @@ public class WorkRequestModel {
 
 	}
 
+	
 	public void updateTables() {
-		WorkRequest obj = new WorkRequest();
 
 		if (userType.equals("admin")) {
 			allWorksList = obj.getAllAdmin(team);
@@ -81,8 +82,7 @@ public class WorkRequestModel {
 	public void deleteWorkRequest(WorkRequestBean delWork) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
-		WorkRequest objj = new WorkRequest();
-		boolean updated = objj.deleteWorkRequest(delWork.getRequestID());
+		boolean updated = obj.deleteWorkRequest(delWork.getRequestID());
 		updateTables();
 
 		if (updated) {
@@ -98,7 +98,6 @@ public class WorkRequestModel {
 
 	public void updateList() {
 
-		WorkRequest objj = new WorkRequest();
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		boolean updated;
@@ -110,7 +109,7 @@ public class WorkRequestModel {
 				1024, true);
 
 		if (check1 && check2) {
-			updated = objj.updateWorkRequest(selectedworkRequest);
+			updated = obj.updateWorkRequest(selectedworkRequest);
 		} else {
 			updated = false;
 		}
@@ -138,7 +137,6 @@ public class WorkRequestModel {
 
 	public void addWorkRequest() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		WorkRequest objj = new WorkRequest();
 
 		boolean response;
 		boolean check1, check2;
@@ -153,7 +151,7 @@ public class WorkRequestModel {
 
 		if (check1 && check2) {
 
-			response = objj.addWorkRequest(workrequestBean);
+			response = obj.addWorkRequest(workrequestBean);
 		} else {
 			response = false;
 		}
@@ -171,11 +169,10 @@ public class WorkRequestModel {
 			PrimeFaces.current().executeScript("PF('dlg2').hide();");
 		} else {
 			if ((check1 && check2)) {
-				log.trace(check1 + " " + check2 + " " + "Malicious input detected");
-
+				log.trace("Server error");
 				context.addMessage(null, new FacesMessage("Work request add error"));
 			} else {
-				log.trace("Work request hasn't  been added");
+				log.trace("ESAPI validation errors");
 				context.addMessage(null, new FacesMessage("Remove special charcters and Try again !"));
 
 			}

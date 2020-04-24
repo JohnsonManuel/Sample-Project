@@ -52,7 +52,6 @@ public class LoginService {
 		Map<String, String> response = login.checkuserinDB(user, pass);
 
 		if (response.get("user_type") != null) {
-			System.out.println(tokens.size());
 			String authcode = generateAuthId(16);
 			tokens.add(authcode);
 			response.put("AUTHID", authcode);
@@ -83,13 +82,10 @@ public class LoginService {
 		log.trace("POST Request received for logout ");
 		String token = httpheaders.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-		System.out.println(token);
-
 		if (token != null && token.startsWith("Bearer")) {
 			token = token.split(" ")[1];
 		}
 
-		System.out.println(token);
 		tokens.remove(token);
 
 	}

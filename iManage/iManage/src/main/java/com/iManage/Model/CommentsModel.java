@@ -13,6 +13,9 @@ import javax.faces.context.FacesContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Encoder;
+import org.owasp.esapi.Validator;
 
 import com.iManage.Bean.CommentsBean;
 import com.iManage.Client.Comments;
@@ -33,12 +36,28 @@ public class CommentsModel {
 
 	Comments objj = new Comments();
 
+	Encoder encoder = ESAPI.encoder();
+	Validator validator = ESAPI.validator();
+	
+	/**
+	 * Adds the comment to the specified Work request using the work requests ID.
+	 * @param workID - The Id of the work-request the comment belongs to.
+	 */
 	public void addComment(int workID) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date date = new Date();
 
-		boolean updated = objj.addComment(workID, commentsBean.getComment(), dateFormat.format(date));
+		boolean validinput = validator.isValidInput("comments", encoder.canonicalize(commentsBean.getComment()), "Special", 1024,
+				false);
+		
+		boolean updated ;
+		
+		if(validinput) {
+			updated = objj.addComment(workID, commentsBean.getComment(), dateFormat.format(date));
+		}else {
+			updated= false;
+		}
 
 		if (updated) {
 
@@ -51,14 +70,29 @@ public class CommentsModel {
 		} else {
 			log.trace("Comment hasn't been added");
 
-			context.addMessage(null, new FacesMessage("Unable to add comment"));
+			if(validinput) 
+				context.addMessage(null, new FacesMessage("Unable to add comment"));
+			else 
+				context.addMessage(null, new FacesMessage("Remove special characters."));
+
+			
+			
 		}
 	}
 
+	
+	
+	/**
+	 * Deletes the comment using the ID of the Comment
+	 * @param id - unique id of Comment
+	 * 
+	 */
 	public void deleteComment(int id) {
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		boolean updated = objj.deleteComments(id);
+		
+		
 		if (updated) {
 			log.trace("Comment has been deleted");
 
@@ -71,18 +105,32 @@ public class CommentsModel {
 		}
 	}
 
-	public void getcomments(int key) {
-		comments = objj.getComments(key);
+	/**
+	 * Method loads the comments of the selected work request
+	 * @param workrequestId - Id of the work-request
+	 */
+	public void getcomments(int workId) {
+		comments = objj.getComments(workId);
 	}
 
+	
+	
+	/**
+	 * Toggles the visibility of CommentsPanel
+	 */
 	public void toggleCommentPanel() {
 		commentsBean.setComment("");
 		renderCommentPanel = !renderCommentPanel;
 
 	}
 
-	public List<CommentsBean> request_comments(int key) {
-		return objj.getComments(key);
+	/**
+	 * Gets all Comments of the selected Work Request
+	 * @param workId - Unique id of Work Request
+	 * @return List<CommentsBean> - list of comments
+	 */
+	public List<CommentsBean> request_comments(int workId) {
+		return objj.getComments(workId);
 
 	}
 

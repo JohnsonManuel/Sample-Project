@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.NameBinding;
 import javax.ws.rs.POST;
@@ -22,6 +23,7 @@ import com.iManageServer.Pojo.WorkRequestPojo;
 @Path("Work")
 public class WorkRequestService {
 
+
 	private static final Logger log = LogManager.getLogger("mainLogger");
 
 	WorkDAO dao = new WorkDAO();
@@ -31,8 +33,7 @@ public class WorkRequestService {
 	@NameBinding
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.TYPE, ElementType.METHOD })
-	public @interface Secured {
-	}
+	public @interface Secured {}
 
 	@Secured
 	@POST
@@ -41,12 +42,19 @@ public class WorkRequestService {
 	public boolean addNewWorkRequest(WorkRequestPojo workrequestbean) {
 		log.trace("POST request came with workrequestbean " + workrequestbean.getRequestID());
 
+		if( ! ServerValidation.ESAPIWorkvalidateBean(workrequestbean) ) {
+			 throw new BadRequestException("Bad request");
+		}
+		
+
 		response = dao.addWorkRequestToDB(workrequestbean);
 
 		log.trace("Sending response " + response);
 
 		return response;
 	}
+
+	
 
 	@Secured
 	@POST
@@ -56,6 +64,10 @@ public class WorkRequestService {
 
 		log.trace("POST request came with bean " + workrequestbean.getRequestID());
 
+		if( ! ServerValidation.ESAPIWorkvalidateBean(workrequestbean) ) {
+			 throw new BadRequestException("Bad request");
+		}
+		
 		response = dao.updateRequestToDB(workrequestbean);
 
 		log.trace("Sending response " + response);
@@ -70,7 +82,12 @@ public class WorkRequestService {
 	public List<WorkRequestPojo> getAllWorkRequestsUser(@FormParam("user") String user) {
 
 		log.trace("POST Request received with paramaeters " + user);
-
+		
+		
+		if( !  ServerValidation.ESAPIvalidateString(user) ) {
+			 throw new BadRequestException("Bad request");
+		}
+		
 		return dao.getAllWorkRequestsUser(user);
 	}
 
@@ -82,6 +99,10 @@ public class WorkRequestService {
 
 		log.trace("POST Request received with paramaeters " + team);
 
+		if( !  ServerValidation.ESAPIvalidateString(team)  ) {
+			 throw new BadRequestException("Bad request");
+		}
+		
 		templist = dao.getAllWorkRequestsAdmin(team);
 
 		if (null != templist)
@@ -98,11 +119,19 @@ public class WorkRequestService {
 
 		log.trace("POST Request received with paramaeters " + id);
 
+		if( !  ServerValidation.ESAPIvalidateString(String.valueOf(id))  ) {
+			 throw new BadRequestException("Bad request");
+		}
+		
 		response = dao.deleteWorkRequests(id);
 
 		log.trace("Sending respone of " + response);
 
 		return response;
 	}
+	
+	
+	
+	
 
 }

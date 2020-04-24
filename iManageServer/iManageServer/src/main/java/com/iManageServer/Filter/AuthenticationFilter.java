@@ -11,6 +11,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.iManageServer.Service.LoginService;
 import com.iManageServer.Service.WorkRequestService.Secured;
 
@@ -18,6 +21,7 @@ import com.iManageServer.Service.WorkRequestService.Secured;
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
+	private static final Logger log = LogManager.getLogger("mainLogger");
 
 	@Inject
 	private LoginService service;
@@ -34,8 +38,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		}
 
 		try {
+			log.trace("Validating request");
 			validateAuthCode(authCodeReceived);
 		} catch (Exception e) {
+			log.trace(e.getMessage());
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 
 		}
@@ -46,11 +52,13 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		if (null != authReceived && service.getTokens() != null) {
 			if (service.getTokens().contains(authReceived)) {
-
+				log.trace("Request is valid");
 			} else {
-				throw new Exception();
+				throw new Exception("The authid received is invalid");
 			}
 		} else {
+			log.trace("No Authid received");
+
 			throw new Exception("Exception null");
 		}
 

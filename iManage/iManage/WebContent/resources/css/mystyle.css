@@ -153,12 +153,16 @@ body {
 #nav-panel {
 	height: 100%;
 	background: rgb(244, 245, 247);
+	box-shadow: 1px 3px 21px -7px #919191;
 }
 
 #main-panel {
 	height: 100%;
 	overflow: auto;
-	background-image: url('/iManage/resources/images/home_background.jpg');
+/*	background: url(/iManage/resources/images/home_background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover; 
+    */
 }
 
 .information-panel {
@@ -358,6 +362,8 @@ body {
 	display: none;
 }
 
+
+
 @media only screen and (max-width:1024px) {
 	.ui-sidebar-left, .ui-dialog-mask {
 		display: block;
@@ -394,22 +400,21 @@ body {
 		margin: 0;
 	}
 	#banner_wrapper {
-		height: 30vh;
+		height: 10vh;
 	}
 	#login_wrapper {
-		height: 70vh
+		height: 90vh
 	}
 	#banner img {
-		width: 120px;
-		vertical-align: middle;
+		display:none;
 	}
 	#banner h2 {
-		display: inline-block;
+		display: block;
 	}
 	#login_form {
 		position: absolute;
-		top: 0;
-		transform: translate(-50%, 0);
+		top: 45%;
+		transform: translate(-50%, -50%);
 	}
 	#banner {
 		width: 100%;

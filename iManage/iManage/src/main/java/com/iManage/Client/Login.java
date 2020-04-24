@@ -18,10 +18,21 @@ import org.apache.logging.log4j.Logger;
 
 import com.iManage.Filter.ClientFilter;
 
+/**
+ * @author Johnson Manuel
+ *
+ */
+
 public class Login {
 	private static final Logger log = LogManager.getLogger("mainLogger");
 	private static String BASE_PATH = "http://localhost:8181/iManageServer/rest/login";
 
+	/**
+	 * Sends a POST request to check if user in registered.
+	 * @param user
+	 * @param pass
+	 * @return
+	 */
 	public Map<String, String> checkuserinDB(String user, String pass) {
 		log.trace("Sending request with parameterrs User and pass ");
 
@@ -41,7 +52,12 @@ public class Login {
 		return user_details;
 	}
 
-	public String getCaptchaString(String authid) {
+
+	/**
+	 * Sends a POST request to get a random Captcha string generated at the server.
+	 * @return
+	 */
+	public String getCaptchaString() {
 		log.trace("Sending captha server request");
 
 		String captcha;
@@ -63,6 +79,10 @@ public class Login {
 		return captcha;
 	}
 
+	/**
+	 * Sends an Empty post request 
+	 * Invalidates the Authid Token
+	 */
 	public void logout() {
 
 		log.trace("Sending captha server request");

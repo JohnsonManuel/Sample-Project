@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.NameBinding;
 import javax.ws.rs.POST;
@@ -33,6 +34,13 @@ public class CommentService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean addComment(@FormParam("id") int id, @FormParam("comment") String comment,
 			@FormParam("time") String time) {
+		
+		if( !ServerValidation.ESAPIvalidateString(String.valueOf(id))
+				||!ServerValidation.ESAPIvalidateString(comment)
+				||!ServerValidation.ESAPIvalidateString(time)) {
+			 throw new BadRequestException("Bad request");
+		}
+		
 		return dao.addComment(id, comment, time);
 	}
 
@@ -41,6 +49,10 @@ public class CommentService {
 	@Path("getcomments")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public List<CommentsPojo> getComments(@FormParam("id") int id) {
+		
+		if( !  ServerValidation.ESAPIvalidateString(String.valueOf(id))  ) {
+			 throw new BadRequestException("Bad request");
+		}
 
 		return dao.getComments(id);
 	}
@@ -50,6 +62,10 @@ public class CommentService {
 	@Path("delete")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public boolean deleteComment(@FormParam("id") int id) {
+		
+		if( !  ServerValidation.ESAPIvalidateString(String.valueOf(id))  ) {
+			 throw new BadRequestException("Bad request");
+		}
 
 		return dao.deleteComment(id);
 	}
