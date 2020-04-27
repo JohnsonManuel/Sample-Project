@@ -28,43 +28,63 @@ public class CommentService {
 	public @interface Secured {
 	}
 
+	/**
+	 * Method receives a request from the client . Only validated client requests
+	 * are allowed.
+	 * 
+	 * @param id unique id of the comment
+	 * @param comment Description of the comment
+	 * @param time Time the comment was created.
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("add")
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean addComment(@FormParam("id") int id, @FormParam("comment") String comment,
 			@FormParam("time") String time) {
-		
-		if( !ServerValidation.ESAPIvalidateString(String.valueOf(id))
-				||!ServerValidation.ESAPIvalidateString(comment)
-				||!ServerValidation.ESAPIvalidateString(time)) {
-			 throw new BadRequestException("Bad request");
+
+		if (!ServerValidation.ESAPIvalidateString(String.valueOf(id)) || !ServerValidation.ESAPIvalidateString(comment)
+				|| !ServerValidation.ESAPIvalidateString(time)) {
+			throw new BadRequestException("Bad request");
 		}
-		
+
 		return dao.addComment(id, comment, time);
 	}
 
+	/**
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @param id unique id of the work request
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("getcomments")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public List<CommentsPojo> getComments(@FormParam("id") int id) {
-		
-		if( !  ServerValidation.ESAPIvalidateString(String.valueOf(id))  ) {
-			 throw new BadRequestException("Bad request");
+
+		if (!ServerValidation.ESAPIvalidateString(String.valueOf(id))) {
+			throw new BadRequestException("Bad request");
 		}
 
 		return dao.getComments(id);
 	}
 
+	/**
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @param id unique id of the comment
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("delete")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public boolean deleteComment(@FormParam("id") int id) {
-		
-		if( !  ServerValidation.ESAPIvalidateString(String.valueOf(id))  ) {
-			 throw new BadRequestException("Bad request");
+
+		if (!ServerValidation.ESAPIvalidateString(String.valueOf(id))) {
+			throw new BadRequestException("Bad request");
 		}
 
 		return dao.deleteComment(id);

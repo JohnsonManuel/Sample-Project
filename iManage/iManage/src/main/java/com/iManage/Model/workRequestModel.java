@@ -122,7 +122,6 @@ public class WorkRequestModel {
 
 		} else {
 			if (check1 || check2) {
-				System.out.println(check1 + " " + check2);
 				log.trace(check1 + " " + check2 + " " + "Malicious input detected");
 				context.addMessage(null, new FacesMessage("Malicious input "));
 

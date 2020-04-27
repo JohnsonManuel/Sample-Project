@@ -15,9 +15,9 @@ public class ConnectDB {
 
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			String dbURL = "jdbc:sqlserver://DESKTOP-JVD9T66\\HOMEDB:1433;databaseName=iManageDB";
-			String DBuser = "sa";
-			String DBpass = "Jmred1234";
+			String dbURL = PropertiesResource.getInstance().getProperty("db.url");
+			String DBuser = PropertiesResource.getInstance().getProperty("db.user");
+			String DBpass = PropertiesResource.getInstance().getProperty("db.pass");
 			Connection conn = DriverManager.getConnection(dbURL, DBuser, DBpass);
 			return conn;
 

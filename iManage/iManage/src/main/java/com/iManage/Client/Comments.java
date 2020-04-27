@@ -27,7 +27,6 @@ public class Comments {
 
 		WebTarget target = Comments.getWebTarget().path("add");
 
-		System.out.println("getAll() " + target.getUri());
 		Form form = new Form();
 		form.param("id", String.valueOf(id));
 		form.param("comment", comment);
@@ -60,7 +59,6 @@ public class Comments {
 		log.trace("Get all comments of " + workId);
 
 		WebTarget target = Comments.getWebTarget().path("getcomments");
-		System.out.println("getAll() " + target.getUri());
 		Form form = new Form();
 		form.param("id", String.valueOf(workId));
 		List<CommentsBean> response;
@@ -89,7 +87,6 @@ public class Comments {
 		log.trace("Delete Comment of id " + commentId);
 
 		WebTarget target = Comments.getWebTarget().path("delete");
-		System.out.println("getAll() " + target.getUri());
 		Form form = new Form();
 		form.param("id", String.valueOf(commentId));
 		boolean result;

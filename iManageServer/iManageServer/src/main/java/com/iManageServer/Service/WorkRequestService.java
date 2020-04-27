@@ -35,6 +35,13 @@ public class WorkRequestService {
 	@Target({ ElementType.TYPE, ElementType.METHOD })
 	public @interface Secured {}
 
+	/**
+	 * 
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @param workrequestbean workrequest bean
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("add")
@@ -56,6 +63,12 @@ public class WorkRequestService {
 
 	
 
+	/**
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @param workrequestbean workrequest bean
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("update")
@@ -75,6 +88,12 @@ public class WorkRequestService {
 		return response;
 	}
 
+	/**
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @param user  User name
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("allrequser")
@@ -91,6 +110,13 @@ public class WorkRequestService {
 		return dao.getAllWorkRequestsUser(user);
 	}
 
+	/**
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * 
+	 * @param team Team name
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("allreqadmin")
@@ -111,6 +137,13 @@ public class WorkRequestService {
 		return templist;
 	}
 
+	/**
+	 * 
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @param id unique id of workrequest
+	 * @return
+	 */
 	@Secured
 	@POST
 	@Path("delete")

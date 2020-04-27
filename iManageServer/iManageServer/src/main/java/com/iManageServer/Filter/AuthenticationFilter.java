@@ -48,6 +48,13 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 	}
 
+	/**
+	 * 
+	 * This method validated the received Authcode and checks whether it is present in server storage
+	 * 
+	 * @param authReceived The authcode received from user
+	 * @throws Exception
+	 */
 	public void validateAuthCode(String authReceived) throws Exception {
 
 		if (null != authReceived && service.getTokens() != null) {

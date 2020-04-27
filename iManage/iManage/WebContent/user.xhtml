@@ -57,7 +57,7 @@
 						<li><h3 class="heading" >Work Requests</h3></li>
 						<li><hr /></li>
 						<li>
-							<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');PF('sidebar').hide();" styleClass="ui-g menu-option current">
+							<h:outputLink value="javascript:void(0)" rendered="#{comp['user.allpanel']}"  onclick="toggleMenus(this,'all');PF('sidebar').hide();" styleClass="ui-g menu-option current">
 								<div class="ui-g-10"><h:outputText value="My Requests" /></div>
 								<div class="ui-g-2"> <p><h:outputText id="sidebar_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
 							</h:outputLink>	
@@ -90,7 +90,7 @@
 				<li><h3 class="heading" >Work Requests</h3></li>
 				<li><hr/></li>
 				<li>
-					<h:outputLink value="javascript:void(0)"  onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
+					<h:outputLink value="javascript:void(0)" rendered="#{comp['user.allpanel']}" onclick="toggleMenus(this,'all');" styleClass="ui-g menu-option current">
 						<div class="ui-g-10"><h:outputText value="My Requests" /></div>
 						<div class="ui-g-2"> <p><h:outputText id="nav-panel_all" styleClass="counter" value="#{fn:length(workRequestModel.allWorksList)}" /></p> </div>
 					</h:outputLink>	
@@ -131,24 +131,25 @@
 				positionType="absolute" width="80%" height="600" resizable="false" draggable="false">
 				<h:form id="newWorkForm">
 					<p:panelGrid columns="1" layout="grid" >
-						<p:outputLabel for="name" value="Subject"></p:outputLabel>
-						<p:inputText id="name" value="#{workRequestBean.name}" styleClass="ui-g-12" required="true"></p:inputText>
+						<p:outputLabel for="name" value="Subject" rendered="#{comp['userform.summary']}" />
+						<p:inputText id="name" value="#{workRequestBean.name}" rendered="#{comp['userform.summary']}" styleClass="ui-g-12" required="true"></p:inputText>
 						
-						<p:outputLabel for="project" value="Project"></p:outputLabel>
-						<p:selectOneMenu id="project" value="#{workRequestBean.team}"  style="width:150px;" required="true">
+						<p:outputLabel for="project" value="Project" rendered="#{comp['userform.project']}" />
+						<p:selectOneMenu id="project" value="#{workRequestBean.team}" rendered="#{comp['userform.project']}" style="width:150px;" required="true">
 							<f:selectItem itemLabel="Select Type" itemValue=""  />
 							<f:selectItem itemLabel="Service Desk" itemValue="Service"  />
 							<f:selectItem itemLabel="Durango Team" itemValue="Durango" />
 						</p:selectOneMenu>
 						
-						<p:outputLabel for="type" value="Type"></p:outputLabel>
-						<p:selectOneMenu id="type" value="#{workRequestBean.requestType}"  style="width:150px;" required="true">
+						<p:outputLabel for="type" value="Type" rendered="#{comp['userform.type']}"/>
+						<p:selectOneMenu id="type" value="#{workRequestBean.requestType}" rendered="#{comp['userform.type']}" style="width:150px;" required="true">
 							<f:selectItem itemLabel="Select Type" itemValue=""  />
 							<f:selectItem itemLabel="IT" itemValue="IT"  />
 							<f:selectItem itemLabel="General" itemValue="General" />
 						</p:selectOneMenu>
-						<p:outputLabel for="desc" value="Description"></p:outputLabel>
-						<p:inputTextarea id="desc"  counter="word-counter" value="#{workRequestBean.description}"  styleClass="ui-g-12 ui-sm-12" rows="10" required="true"  maxlength="500" counterTemplate="{0} characters remaining." autoResize="false"/>
+						
+						<p:outputLabel for="desc" value="Description" rendered="#{comp['userform.description']}" />
+						<p:inputTextarea id="desc"  counter="word-counter" value="#{workRequestBean.description}"  rendered="#{comp['userform.description']}" styleClass="ui-g-12 ui-sm-12" rows="10" required="true"  maxlength="500" counterTemplate="{0} characters remaining." autoResize="false"/>
 						<h:outputText id="word-counter"/>
 						
 					</p:panelGrid>
@@ -177,7 +178,7 @@
 			</p:dialog>
 			
 			
-			<p:outputPanel styleClass="display-panels ui-g-12 active" id="all" rendered="#{comp['admin.allpanel']}">
+			<p:outputPanel styleClass="display-panels ui-g-12 active" id="all" rendered="#{comp['user.allpanel']}">
 				<p:outputPanel id="all-panel"> 
 				
 					<h3>My Requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="all-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h3>

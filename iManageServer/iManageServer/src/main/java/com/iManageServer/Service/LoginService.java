@@ -43,6 +43,13 @@ public class LoginService {
 	public @interface Secured {
 	}
 
+	/**
+	 * s
+	 * Method receives a request from the client .
+	 * @param user - User name 
+	 * @param pass - Encrypted password
+	 * @return
+	 */
 	@POST
 	@Path("user")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -60,6 +67,11 @@ public class LoginService {
 		return response;
 	}
 
+	/**
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @return
+	 */
 	@Secured
 	@GET
 	@Path("captcha")
@@ -74,6 +86,11 @@ public class LoginService {
 		return temp;
 	}
 
+	/**
+	 * Method receives a request from the client .
+	 * Only validated client requests are allowed.
+	 * @param httpheaders
+	 */
 	@Secured
 	@POST
 	@Path("logout")
@@ -90,6 +107,12 @@ public class LoginService {
 
 	}
 
+	/**
+	 * 
+	 * Generates a random captcha string of given length
+	 * @param length Length of the string to be generated
+	 * @return A random generated string
+	 */
 	public String generateAuthId(int length) {
 		String elegibleChars = "ABCDEFGHJKLMNPQRSTUVWXY" + "abcdefghjkmnpqrstuvwxy" + "12345";
 		char[] chars = elegibleChars.toCharArray();

@@ -86,7 +86,6 @@ public class WorkRequest {
 		log.trace("Get all Reuests List");
 
 		WebTarget target = WorkRequest.getWebTarget().path("allrequser");
-		System.out.println("getAll() " + target.getUri());
 		Form form = new Form();
 		form.param("user", user);
 

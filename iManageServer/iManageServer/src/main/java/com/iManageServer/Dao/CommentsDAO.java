@@ -38,7 +38,7 @@ public class CommentsDAO {
 				queryexecuted = pstmt.executeUpdate();
 			}
 		} catch (SQLException ex) {
-			System.out.println("Login error -->" + ex.getMessage());
+			log.trace("Login error -->" + ex.getMessage());
 			return false;
 		} finally {
 			ConnectDB.close(conn);
@@ -52,7 +52,6 @@ public class CommentsDAO {
 
 		log.trace("Executing getComments method");
 
-		System.out.println(requestId);
 		List<CommentsPojo> temp = new ArrayList<CommentsPojo>();
 		String query = "SELECT id,comment,time from requests_comments WHERE request_id = ? ";
 

@@ -47,9 +47,8 @@ public class loginModel {
 	Login login = new Login();
 
 	/**
-	 * Checks whether the entered credentials are valid and returns redirect string accordingly.
+	 * Checks whether the entered credentials are valid and returns redirect string accordingly.</br>
 	 * Session values "user" , "user-type" , "AUTHID" are set if credentials are valid
-	 * 
 	 * @return String - Returns the redirect string based on validation
 	 */
 	public String validateUser() {
@@ -78,7 +77,7 @@ public class loginModel {
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("AUTHID",
 					loginResponse.get("AUTHID"));
 
-			System.out.println("The authid is " + loginResponse.get("AUTHID"));
+			log.trace("The authid is " + loginResponse.get("AUTHID"));
 			loginBean.setUserType(loginResponse.get("user_type"));
 
 			// reset values
@@ -94,7 +93,6 @@ public class loginModel {
 			return "captcha";
 		} else {
 			log.trace("User doesn't exist");
-			System.out.println("Came here");
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage("Invalid Username or password"));
 			return null;
@@ -112,7 +110,6 @@ public class loginModel {
 				"SafeString", 7, false);
 
 		log.trace("Validating Captcha");
-		System.out.println(loginBean.getCaptcha());
 
 		if (loginBean.getCaptcha().equals(loginBean.getCaptchaText()) && isSafetext) {
 			log.trace("Esapi passes for captcha input");
@@ -180,6 +177,12 @@ public class loginModel {
 			ImageIO.write(cpimg, "jpg", baos);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				baos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		String encodedString = Base64.getEncoder().encodeToString(baos.toByteArray());
 

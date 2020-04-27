@@ -39,7 +39,6 @@ public class Login {
 		Client client = ClientBuilder.newClient();
 
 		WebTarget target = client.target("http://localhost:8181/iManageServer/rest/login").path("user");
-		System.out.println(target.getUri());
 		Form form = new Form();
 		form.param("user", user);
 		form.param("pass", pass);
