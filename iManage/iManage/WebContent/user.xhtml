@@ -26,7 +26,7 @@
 			<p:commandButton value="Create" id="header-btn" type="button" styleClass="btn"  icon="pi pi-plus" iconPos="right" onclick="PF('dlg2').show();" ></p:commandButton>
 		</p:outputPanel>
 		<p:outputPanel styleClass="ui-g ui-g-4 ui-sm-2" >
-			<h:outputLink id="profile-tab" onclick="toggleVisibility('profile-tab-menu');" value="javascript:void(0)" >
+			<h:outputLink id="profile-tab" onclick="toggleVisibility('profile-tab-menu')" value="javascript:void(0)" >
 				<span><h:outputText value="#{workRequestModel.currentUser}" /></span>
 				<h:graphicImage name="profile.png" library="images" id="user-img"></h:graphicImage>
 				<p:outputPanel id="profile-tab-menu" >
@@ -227,7 +227,7 @@
 			
 			<p:outputPanel styleClass="display-panels ui-g-12 " id="inp" rendered="#{comp['user.inppanel']}">
 				<p:outputPanel id="inp-panel"> 
-					<h2>In progress requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="inp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<h3>In progress requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="inp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h3>
 					<p:outputPanel  rendered="#{empty workRequestModel.inProgressWorksList}" styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
 						<p> <h:outputText value="You're all caught up here !"></h:outputText> </p>
@@ -261,16 +261,13 @@
 						<p:column>
 							<p:commandButton value="View Comments" style="font-size:14px;"  action="#{commentsModel.getcomments(list.requestID)}" update="comments-table" oncomplete="PF('cmnt-dlg').show();" ></p:commandButton>
 						</p:column>	
-						<p:column headerText="Status" sortBy="#{list.status}">
-							<h:outputText value="#{list.status}" />
-						</p:column>		
 					</p:dataTable>
 				</p:outputPanel>
 			</p:outputPanel>
 			
 			<p:outputPanel styleClass="display-panels ui-g-12 " id="open" rendered="#{comp['user.openpanel']}">
 				<p:outputPanel id="open-panel"> 
-					<h2>Open requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<h3>Open requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h3>
 					<p:outputPanel  rendered="#{empty workRequestModel.openProgressWorksList}" styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
 						<p> <h:outputText value="You're all caught up here !"></h:outputText> </p>
@@ -312,7 +309,7 @@
 	
 			<p:outputPanel styleClass="display-panels ui-g-12 " id="comp" rendered="#{comp['user.comppanel']}">
 				<p:outputPanel id="comp-panel"> 
-					<h2>Completed requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="comp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h2>
+					<h3>Completed requests<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh" action="#{workRequestModel.updateTables()}" title="refresh" update="comp-panel @(.counter) inp-panel open-panel comp-panel all-panel" /></h3>
 					<p:outputPanel  rendered="#{empty workRequestModel.completedWorksList}" styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images" ></h:graphicImage>
 						<p> <h:outputText value="You're all caught up here !"></h:outputText> </p>

@@ -37,7 +37,7 @@ public class ServerValidation {
 		
 		
 		boolean check1 = validator.isValidInput("field", encoder.canonicalize(workrequestbean.getName()), "Special", 1024,true);
-		boolean check2 = validator.isValidInput("field", encoder.canonicalize(workrequestbean.getRequestedBy()), "Special", 1024,true);
+		boolean check2 = validator.isValidInput("field", encoder.canonicalize(workrequestbean.getRequester()), "Special", 1024,true);
 		boolean check3 = validator.isValidInput("field", encoder.canonicalize(workrequestbean.getDescription()), "Special", 1024,true);
 		boolean check4 = validator.isValidInput("field", encoder.canonicalize(workrequestbean.getComment()), "Special", 1024,true);
 		boolean check5 = validator.isValidInput("field", encoder.canonicalize(workrequestbean.getRequestType()), "Special", 1024,true);

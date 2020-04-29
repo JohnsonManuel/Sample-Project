@@ -140,8 +140,9 @@ public class WorkRequestModel {
 		boolean response;
 		boolean check1, check2;
 
-		workrequestBean.setRequestedBy(currentUser);
+		workrequestBean.setRequester(currentUser);
 		workrequestBean.setStatus("Open");
+		workrequestBean.setRequesterTeam(team);
 
 		check1 = validator.isValidInput("summary", encoder.canonicalize(workrequestBean.getName()), "Special", 1024,
 				false);

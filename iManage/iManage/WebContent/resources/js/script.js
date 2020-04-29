@@ -13,6 +13,37 @@ function toggleSubMenu(id) {
 
 	return false;
 }
+/*
+window.onload = ()=>{
+	document.getElementById("profile-tab").addEventListener("click", 
+			function(ev){
+		
+			
+			toggleVisibility("profile-tab-menu");
+			window.addEventListener("click", clickout );
+
+			}
+			);
+	
+}; 
+
+
+function clickout(event){
+	let thispanel = document.getElementById("profile-tab-menu");
+		
+	console.log(event.target.parentNode.id);
+
+		if(!event.target.parentNode.id == 'profile-tab-menu'){
+			console.log(event.target.parentNode.id);
+			thispanel.style.display = 'none';
+			window.removeEventListener('click',clickout);
+		}else{
+			console.log("hit");
+		}
+		
+		
+	 	
+}*/
 
 function toggleMenus(e, id) {
 	var elements = document.getElementsByClassName('current');

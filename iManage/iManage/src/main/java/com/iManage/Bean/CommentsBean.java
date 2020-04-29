@@ -1,5 +1,7 @@
 package com.iManage.Bean;
 
+import java.util.Date;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
@@ -10,6 +12,7 @@ public class CommentsBean {
 	private int id;
 	private String comment;
 	private String time;
+	private Date timer = new Date() ;
 
 	public int getId() {
 		return id;
@@ -33,6 +36,15 @@ public class CommentsBean {
 
 	public void setTime(String time) {
 		this.time = time;
+	}
+
+	public Date getTimer() {
+		timer = new Date();
+		return timer;
+	}
+
+	public void setTimer(Date timer) {
+		this.timer = timer;
 	}
 
 }

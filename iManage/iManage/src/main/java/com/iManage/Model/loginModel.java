@@ -93,6 +93,8 @@ public class loginModel {
 			return "captcha";
 		} else {
 			log.trace("User doesn't exist");
+			loginBean.setUsername("");
+			loginBean.setPassword("");
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage("Invalid Username or password"));
 			return null;

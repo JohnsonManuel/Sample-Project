@@ -220,12 +220,12 @@
 			<p:outputPanel styleClass="display-panels active ui-g-12" id="all"
 				rendered="#{comp['admin.allpanel']}">
 				<p:outputPanel id="all-panel">
-					<h2>
+					<h3>
 						<h:outputText value="All Requests" />
 						<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh"
 							title="refresh" action="#{workRequestModel.updateTables()}"
 							update="all-panel @(.counter) inp-panel open-panel comp-panel all-panel" />
-					</h2>
+					</h3>
 					<p:outputPanel rendered="#{empty workRequestModel.allWorksList}"
 						styleClass="information-panel">
 						<h:graphicImage name="empty.jpg" library="images"></h:graphicImage>
@@ -253,8 +253,8 @@
 							<h:outputText value="    #{list.requestType}"
 								styleClass="type-text"></h:outputText>
 						</p:column>
-						<p:column headerText="Assigner" sortBy="#{list.requestedBy}">
-							<h:outputText value="#{list.requestedBy}" />
+						<p:column headerText="Assigner" sortBy="#{list.requester}">
+							<h:outputText value="#{list.requester}" />
 						</p:column>
 						<p:column headerText="Name" sortBy="#{list.name}">
 							<h:outputText value="#{list.name}" />
@@ -281,12 +281,12 @@
 			<p:outputPanel styleClass="display-panels ui-g-12" id="inp"
 				rendered="#{comp['admin.inppanel']}">
 				<p:outputPanel id="inp-panel">
-					<h2>
+					<h3>
 						In progress requests
 						<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh"
 							action="#{workRequestModel.updateTables()}" title="refresh"
 							update="inp-panel @(.counter) inp-panel open-panel comp-panel all-panel" />
-					</h2>
+					</h3>
 					<p:outputPanel
 						rendered="#{empty workRequestModel.inProgressWorksList}"
 						styleClass="information-panel">
@@ -314,8 +314,8 @@
 							<h:outputText value="    #{list.requestType}"
 								styleClass="type-text"></h:outputText>
 						</p:column>
-						<p:column headerText="Assigner" sortBy="#{list.requestedBy}">
-							<h:outputText value="#{list.requestedBy}" />
+						<p:column headerText="Assigner" sortBy="#{list.requester}">
+							<h:outputText value="#{list.requester}" />
 						</p:column>
 						<p:column headerText="Name" sortBy="#{list.name}">
 							<h:outputText value="#{list.name}" />
@@ -346,12 +346,12 @@
 			<p:outputPanel styleClass="display-panels ui-g-12" id="comp"
 				rendered="#{comp['admin.comppanel']}">
 				<p:outputPanel id="comp-panel">
-					<h2>
+					<h3>
 						Completed requests
 						<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh"
 							action="#{workRequestModel.updateTables()}" title="refresh"
 							update="comp-panel @(.counter) inp-panel open-panel comp-panel all-panel" />
-					</h2>
+					</h3>
 					<p:outputPanel
 						rendered="#{empty workRequestModel.completedWorksList}"
 						styleClass="information-panel">
@@ -379,8 +379,8 @@
 							<h:outputText value="    #{list.requestType}"
 								styleClass="type-text"></h:outputText>
 						</p:column>
-						<p:column headerText="Assigner" sortBy="#{list.requestedBy}">
-							<h:outputText value="#{list.requestedBy}" />
+						<p:column headerText="Assigner" sortBy="#{list.requester}">
+							<h:outputText value="#{list.requester}" />
 						</p:column>
 						<p:column headerText="Name" sortBy="#{list.name}">
 							<h:outputText value="#{list.name}" />
@@ -409,12 +409,12 @@
 			<p:outputPanel styleClass="display-panels ui-g-12" id="open"
 				rendered="#{comp['admin.openpanel']}">
 				<p:outputPanel id="open-panel">
-					<h2>
+					<h3>
 						Open requests
 						<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh"
 							action="#{workRequestModel.updateTables()}" title="refresh"
 							update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" />
-					</h2>
+					</h3>
 					<p:outputPanel
 						rendered="#{empty workRequestModel.openProgressWorksList}"
 						styleClass="information-panel">
@@ -443,8 +443,8 @@
 							<h:outputText value="    #{list.requestType}"
 								styleClass="type-text"></h:outputText>
 						</p:column>
-						<p:column headerText="Assigner" sortBy="#{list.requestedBy}">
-							<h:outputText value="#{list.requestedBy}" />
+						<p:column headerText="Assigner" sortBy="#{list.requester}">
+							<h:outputText value="#{list.requester}" />
 						</p:column>
 						<p:column headerText="Name" sortBy="#{list.name}">
 							<h:outputText value="#{list.name}" />
@@ -471,10 +471,10 @@
 				<p:commandButton value="Back" onclick="toggleSubMenu();"
 					icon="pi pi-chevron-left" update="editform messages"></p:commandButton>
 				<h:form id="editform">
-					<h2>
+					<h3>
 						<h:outputText
 							value="Ticket ID : #{workRequestModel.selectedworkRequest.requestType}-#{workRequestModel.selectedworkRequest.requestID}" />
-					</h2>
+					</h3>
 
 					<p:panelGrid columns="2" layout="grid" id="edit-panel"
 						styleClass="ui-g-6 ui-sm-12">
@@ -484,6 +484,11 @@
 							value="#{workRequestModel.selectedworkRequest.name}"
 							styleClass="ui-g-12">
 						</h:inputText>
+						
+						<h:outputLabel value="Requested By:" for="requester" />
+						<h:inputText id="requester"
+							value="#{workRequestModel.selectedworkRequest.requester}"
+							readonly="true" styleClass="ui-g-6"></h:inputText>
 
 						<p:outputLabel value="Type:" for="selectedType"></p:outputLabel>
 						<h:inputText id="selectedType"

@@ -20,7 +20,7 @@ public class WorkDAO {
 		log.trace("Executing addWorkRequestToDB method");
 
 		int queryexecuted = 0;
-		String query = "INSERT INTO work_requests (assigned_by,request_name,request_type,request_description,request_status,team) values (?,?,?,?,?,?)";
+		String query = "INSERT INTO work_requests (assigned_by,request_name,request_type,request_description,request_status,team,requester_team) values (?,?,?,?,?,?,?)";
 
 		log.trace("Connecting to Database");
 		Connection conn = null;
@@ -29,12 +29,13 @@ public class WorkDAO {
 			conn = ConnectDB.getConnection();
 			if (conn != null) {
 				PreparedStatement pstmt = conn.prepareStatement(query);
-				pstmt.setString(1, pojo.getRequestedBy());
+				pstmt.setString(1, pojo.getRequester());
 				pstmt.setString(2, pojo.getName());
 				pstmt.setString(3, pojo.getRequestType());
 				pstmt.setString(4, pojo.getDescription());
 				pstmt.setString(5, pojo.getStatus());
 				pstmt.setString(6, pojo.getTeam());
+				pstmt.setString(7, pojo.getRequesterTeam());
 
 				log.trace("Executing query " + query);
 
@@ -57,7 +58,7 @@ public class WorkDAO {
 		log.trace("Executing getAllWorkRequestsAdmin method");
 
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests where team = ?";
+		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team,requester_team from work_requests where team = ?";
 
 		log.trace("Connecting to Database");
 		Connection conn = null;
@@ -73,7 +74,7 @@ public class WorkDAO {
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
 					temp.add(new WorkRequestPojo(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-							rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+							rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8),rs.getString(9) ));
 				}
 			}
 
@@ -93,7 +94,7 @@ public class WorkDAO {
 		log.trace("Executing getAllWorkRequestsUser method");
 
 		List<WorkRequestPojo> temp = new ArrayList<WorkRequestPojo>();
-		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team from work_requests WHERE assigned_by = ? ";
+		String query = "SELECT id,request_name,assigned_by,request_type,request_description,request_status,comments,team,requester_team from work_requests WHERE assigned_by = ? ";
 
 		log.trace("Connecting to Database");
 		Connection conn = null;
@@ -109,7 +110,7 @@ public class WorkDAO {
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
 					temp.add(new WorkRequestPojo(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-							rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+							rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9)));
 				}
 			}
 

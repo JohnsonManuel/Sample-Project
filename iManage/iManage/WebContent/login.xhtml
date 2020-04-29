@@ -27,12 +27,11 @@
 		<div class="ui-g-12 ui-sm-12 ui-md-8 ui-lg-8 ui-xl-8"
 			id="login_wrapper">
 			<p:outputPanel styleClass="ui-g-11 ui-sm-11 ui-md-10 ui-lg-8" id="login_form">
+				<h2>Login</h2>			
 				<h:form>
 					<p:growl id="messages"></p:growl>
-					<h2>Login</h2>
 					<p:panelGrid columns="2" layout="grid"
 						columnClasses="ui-g-6 ui-md-4 ui-sm-12,ui-g-6 ui-md-8 ui-sm-12" 
-						
 						>
 						<p:outputLabel for="username" value="Username:" />
 						<p:inputText id="username" styleClass="ui-g-12" value="#{loginBean.username}" >

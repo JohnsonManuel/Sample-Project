@@ -6,7 +6,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "WorkRequestBean")
 public class WorkRequestPojo {
 
-	private String requestedBy;
+	private String requester;
+	private String requesterTeam;
 	private int requestID;
 	private String name;
 	private String requestType;
@@ -19,8 +20,8 @@ public class WorkRequestPojo {
 
 	}
 
-	public WorkRequestPojo(int requestID, String name, String requestedBy, String requestType, String description,
-			String status, String comment, String team) {
+	public WorkRequestPojo(int requestID, String name, String requester, String requestType, String description,
+			String status, String comment, String team ,String requesterTeam) {
 		super();
 		this.name = name;
 		this.requestType = requestType;
@@ -28,8 +29,9 @@ public class WorkRequestPojo {
 		this.status = status;
 		this.requestID = requestID;
 		this.comment = comment;
-		this.requestedBy = requestedBy;
+		this.requester = requester;
 		this.team = team;
+		this.requesterTeam = requesterTeam;
 	}
 
 	@XmlElement(name = "name")
@@ -86,21 +88,32 @@ public class WorkRequestPojo {
 		this.comment = comment;
 	}
 
-	@XmlElement(name = "requestedBy")
-	public String getRequestedBy() {
-		return requestedBy;
+	
+	@XmlElement(name = "requester")
+	public String getRequester() {
+		return requester;
 	}
 
-	public void setRequestedBy(String requestedBy) {
-		this.requestedBy = requestedBy;
+	public void setRequester(String requester) {
+		this.requester = requester;
 	}
-
+	
+	@XmlElement(name = "team")
 	public String getTeam() {
 		return team;
 	}
 
 	public void setTeam(String team) {
 		this.team = team;
+	}
+
+	@XmlElement(name = "requesterTeam")
+	public String getRequesterTeam() {
+		return requesterTeam;
+	}
+
+	public void setRequesterTeam(String requesterTeam) {
+		this.requesterTeam = requesterTeam;
 	}
 
 }

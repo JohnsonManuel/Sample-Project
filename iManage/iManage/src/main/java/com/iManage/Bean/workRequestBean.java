@@ -6,8 +6,9 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 @ManagedBean(name = "workRequestBean", eager = true)
 public class WorkRequestBean {
-
-	private String requestedBy;
+	
+	private String requester;
+	private String requesterTeam;
 	private int requestID;
 	private String name;
 	private String requestType;
@@ -74,13 +75,6 @@ public class WorkRequestBean {
 		this.requestID = requestID;
 	}
 
-	public String getRequestedBy() {
-		return requestedBy;
-	}
-
-	public void setRequestedBy(String requestedBy) {
-		this.requestedBy = requestedBy;
-	}
 
 	public String getTeam() {
 		return team;
@@ -89,5 +83,22 @@ public class WorkRequestBean {
 	public void setTeam(String team) {
 		this.team = team;
 	}
+
+	public String getRequester() {
+		return requester;
+	}
+
+	public void setRequester(String requester) {
+		this.requester = requester;
+	}
+
+	public String getRequesterTeam() {
+		return requesterTeam;
+	}
+
+	public void setRequesterTeam(String requesterTeam) {
+		this.requesterTeam = requesterTeam;
+	}
+	
 
 }
