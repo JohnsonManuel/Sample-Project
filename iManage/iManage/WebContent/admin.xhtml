@@ -74,7 +74,7 @@
 							<h:outputText value="Team : "></h:outputText>
 							<h:outputText value="#{workRequestModel.team}"></h:outputText>
 						</p:panelGrid>
-						<p:commandButton value="Logout" action="#{loginModel.logout()}"></p:commandButton>
+						<p:commandButton value="Logout" action="#{loginModel.logout()}" onclick="clearSession();" ></p:commandButton>
 					</h:form>
 				</p:outputPanel>
 			</h:outputLink>
@@ -278,6 +278,68 @@
 					</p:dataTable>
 				</p:outputPanel>
 			</p:outputPanel>
+			
+			<p:outputPanel styleClass="display-panels ui-g-12" id="open"
+				rendered="#{comp['admin.openpanel']}">
+				<p:outputPanel id="open-panel">
+					<h3>
+						Open requests
+						<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh"
+							action="#{workRequestModel.updateTables()}" title="refresh"
+							update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" />
+					</h3>
+					<p:outputPanel
+						rendered="#{empty workRequestModel.openProgressWorksList}"
+						styleClass="information-panel">
+						<h:graphicImage name="empty.jpg" library="images"></h:graphicImage>
+						<p>
+							<h:outputText value="You're all caugth up here !"></h:outputText>
+						</p>
+					</p:outputPanel>
+					<p:dataTable var="list"
+						value="#{workRequestModel.openProgressWorksList}"
+						rendered="#{not empty workRequestModel.openProgressWorksList}"
+						id="openprogressworklist" reflow="true"
+						rows="15"
+						paginator="true"
+		                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+		                rowsPerPageTemplate="5,10,15">
+						<p:column headerText="Id"
+							sortBy="#{list.requestType}-#{list.requestID}">
+							<h:outputText value="#{list.requestType}-#{list.requestID}" />
+						</p:column>
+						<p:column headerText="Type" styleClass="type"
+							sortBy="#{list.requestType}">
+							<h:graphicImage name="#{list.requestType}.svg" library="images"
+								styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
+							<h:outputText value="    #{list.requestType}"
+								styleClass="type-text"></h:outputText>
+						</p:column>
+						<p:column headerText="Assigner" sortBy="#{list.requester}">
+							<h:outputText value="#{list.requester}" />
+						</p:column>
+						<p:column headerText="Name" sortBy="#{list.name}">
+							<h:outputText value="#{list.name}" />
+						</p:column>
+						<p:column headerText="Description" styleClass="singleLine"
+							sortBy="#{list.description}">
+							<h:outputText value="#{list.description}" />
+							<p:commandButton styleClass="expand-btn" value="..."
+								action="#{workRequestModel.setSelectedworkRequest(list)}"
+								update="description-panel"
+								oncomplete="PF('description-dialog').show();"></p:commandButton>
+						</p:column>
+						<p:column headerText="Edit">
+							<p:commandButton value="Select"
+								action="#{workRequestModel.setSelectedworkRequest(list)}"
+								update="editform comments-panel"
+								onclick="toggleSubMenu('edit');"></p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</p:outputPanel>
+			
 			<p:outputPanel styleClass="display-panels ui-g-12" id="inp"
 				rendered="#{comp['admin.inppanel']}">
 				<p:outputPanel id="inp-panel">
@@ -406,78 +468,18 @@
 				</p:outputPanel>
 			</p:outputPanel>
 
-			<p:outputPanel styleClass="display-panels ui-g-12" id="open"
-				rendered="#{comp['admin.openpanel']}">
-				<p:outputPanel id="open-panel">
-					<h3>
-						Open requests
-						<p:commandButton icon="pi pi-refresh" styleClass="btn-refresh"
-							action="#{workRequestModel.updateTables()}" title="refresh"
-							update="open-panel @(.counter) inp-panel open-panel comp-panel all-panel" />
-					</h3>
-					<p:outputPanel
-						rendered="#{empty workRequestModel.openProgressWorksList}"
-						styleClass="information-panel">
-						<h:graphicImage name="empty.jpg" library="images"></h:graphicImage>
-						<p>
-							<h:outputText value="You're all caugth up here !"></h:outputText>
-						</p>
-					</p:outputPanel>
-					<p:dataTable var="list"
-						value="#{workRequestModel.openProgressWorksList}"
-						rendered="#{not empty workRequestModel.openProgressWorksList}"
-						id="openprogressworklist" reflow="true"
-						rows="15"
-						paginator="true"
-		                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-		                currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-		                rowsPerPageTemplate="5,10,15">
-						<p:column headerText="Id"
-							sortBy="#{list.requestType}-#{list.requestID}">
-							<h:outputText value="#{list.requestType}-#{list.requestID}" />
-						</p:column>
-						<p:column headerText="Type" styleClass="type"
-							sortBy="#{list.requestType}">
-							<h:graphicImage name="#{list.requestType}.svg" library="images"
-								styleClass="type-img" title="#{list.requestType} Service"></h:graphicImage>
-							<h:outputText value="    #{list.requestType}"
-								styleClass="type-text"></h:outputText>
-						</p:column>
-						<p:column headerText="Assigner" sortBy="#{list.requester}">
-							<h:outputText value="#{list.requester}" />
-						</p:column>
-						<p:column headerText="Name" sortBy="#{list.name}">
-							<h:outputText value="#{list.name}" />
-						</p:column>
-						<p:column headerText="Description" styleClass="singleLine"
-							sortBy="#{list.description}">
-							<h:outputText value="#{list.description}" />
-							<p:commandButton styleClass="expand-btn" value="..."
-								action="#{workRequestModel.setSelectedworkRequest(list)}"
-								update="description-panel"
-								oncomplete="PF('description-dialog').show();"></p:commandButton>
-						</p:column>
-						<p:column headerText="Edit">
-							<p:commandButton value="Select"
-								action="#{workRequestModel.setSelectedworkRequest(list)}"
-								update="editform comments-panel"
-								onclick="toggleSubMenu('edit');"></p:commandButton>
-						</p:column>
-					</p:dataTable>
-				</p:outputPanel>
-			</p:outputPanel>
+			
 
 			<p:outputPanel styleClass="display-panels ui-g-12 ui-sm-12" id="edit">
 				<p:commandButton value="Back" onclick="toggleSubMenu();"
 					icon="pi pi-chevron-left" update="editform messages"></p:commandButton>
-				<h:form id="editform">
+				<h:form id="editform" styleClass="ui-g-12">
 					<h3>
 						<h:outputText
 							value="Ticket ID : #{workRequestModel.selectedworkRequest.requestType}-#{workRequestModel.selectedworkRequest.requestID}" />
 					</h3>
-
 					<p:panelGrid columns="2" layout="grid" id="edit-panel"
-						styleClass="ui-g-6 ui-sm-12">
+						styleClass="ui-g-12">
 
 						<h:outputLabel value="Subject:" for="selectedName"></h:outputLabel>
 						<h:inputText id="selectedName"
@@ -526,10 +528,15 @@
 					</p:panelGrid>
 				</h:form>
 				<h:form id="comments-panel">
-					<p:outputPanel styleClass="ui-g-6 ui-sm-12">
+					<p:outputPanel styleClass="ui-g-12">
 						<p>
 							<b>Comments :</b>
 						</p>
+						
+						<p:outputPanel rendered="#{commentsModel.request_comments(workRequestModel.selectedworkRequest.requestID)} eq null">
+							No comments
+						</p:outputPanel>
+						
 						<p:outputPanel>
 							<ui:repeat var="commentList"
 								value="#{commentsModel.request_comments(workRequestModel.selectedworkRequest.requestID)}">

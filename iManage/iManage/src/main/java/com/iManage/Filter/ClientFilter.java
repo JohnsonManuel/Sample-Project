@@ -11,9 +11,13 @@ public class ClientFilter implements ClientRequestFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
+
 		String SecretAuthCode = (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("AUTHID");
-		requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + SecretAuthCode);
+
+		if (SecretAuthCode != null) {
+			requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + SecretAuthCode);
+		}
 	}
 
 }

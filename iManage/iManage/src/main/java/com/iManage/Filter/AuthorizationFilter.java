@@ -50,7 +50,9 @@ public class AuthorizationFilter implements Filter {
 			}
 
 			if (ses != null) {
+				
 				if (ses.getAttribute("user") != null && ses.getAttribute("team") != null) {
+					
 					if (ses.getAttribute("user-type") != null) {
 						if (reqURI.indexOf("/admin.xhtml") >= 0) {
 							if (ses.getAttribute("user-type").equals("admin")) {
