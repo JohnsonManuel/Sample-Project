@@ -85,7 +85,7 @@ window.onunload = function() {
 	}
 
 };
-window.onbeforeprint = function() {
+window.onload = function() {
 	console.log(sessionStorage.getItem("lastLoaded"));
 	if (sessionStorage.getItem("lastLoaded") != null
 			&& sessionStorage.getItem("lastLoaded") != 'edit') {
